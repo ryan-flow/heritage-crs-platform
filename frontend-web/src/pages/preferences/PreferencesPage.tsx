@@ -20,12 +20,15 @@ export default function PreferencesPage() {
 
   useEffect(() => {
     if (session?.userId) {
-      apiRequest<{ code: number; data: { preferred_heritage_types?: string; preferred_scene_types?: string; preferred_regions?: string } }>(`/users/${session.userId}`)
+      apiRequest<{ code: number; data: { preferred_heritage_types?: string[]; preferred_scene_types?: string[]; preferred_regions?: string[] } }>(`/users/${session.userId}`)
         .then(res => {
           if (res.data) {
-            if (res.data.preferred_heritage_types) setSelectedTypes(res.data.preferred_heritage_types.split(',').filter(Boolean));
-            if (res.data.preferred_scene_types) setSelectedScenes(res.data.preferred_scene_types.split(',').filter(Boolean));
-            if (res.data.preferred_regions) setSelectedRegions(res.data.preferred_regions.split(',').filter(Boolean));
+            const h = res.data.preferred_heritage_types;
+            const s = res.data.preferred_scene_types;
+            const r = res.data.preferred_regions;
+            if (h) setSelectedTypes(Array.isArray(h) ? h : String(h).split(',').filter(Boolean));
+            if (s) setSelectedScenes(Array.isArray(s) ? s : String(s).split(',').filter(Boolean));
+            if (r) setSelectedRegions(Array.isArray(r) ? r : String(r).split(',').filter(Boolean));
           }
         }).catch(() => {});
     }
@@ -38,12 +41,12 @@ export default function PreferencesPage() {
   const handleSave = async () => {
     setSaving(true);
     try {
-      await apiRequest(`/users/${session?.userId}`, {
+      await apiRequest(`/users/me/${session?.userId}/preferences`, {
         method: 'PUT',
         data: {
-          preferred_heritage_types: selectedTypes.join(','),
-          preferred_scene_types: selectedScenes.join(','),
-          preferred_regions: selectedRegions.join(','),
+          heritage_types: selectedTypes,
+          scene_types: selectedScenes,
+          regions: selectedRegions,
         },
       });
       setSaved(true);

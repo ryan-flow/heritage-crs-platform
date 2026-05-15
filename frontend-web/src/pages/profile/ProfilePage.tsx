@@ -46,9 +46,13 @@ export default function ProfilePage() {
             ) : null}
           </div>
         </div>
-        {user?.preferred_heritage_types && (
+        {user?.preferred_heritage_types && user.preferred_heritage_types.length > 0 && (
           <div className="mt-3 pt-3 border-t border-ink-border/30">
-            <span className="text-xs text-ink-secondary">偏好：{user.preferred_heritage_types.replace(/,/g, '、')}</span>
+            <span className="text-xs text-ink-secondary">
+              偏好：{Array.isArray(user.preferred_heritage_types)
+                ? user.preferred_heritage_types.join('、')
+                : String(user.preferred_heritage_types).replace(/,/g, '、')}
+            </span>
           </div>
         )}
       </GlassCard>
