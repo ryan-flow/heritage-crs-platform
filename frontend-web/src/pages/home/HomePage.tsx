@@ -1,13 +1,10 @@
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { ArrowRight, MapPin, Clock, MessageSquare, BookOpen, Sparkles, Calendar, MessageCircle } from 'lucide-react';
+import { Sparkles, MapPin, Clock, MessageSquare, BookOpen, Calendar, MessageCircle, ChevronRight } from 'lucide-react';
 import { apiRequest, buildImageUrl, shortenReason } from '../../lib/api';
 import { RecommendData, ContentItem, Activity, DiscussionTopic } from '../../types';
 import { DigitalHumanModel } from '../../components/digital-human/DigitalHumanModel';
 import '../../components/digital-human/DigitalHumanModel.css';
-import { GlassCard } from '../../components/ui/GlassCard';
-import { SealBadge } from '../../components/ui/SealBadge';
-import { SkeletonLoader } from '../../components/ui/SkeletonLoader';
 import { useAuthStore } from '../../stores/auth-store';
 
 export default function HomePage() {
@@ -38,151 +35,165 @@ export default function HomePage() {
   };
 
   return (
-    <div className="px-4 py-5 space-y-5">
-      {/* Hero — Digital Human + CRS */}
-      <div className="relative bg-gradient-to-br from-parchment via-white to-gold-50 rounded-3xl p-5 border border-ink-border/40 shadow-sm overflow-hidden">
-        <div className="absolute top-0 right-0 w-48 h-48 bg-gold-100/20 rounded-full blur-2xl -translate-y-1/2 translate-x-1/4" />
-        <div className="flex items-center gap-3 relative z-10">
-          <div className="shrink-0">
-            <DigitalHumanModel variant="hero" mood={mood} size={180} />
-          </div>
-          <div className="flex-1">
-            <h2 className="text-lg font-serif font-bold text-ink">和黑塔聊聊非遗</h2>
-            <p className="text-sm text-ink-secondary mt-1 leading-relaxed">
-              {crsMode === 'precision'
-                ? '已为你准备好个性化推荐'
-                : crsMode === 'mixed'
-                ? '正在探索你的兴趣偏好'
-                : '让我来了解你喜欢什么'}
-            </p>
-
-            {/* Confidence ring */}
-            {confidence > 0 && (
-              <div className="flex items-center gap-2.5 mt-3">
-                <div className="relative w-10 h-10">
-                  <svg className="w-10 h-10 -rotate-90" viewBox="0 0 36 36">
-                    <circle cx="18" cy="18" r="15" fill="none" stroke="currentColor" strokeWidth="3" className="text-ink-border/40" />
-                    <circle
-                      cx="18" cy="18" r="15" fill="none" stroke="currentColor" strokeWidth="3"
-                      strokeDasharray={`${confidence * 0.942} 94.2`}
-                      strokeLinecap="round"
-                      className={`${mood === 'confident' ? 'text-cinnabar-600' : mood === 'thinking' ? 'text-jade-500' : 'text-gold-500'}`}
-                    />
-                  </svg>
-                  <span className="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-ink">{confidence}%</span>
-                </div>
-                <SealBadge variant={mood === 'confident' ? 'cinnabar' : mood === 'thinking' ? 'jade' : 'gold'}>
-                  {mood === 'confident' ? '已懂你' : mood === 'thinking' ? '思考中' : '了解中'}
-                </SealBadge>
-              </div>
-            )}
-
-            <button
-              onClick={() => navigate('/ai')}
-              className="mt-3.5 ink-btn ink-btn-primary !text-sm"
-            >
-              <Sparkles size={15} /> 开始对话 <ArrowRight size={14} />
-            </button>
-          </div>
+    <div style={{ padding: '24rpx', paddingBottom: 40 }}>
+      {/* ── Hero (小程序 ai-hero 风格) ── */}
+      <div className="rise-in" style={{
+        background: 'linear-gradient(135deg, #5B3A7A 0%, #8B4513 100%)',
+        borderRadius: '36rpx', padding: '16rpx 24rpx 0',
+        minHeight: 200, display: 'flex', alignItems: 'flex-end',
+        boxShadow: '0 22rpx 46rpx rgba(65,32,92,0.24)',
+        position: 'relative', overflow: 'hidden', marginBottom: 20,
+      }}>
+        {/* Inner glows */}
+        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'radial-gradient(ellipse at 30% 20%, rgba(255,255,255,0.06) 0%, transparent 50%), radial-gradient(ellipse at 70% 60%, rgba(200,160,100,0.08) 0%, transparent 50%)' }} />
+        <div style={{ flex: '0 0 56%', paddingBottom: 20, position: 'relative', zIndex: 1 }}>
+          <span style={{
+            display: 'inline-block', padding: '4rpx 14rpx', borderRadius: 999,
+            background: 'rgba(255,247,236,0.16)', color: '#ffd8a8',
+            fontSize: 12, fontWeight: 600, marginBottom: 12, letterSpacing: '0.6rpx',
+          }}>
+            数字导览中枢
+          </span>
+          <h2 style={{
+            fontSize: 28, fontWeight: 800, color: '#fff8f1',
+            lineHeight: 1.22, margin: '0 0 8rpx',
+            textShadow: '0 2rpx 8rpx rgba(0,0,0,0.1)',
+          }}>
+            和黑塔聊聊非遗
+          </h2>
+          <p style={{ fontSize: 14, color: 'rgba(255,244,232,0.92)', lineHeight: 1.5, margin: '0 0 14rpx' }}>
+            {crsMode === 'precision' ? '已为你准备好个性化推荐' : crsMode === 'mixed' ? '正在探索你的兴趣偏好' : '让我来了解你喜欢什么'}
+          </p>
+          <button onClick={() => navigate('/ai')}
+            style={{
+              display: 'inline-flex', alignItems: 'center', gap: 6,
+              padding: '12rpx 28rpx', borderRadius: 999, border: 'none', cursor: 'pointer',
+              background: 'linear-gradient(135deg, #ffd39a, #ffb765)',
+              color: '#5d2410', fontWeight: 800, fontSize: 14, letterSpacing: '1rpx',
+              boxShadow: '0 8rpx 16rpx rgba(0,0,0,0.1)',
+            }}>
+            <Sparkles size={14} /> 开始对话
+          </button>
+        </div>
+        <div style={{ flex: '0 0 44%', position: 'relative', zIndex: 1, alignSelf: 'flex-end', transform: 'translateY(16rpx)' }}>
+          <DigitalHumanModel variant="hero" mood={mood} size={160} />
         </div>
       </div>
 
-      {/* Quick links */}
-      <div className="grid grid-cols-4 gap-2.5">
+      {/* ── Guide text ── */}
+      {recommend.guide_text && (
+        <div className="card rise-in rise-in-2" style={{ padding: '20rpx 24rpx' }}>
+          <p style={{ margin: 0, fontSize: 14, color: '#5a4430', lineHeight: 1.8 }}>{recommend.guide_text}</p>
+        </div>
+      )}
+
+      {/* ── Quick entry grid (小程序 quick-grid 风格) ── */}
+      <div className="rise-in rise-in-2" style={{
+        display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14,
+        marginBottom: 18,
+      }}>
         {[
-          { label: '非遗文化', icon: BookOpen, path: '/culture', color: 'bg-amber-50 text-amber-600' },
-          { label: '非遗场馆', icon: MapPin, path: '/places', color: 'bg-jade-50 text-jade-500' },
-          { label: '浏览历史', icon: Clock, path: '/history', color: 'bg-blue-50 text-blue-500' },
-          { label: 'AI 对话', icon: MessageSquare, path: '/ai', color: 'bg-cinnabar-50 text-cinnabar-600' },
+          { label: '非遗文化', note: '策展精选', icon: BookOpen, path: '/culture', bg: '#fff5eb' },
+          { label: '非遗场馆', note: '线下体验', icon: MapPin, path: '/places', bg: '#f5f0e8' },
+          { label: '浏览历史', note: '足迹回顾', icon: Clock, path: '/history', bg: '#f0f0f5' },
+          { label: 'AI 对话', note: '黑塔导览', icon: MessageSquare, path: '/ai', bg: '#fff0ec' },
         ].map(item => {
           const Icon = item.icon;
           return (
-            <button
-              key={item.path}
-              onClick={() => navigate(item.path)}
-              className="flex flex-col items-center gap-1.5 p-2.5 glass-card hover:border-gold-200 transition-all"
-            >
-              <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${item.color}`}>
-                <Icon size={18} />
-              </div>
-              <span className="text-[11px] text-ink-secondary">{item.label}</span>
+            <button key={item.path} onClick={() => navigate(item.path)}
+              className="card"
+              style={{ padding: '18rpx', margin: 0, background: item.bg, border: 'none', cursor: 'pointer', textAlign: 'left', display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <Icon size={20} style={{ color: '#9f2d22' }} />
+              <span style={{ fontSize: 16, fontWeight: 700, color: '#3a2416' }}>{item.label}</span>
+              <span style={{ fontSize: 13, color: '#83664d' }}>{item.note}</span>
             </button>
           );
         })}
       </div>
 
-      {/* Guide text */}
-      {recommend.guide_text && (
-        <GlassCard className="p-3.5">
-          <p className="text-sm text-ink-secondary leading-relaxed">{recommend.guide_text}</p>
-        </GlassCard>
-      )}
-
       {isLoading ? (
-        <div className="space-y-3">
-          <SkeletonLoader variant="card" />
-          <SkeletonLoader variant="text" />
-          <SkeletonLoader variant="text" />
-          <SkeletonLoader variant="card" />
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+          {[1, 2, 3].map(i => <div key={i} className="skeleton" style={{ height: 120 }} />)}
         </div>
       ) : (
         <>
-          {/* Featured Content */}
+          {/* ── Featured Recommendation ── */}
           {firstContent && (
-            <section>
-              <div className="flex items-center gap-2 mb-2.5">
-                <Sparkles size={14} className="text-cinnabar-600" />
-                <h3 className="text-sm font-serif font-bold text-ink">为你推荐</h3>
-              </div>
-              <button
-                onClick={() => { trackClick('content', firstContent.id); navigate(`/content/${firstContent.id}`); }}
-                className="w-full glass-card overflow-hidden hover:shadow-lg transition-all text-left card-lift"
-              >
-                {firstContent.cover_url && (
-                  <div className="h-40 bg-parchment-dark relative">
-                    <img src={buildImageUrl(firstContent.cover_url)} alt={firstContent.title} className="w-full h-full object-cover" loading="lazy" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
-                    <div className="absolute top-3 right-3">
-                      <SealBadge variant="gold">精选</SealBadge>
-                    </div>
+            <section className="rise-in rise-in-3" style={{ marginBottom: 18 }}>
+              <div style={{
+                background: 'linear-gradient(180deg, rgba(255,249,241,0.98), rgba(251,236,219,0.98))',
+                borderRadius: '28rpx', padding: '20rpx 24rpx',
+                boxShadow: '0 14rpx 34rpx rgba(121,58,31,0.08)',
+                border: '1rpx solid rgba(219,191,155,0.18)',
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <Sparkles size={14} style={{ color: '#c08a3e' }} />
+                    <span style={{ fontSize: 18, fontWeight: 800, color: '#342114' }}>精选推荐</span>
                   </div>
-                )}
-                <div className="p-4">
-                  <h4 className="font-serif font-bold text-ink text-base">{firstContent.title}</h4>
-                  <p className="text-xs text-ink-secondary mt-1.5 line-clamp-2 leading-relaxed">
-                    {shortenReason(firstContent.reason, firstContent.summary || '')}
-                  </p>
+                  <span style={{
+                    fontSize: 11, padding: '2rpx 10rpx', borderRadius: 999,
+                    background: '#f7e7dc', color: '#9f2d22', fontWeight: 600,
+                  }}>文化</span>
                 </div>
-              </button>
+                <button
+                  onClick={() => { trackClick('content', firstContent.id); navigate(`/content/${firstContent.id}`); }}
+                  style={{ width: '100%', border: 'none', background: 'none', padding: 0, cursor: 'pointer', textAlign: 'left', display: 'flex', gap: 14 }}>
+                  {firstContent.cover_url ? (
+                    <div style={{ width: 114, height: 78, borderRadius: 14, overflow: 'hidden', flexShrink: 0, boxShadow: '0 6rpx 16rpx rgba(121,58,31,0.08)' }}>
+                      <img src={buildImageUrl(firstContent.cover_url)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    </div>
+                  ) : (
+                    <div style={{
+                      width: 114, height: 78, borderRadius: 14, flexShrink: 0,
+                      background: 'linear-gradient(135deg, #f5e8d5, #e8d5b8)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      fontSize: 32, color: '#c08a3e',
+                    }}>
+                      📜
+                    </div>
+                  )}
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <h3 style={{ fontSize: 17, fontWeight: 800, color: '#342114', margin: '0 0 6rpx', lineHeight: 1.3 }}>{firstContent.title}</h3>
+                    <p style={{ fontSize: 12, color: '#83664d', margin: 0, lineHeight: 1.5, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                      {shortenReason(firstContent.reason, firstContent.summary || '')}
+                    </p>
+                  </div>
+                </button>
+              </div>
             </section>
           )}
 
-          {/* Content list */}
+          {/* ── Content Section ── */}
           {recommend.contents && recommend.contents.length > 1 && (
-            <section>
-              <div className="flex items-center justify-between mb-2.5">
-                <h3 className="text-sm font-serif font-bold text-ink flex items-center gap-1.5">
-                  <BookOpen size={14} className="text-ink-muted" /> 文化内容
-                </h3>
-                <button onClick={() => navigate('/content')} className="text-xs text-cinnabar-600 hover:text-cinnabar-700 font-medium transition-colors">
-                  全部 →
+            <section style={{ marginBottom: 18 }}>
+              <div className="split-line" style={{ marginBottom: 14 }} />
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+                <span style={{ fontSize: 18, fontWeight: 700, color: '#2f2419' }}>文化内容</span>
+                <button onClick={() => navigate('/content')} style={{ fontSize: 13, color: '#9f2d22', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 600 }}>
+                  全部 <ChevronRight size={14} style={{ verticalAlign: 'middle' }} />
                 </button>
               </div>
-              <div className="grid grid-cols-2 gap-2.5">
-                {recommend.contents.slice(1, 5).map((item: ContentItem) => (
-                  <button
-                    key={item.id}
-                    onClick={() => { trackClick('content', item.id); navigate(`/content/${item.id}`); }}
-                    className="glass-card p-0 overflow-hidden hover:border-gold-200 transition-all text-left card-lift"
-                  >
-                    {item.cover_url && (
-                      <div className="h-24 bg-parchment-dark">
-                        <img src={buildImageUrl(item.cover_url)} alt={item.title} className="w-full h-full object-cover" loading="lazy" />
-                      </div>
-                    )}
-                    <div className="p-2.5">
-                      <h4 className="text-xs font-medium text-ink line-clamp-2 leading-snug">{item.title}</h4>
-                      <p className="text-[11px] text-ink-muted mt-1 line-clamp-1">{shortenReason(item.reason, '')}</p>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                {recommend.contents.slice(1, 5).map((item: ContentItem, idx: number) => (
+                  <button key={item.id} onClick={() => { trackClick('content', item.id); navigate(`/content/${item.id}`); }}
+                    className="card" style={{
+                      margin: 0, padding: 0, overflow: 'hidden', textAlign: 'left', border: 'none', cursor: 'pointer',
+                      animationDelay: `${0.3 + idx * 0.08}s`,
+                    }}>
+                    <div style={{
+                      height: 90, background: 'linear-gradient(135deg, #f5e8d5, #eadcc8)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    }}>
+                      {item.cover_url
+                        ? <img src={buildImageUrl(item.cover_url)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        : <span style={{ fontSize: 36, color: '#c08a3e' }}>📖</span>}
+                    </div>
+                    <div style={{ padding: '14rpx 16rpx' }}>
+                      <h4 style={{ fontSize: 14, fontWeight: 700, color: '#332418', margin: 0, lineHeight: 1.3 }}>{item.title}</h4>
+                      <p style={{ fontSize: 11, color: '#7c5f44', margin: '4rpx 0 0', lineHeight: 1.4, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                        {shortenReason(item.reason, '')}
+                      </p>
                     </div>
                   </button>
                 ))}
@@ -190,88 +201,79 @@ export default function HomePage() {
             </section>
           )}
 
-          {/* Events */}
+          {/* ── Events ── */}
           {recommend.events && recommend.events.length > 0 && (
-            <section>
-              <div className="flex items-center justify-between mb-2.5">
-                <h3 className="text-sm font-serif font-bold text-ink flex items-center gap-1.5">
-                  <Calendar size={14} className="text-ink-muted" /> 推荐活动
-                </h3>
-                <button onClick={() => navigate('/activity')} className="text-xs text-cinnabar-600 hover:text-cinnabar-700 font-medium transition-colors">
-                  全部 →
+            <section style={{ marginBottom: 18 }}>
+              <div className="split-line" style={{ marginBottom: 14 }} />
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+                <span style={{ fontSize: 18, fontWeight: 700, color: '#2f2419' }}>推荐活动</span>
+                <button onClick={() => navigate('/activity')} style={{ fontSize: 13, color: '#9f2d22', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 600 }}>
+                  全部 <ChevronRight size={14} style={{ verticalAlign: 'middle' }} />
                 </button>
               </div>
-              <div className="space-y-2">
-                {recommend.events.slice(0, 3).map((item: Activity) => (
-                  <button
-                    key={item.id}
-                    onClick={() => { trackClick('event', item.id); navigate(`/activity/${item.id}`); }}
-                    className="w-full glass-card p-3 flex gap-3 hover:border-gold-200 transition-all text-left card-lift"
-                  >
-                    {item.cover_url ? (
-                      <div className="w-14 h-14 shrink-0 rounded-lg overflow-hidden bg-parchment-dark">
-                        <img src={buildImageUrl(item.cover_url)} alt={item.title} className="w-full h-full object-cover" loading="lazy" />
-                      </div>
-                    ) : (
-                      <div className="w-14 h-14 shrink-0 rounded-lg bg-jade-50 flex items-center justify-center">
-                        <Calendar size={20} className="text-jade-400" />
-                      </div>
-                    )}
-                    <div className="flex-1 min-w-0">
-                      <h4 className="text-sm font-medium text-ink">{item.title}</h4>
-                      <p className="text-xs text-ink-muted mt-0.5">{item.location} · {item.start_time?.slice(0, 10)}</p>
-                      <p className="text-xs text-ink-muted/70 line-clamp-1 mt-0.5">{shortenReason(item.reason, '')}</p>
-                    </div>
-                  </button>
-                ))}
-              </div>
+              {recommend.events.slice(0, 3).map((item: Activity, idx: number) => (
+                <button key={item.id} onClick={() => { trackClick('event', item.id); navigate(`/activity/${item.id}`); }}
+                  className="card rise-in" style={{
+                    display: 'flex', gap: 14, alignItems: 'center', width: '100%',
+                    border: 'none', cursor: 'pointer', textAlign: 'left',
+                    animationDelay: `${0.3 + idx * 0.08}s`, margin: '0 0 12rpx',
+                  }}>
+                  <div style={{
+                    width: 72, height: 56, borderRadius: 12, flexShrink: 0,
+                    background: 'linear-gradient(135deg, #f0e6d8, #e0d0b8)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontSize: 28, color: '#9f2d22',
+                  }}>
+                    {item.cover_url
+                      ? <img src={buildImageUrl(item.cover_url)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      : '📅'}
+                  </div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <h4 style={{ fontSize: 15, fontWeight: 700, color: '#342114', margin: '0 0 4rpx' }}>{item.title}</h4>
+                    <p style={{ fontSize: 11, color: '#8b6a4b', margin: '0 0 2rpx' }}>
+                      <MapPin size={10} style={{ verticalAlign: 'middle', marginRight: 4 }} />
+                      {item.location} · {item.start_time?.slice(0, 10)}
+                    </p>
+                    <p style={{ fontSize: 11, color: '#a08868', margin: 0, display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                      {shortenReason(item.reason, '')}
+                    </p>
+                  </div>
+                </button>
+              ))}
             </section>
           )}
 
-          {/* Topics */}
+          {/* ── Topics ── */}
           {recommend.topics && recommend.topics.length > 0 && (
-            <section>
-              <div className="flex items-center justify-between mb-2.5">
-                <h3 className="text-sm font-serif font-bold text-ink flex items-center gap-1.5">
-                  <MessageCircle size={14} className="text-ink-muted" /> 社区讨论
-                </h3>
-                <button onClick={() => navigate('/discussion')} className="text-xs text-cinnabar-600 hover:text-cinnabar-700 font-medium transition-colors">
-                  全部 →
+            <section style={{ marginBottom: 18 }}>
+              <div className="split-line" style={{ marginBottom: 14 }} />
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+                <span style={{ fontSize: 18, fontWeight: 700, color: '#2f2419' }}>社区讨论</span>
+                <button onClick={() => navigate('/discussion')} style={{ fontSize: 13, color: '#9f2d22', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 600 }}>
+                  全部 <ChevronRight size={14} style={{ verticalAlign: 'middle' }} />
                 </button>
               </div>
-              <div className="space-y-2">
-                {recommend.topics.slice(0, 3).map((item: DiscussionTopic) => (
-                  <button
-                    key={item.id}
-                    onClick={() => { trackClick('topic', item.id); navigate(`/discussion/${item.id}`); }}
-                    className="w-full glass-card p-3 hover:border-gold-200 transition-all text-left card-lift"
-                  >
-                    <h4 className="text-sm font-medium text-ink">{item.title}</h4>
-                    <p className="text-xs text-ink-muted mt-1 line-clamp-1">{shortenReason(item.reason, item.content || '')}</p>
-                    <div className="flex items-center gap-3 mt-2 text-xs text-ink-muted">
-                      <span className="flex items-center gap-1">👍 {item.like_count || 0}</span>
-                      <span className="flex items-center gap-1">💬 {item.comment_count || 0}</span>
-                      {item.nickname && <span className="ml-auto">{item.nickname}</span>}
-                    </div>
-                  </button>
-                ))}
-              </div>
+              {recommend.topics.slice(0, 3).map((item: DiscussionTopic, idx: number) => (
+                <button key={item.id} onClick={() => { trackClick('topic', item.id); navigate(`/discussion/${item.id}`); }}
+                  className="card" style={{
+                    width: '100%', border: 'none', cursor: 'pointer', textAlign: 'left',
+                    margin: '0 0 10rpx',
+                  }}>
+                  <h4 style={{ fontSize: 15, fontWeight: 700, color: '#322418', margin: '0 0 6rpx' }}>{item.title}</h4>
+                  <p style={{ fontSize: 13, color: '#674d36', margin: '0 0 8rpx', lineHeight: 1.6, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                    {item.content?.replace(/<[^>]*>/g, '').slice(0, 140)}
+                  </p>
+                  <div style={{ display: 'flex', gap: 14, fontSize: 11, color: '#8b6a4b' }}>
+                    <span>👍 {item.like_count || 0}</span>
+                    <span>💬 {item.comment_count || 0}</span>
+                    {item.nickname && <span style={{ color: '#a08868' }}>{item.nickname}</span>}
+                  </div>
+                </button>
+              ))}
             </section>
-          )}
-
-          {/* Profile Summary */}
-          {recommend.profile_summary?.summary_text && (
-            <GlassCard className="p-3.5 border-gold-200/50">
-              <p className="text-xs text-ink-secondary leading-relaxed">
-                <span className="font-medium text-ink">你的画像：</span>
-                {recommend.profile_summary.summary_text}
-              </p>
-            </GlassCard>
           )}
         </>
       )}
-
-      <div className="h-4" />
     </div>
   );
 }

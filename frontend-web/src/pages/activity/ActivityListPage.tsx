@@ -4,89 +4,88 @@ import { useQuery } from '@tanstack/react-query';
 import { MapPin, Calendar, Users } from 'lucide-react';
 import { apiRequest, buildImageUrl } from '../../lib/api';
 import { Activity } from '../../types';
-import { GlassCard } from '../../components/ui/GlassCard';
-import { SealBadge } from '../../components/ui/SealBadge';
-import { SkeletonLoader } from '../../components/ui/SkeletonLoader';
 
-const statuses = ['全部', 'open', 'closed', 'full'];
-
+const statuses = ['全部', 'open', 'closed', 'full'] as const;
 const statusLabels: Record<string, string> = { open: '报名中', closed: '已结束', full: '已满' };
-const statusBg: Record<string, string> = {
-  open: 'bg-jade-50 text-jade-600',
-  closed: 'bg-ink-border/30 text-ink-muted',
-  full: 'bg-orange-50 text-orange-600',
-};
 
 export default function ActivityListPage() {
   const navigate = useNavigate();
   const [status, setStatus] = useState('全部');
-
   const { data, isLoading } = useQuery({
     queryKey: ['activities', status],
     queryFn: () => apiRequest<{ code: number; data: Activity[] }>(`/events/?status=${status === '全部' ? '' : status}`),
   });
-
   const activities = (data?.data || []) as Activity[];
 
   return (
-    <div className="px-4 py-5 space-y-4">
-      <h1 className="text-xl font-serif font-bold text-ink">非遗活动</h1>
+    <div style={{ padding: '0 24rpx 36rpx' }}>
+      {/* Hero */}
+      <div className="rise-in" style={{
+        background: 'linear-gradient(135deg, #6B3A2A, #9B4F3C)',
+        borderRadius: '36rpx', padding: '20rpx 24rpx', marginBottom: 20, marginTop: 16,
+        boxShadow: '0 22rpx 46rpx rgba(60,20,10,0.2)',
+      }}>
+        <span style={{ display: 'inline-block', padding: '4rpx 14rpx', borderRadius: 999, background: 'rgba(255,245,230,0.14)', color: '#ffe1bc', fontSize: 12, fontWeight: 600, marginBottom: 10 }}>
+          活动日历中心
+        </span>
+        <h1 style={{ fontSize: 26, fontWeight: 800, color: '#fff8f1', margin: '0 0 4rpx' }}>非遗体验活动</h1>
+        <p style={{ fontSize: 14, color: 'rgba(255,244,232,0.86)', margin: 0 }}>线下活动、体验工坊、文化节庆</p>
+      </div>
 
       {/* Status filter */}
-      <div className="flex gap-2">
+      <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
         {statuses.map(s => (
-          <button
-            key={s}
-            onClick={() => setStatus(s)}
-            className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-all ${
-              status === s
-                ? 'cinnabar-gradient text-white shadow-sm'
-                : 'glass-card text-ink-secondary hover:text-ink'
-            }`}
-          >
+          <button key={s} onClick={() => setStatus(s)}
+            className={`chip ${status === s ? 'chip-active' : ''}`}>
             {s === '全部' ? '全部' : statusLabels[s] || s}
           </button>
         ))}
       </div>
 
       {isLoading ? (
-        <div className="space-y-3">
-          {[1, 2, 3].map(i => <SkeletonLoader key={i} variant="card" />)}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+          {[1, 2, 3].map(i => <div key={i} className="skeleton" style={{ height: 100 }} />)}
         </div>
       ) : activities.length === 0 ? (
-        <div className="text-center py-16">
-          <Calendar size={40} className="text-ink-muted/40 mx-auto mb-2" />
-          <p className="text-ink-muted text-sm">暂无活动</p>
+        <div style={{ textAlign: 'center', padding: '60rpx 0', color: '#a08868', fontSize: 14 }}>
+          <Calendar size={32} style={{ display: 'block', margin: '0 auto 12rpx', opacity: 0.4 }} />
+          <p>暂无活动</p>
         </div>
       ) : (
-        <div className="space-y-2.5">
-          {activities.map(item => (
-            <button
-              key={item.id}
-              onClick={() => navigate(`/activity/${item.id}`)}
-              className="w-full glass-card overflow-hidden hover:border-gold-200 transition-all text-left flex card-lift"
-            >
-              {item.cover_url ? (
-                <div className="w-24 h-28 shrink-0 bg-parchment-dark">
-                  <img src={buildImageUrl(item.cover_url)} alt={item.title} className="w-full h-full object-cover" loading="lazy" />
-                </div>
-              ) : (
-                <div className="w-24 h-28 shrink-0 bg-jade-50 flex items-center justify-center">
-                  <Calendar size={24} className="text-jade-400" />
-                </div>
-              )}
-              <div className="flex-1 p-3 min-w-0">
-                <h3 className="text-sm font-medium text-ink line-clamp-2">{item.title}</h3>
-                <div className="flex flex-wrap gap-x-3 gap-y-1 mt-1.5 text-xs text-ink-muted">
-                  <span className="flex items-center gap-1"><MapPin size={11} /> {item.location}</span>
-                  <span className="flex items-center gap-1"><Calendar size={11} /> {item.start_time?.slice(0, 10)}</span>
-                  {item.current_participants !== undefined && (
-                    <span className="flex items-center gap-1"><Users size={11} /> {item.current_participants}/{item.max_participants || '-'}</span>
-                  )}
-                </div>
-                <span className={`inline-block mt-2 text-[11px] px-1.5 py-0.5 rounded-full ${statusBg[item.status] || 'bg-parchment-dark text-ink-muted'}`}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+          {activities.map((item, idx) => (
+            <button key={item.id} onClick={() => navigate(`/activity/${item.id}`)}
+              className="card rise-in"
+              style={{
+                margin: 0, textAlign: 'left', border: 'none', cursor: 'pointer', width: '100%',
+                padding: 0, overflow: 'hidden',
+                animationDelay: `${0.1 + idx * 0.05}s`,
+              }}>
+              <div style={{
+                height: 160, background: 'linear-gradient(135deg, #f0e6d8, #e0d0b8)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                position: 'relative',
+              }}>
+                {item.cover_url
+                  ? <img src={buildImageUrl(item.cover_url)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  : <Calendar size={48} style={{ color: '#c08a3e', opacity: 0.4 }} />}
+                <span style={{
+                  position: 'absolute', top: 12, left: 12,
+                  padding: '5rpx 12rpx', borderRadius: 999, fontSize: 11, fontWeight: 600,
+                  background: 'rgba(50,28,20,0.66)', color: '#ffe1bc',
+                }}>
                   {statusLabels[item.status] || item.status}
                 </span>
+              </div>
+              <div style={{ padding: '16rpx 18rpx' }}>
+                <h3 style={{ fontSize: 16, fontWeight: 800, color: '#342114', margin: '0 0 8rpx' }}>{item.title}</h3>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6rpx 14rpx', fontSize: 11, color: '#8b6a4b' }}>
+                  <span><MapPin size={10} style={{ verticalAlign: 'middle', marginRight: 3 }} />{item.location}</span>
+                  <span><Calendar size={10} style={{ verticalAlign: 'middle', marginRight: 3 }} />{item.start_time?.slice(0, 10)}</span>
+                  {item.max_participants && (
+                    <span><Users size={10} style={{ verticalAlign: 'middle', marginRight: 3 }} />{item.current_participants || 0}/{item.max_participants}</span>
+                  )}
+                </div>
               </div>
             </button>
           ))}
