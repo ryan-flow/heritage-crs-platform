@@ -5,76 +5,61 @@ import { useAuthStore } from '../../stores/auth-store';
 import { PageTransition } from '../ui/PageTransition';
 
 /* CSS-only tab icons matching mini-program style */
-function HomeGlyph({ active }: { active: boolean }) {
+function TabGlyph({ active, type }: { active: boolean; type: string }) {
   const c = active ? '#fff7ef' : '#9f2d22';
-  return (
-    <div style={{ position: 'relative', width: 24, height: 24, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: 3 }}>
+  if (type === 'home') return (
+    <div className="relative w-6 h-6 flex flex-col justify-center items-center gap-[3px]">
       <div style={{ width: 18, height: 2.5, background: c, borderRadius: 1 }} />
       <div style={{ width: 14, height: 2.5, background: c, borderRadius: 1 }} />
       <div style={{ width: 8, height: 2.5, background: c, borderRadius: 1 }} />
     </div>
   );
-}
-
-function ContentGlyph({ active }: { active: boolean }) {
-  const c = active ? '#fff7ef' : '#9f2d22';
-  return (
-    <div style={{ position: 'relative', width: 22, height: 24, border: `2.5px solid ${c}`, borderRadius: 4, boxSizing: 'border-box' }}>
-      <div style={{ position: 'absolute', top: 6, left: 4, right: 4, height: 1.5, background: c, borderRadius: 1 }} />
-      <div style={{ position: 'absolute', top: 12, left: 4, width: 8, height: 1.5, background: c, borderRadius: 1 }} />
+  if (type === 'content') return (
+    <div className="relative w-[22px] h-6 rounded" style={{ border: `2.5px solid ${c}` }}>
+      <div className="absolute top-1.5 left-1 right-1 h-[1.5px]" style={{ background: c }} />
+      <div className="absolute top-3 left-1 w-2 h-[1.5px]" style={{ background: c }} />
     </div>
   );
-}
-
-function ActivityGlyph({ active }: { active: boolean }) {
-  const c = active ? '#fff7ef' : '#9f2d22';
-  return (
-    <div style={{ position: 'relative', width: 22, height: 24, border: `2.5px solid ${c}`, borderRadius: 4, boxSizing: 'border-box' }}>
-      <div style={{ position: 'absolute', top: 4, left: 0, right: 0, height: 2, background: c, margin: '0 4rpx' }} />
-      <div style={{ position: 'absolute', top: 10, left: '50%', width: 2, height: 8, background: c, transform: 'translateX(-50%)' }} />
+  if (type === 'activity') return (
+    <div className="relative w-[22px] h-6 rounded" style={{ border: `2.5px solid ${c}` }}>
+      <div className="absolute top-1 left-0 right-0 mx-1 h-0.5" style={{ background: c }} />
+      <div className="absolute top-2.5 left-1/2 -translate-x-1/2 w-0.5 h-2" style={{ background: c }} />
     </div>
   );
-}
-
-function DiscussGlyph({ active }: { active: boolean }) {
-  const c = active ? '#fff7ef' : '#9f2d22';
-  return (
-    <div style={{ position: 'relative', width: 24, height: 24 }}>
-      <div style={{ position: 'absolute', left: 2, top: 2, width: 17, height: 14, border: `2.5px solid ${c}`, borderRadius: 6, boxSizing: 'border-box' }} />
-      <div style={{ position: 'absolute', right: 1, bottom: 1, width: 0, height: 0, borderLeft: `6rpx solid transparent`, borderRight: '6rpx solid transparent', borderTop: `7rpx solid ${c}` }} />
-      <div style={{ position: 'absolute', left: 7, top: 7, width: 6, height: 1.5, background: c, borderRadius: 1 }} />
+  if (type === 'discussion') return (
+    <div className="relative w-6 h-6">
+      <div className="absolute left-0.5 top-0.5 w-[17px] h-3.5 rounded-md" style={{ border: `2.5px solid ${c}` }} />
+      <div className="absolute right-px -bottom-px w-0 h-0 border-l-[6px] border-r-[6px] border-t-[7px] border-l-transparent border-r-transparent" style={{ borderTopColor: c }} />
+      <div className="absolute left-[7px] top-[7px] w-1.5 h-[1.5px]" style={{ background: c }} />
     </div>
   );
-}
-
-function ProfileGlyph({ active }: { active: boolean }) {
-  const c = active ? '#fff7ef' : '#9f2d22';
-  return (
-    <div style={{ position: 'relative', width: 22, height: 24, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-      <div style={{ width: 13, height: 13, borderRadius: '50%', background: c }} />
-      <div style={{ width: 18, height: 10, borderRadius: '9rpx 9rpx 0 0', background: c, marginTop: -1 }} />
+  if (type === 'profile') return (
+    <div className="relative w-[22px] h-6 flex flex-col items-center">
+      <div className="w-[13px] h-[13px] rounded-full" style={{ background: c }} />
+      <div className="w-[18px] h-2.5 rounded-t-[9px] -mt-px" style={{ background: c }} />
     </div>
   );
+  return null;
 }
 
 const tabs = [
-  { path: '/', label: '首页', Glyph: HomeGlyph },
-  { path: '/content', label: '文化', Glyph: ContentGlyph },
-  { path: '/activity', label: '活动', Glyph: ActivityGlyph },
-  { path: '/discussion', label: '讨论', Glyph: DiscussGlyph },
-  { path: '/profile', label: '我的', Glyph: ProfileGlyph },
-];
+  { path: '/', label: '首页', type: 'home' },
+  { path: '/content', label: '文化', type: 'content' },
+  { path: '/activity', label: '活动', type: 'activity' },
+  { path: '/discussion', label: '讨论', type: 'discussion' },
+  { path: '/profile', label: '我的', type: 'profile' },
+] as const;
 
 function useActiveTab(pathname: string) {
   if (pathname === '/') return 0;
-  const idx = tabs.findIndex(t => pathname.startsWith(t.path) && t.path !== '/');
-  return idx >= 0 ? idx : 0;
+  return tabs.findIndex(t => pathname.startsWith(t.path) && t.path !== '/');
 }
 
 export default function AppLayout() {
   const location = useLocation();
   const navigate = useNavigate();
   const activeIdx = useActiveTab(location.pathname);
+  const effectiveIdx = activeIdx >= 0 ? activeIdx : 0;
   const { session } = useAuthStore();
   const [menuOpen, setMenuOpen] = useState(false);
   const isAiPage = location.pathname === '/ai';
@@ -88,119 +73,84 @@ export default function AppLayout() {
   ];
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      background: 'linear-gradient(180deg, #fff8ef 0%, #f7efe0 42%, #f7f3eb 100%)',
-      maxWidth: 480, margin: '0 auto', position: 'relative',
-    }}>
+    <div className="min-h-screen max-w-[480px] mx-auto relative"
+      style={{ background: 'linear-gradient(180deg, #fff8ef 0%, #f7efe0 42%, #f7f3eb 100%)' }}>
+
       {/* Header */}
       {!isAiPage && (
-        <header style={{
-          position: 'sticky', top: 0, zIndex: 40,
-          background: 'rgba(255,250,243,0.92)',
-          backdropFilter: 'blur(16rpx)',
-          borderBottom: '1rpx solid rgba(219,191,155,0.22)',
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 20rpx', height: 50 }}>
-            <button onClick={() => navigate('/')} style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'none', border: 'none', cursor: 'pointer' }}>
-              <span style={{
-                width: 28, height: 28, borderRadius: 8,
-                background: 'linear-gradient(135deg, #9f2d22, #bf563f)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                color: '#fff7ef', fontSize: 14, fontWeight: 800,
-              }}>非</span>
-              <span style={{ fontSize: 16, fontWeight: 700, color: '#2f2419', letterSpacing: '0.5rpx' }}>黑塔 · 非遗</span>
+        <header className="sticky top-0 z-40 backdrop-blur-md border-b border-[rgba(219,191,155,0.22)]"
+          style={{ background: 'rgba(255,250,243,0.92)' }}>
+          <div className="flex items-center justify-between px-5 h-[50px]">
+            <button onClick={() => navigate('/')} className="flex items-center gap-2 bg-transparent border-none cursor-pointer">
+              <span className="w-7 h-7 rounded-lg flex items-center justify-center text-[#fff7ef] text-sm font-extrabold"
+                style={{ background: 'linear-gradient(135deg, #9f2d22, #bf563f)' }}>非</span>
+              <span className="text-base font-bold text-[#2f2419] tracking-[0.5px]">黑塔 · 非遗</span>
             </button>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <div className="flex items-center gap-2">
               {session?.role === 'admin' && (
                 <button onClick={() => navigate('/admin')}
-                  style={{
-                    fontSize: 12, background: '#f7e7dc', color: '#9f2d22',
-                    padding: '4rpx 12rpx', borderRadius: 999, border: 'none',
-                    cursor: 'pointer', fontWeight: 600,
-                  }}>
+                  className="text-xs bg-[#f7e7dc] text-brand px-3 py-1 rounded-full border-none cursor-pointer font-semibold">
                   管理
                 </button>
               )}
               <button onClick={() => setMenuOpen(!menuOpen)}
-                style={{
-                  background: menuOpen ? '#f5e8d5' : 'transparent',
-                  border: 'none', borderRadius: 10, padding: '6rpx',
-                  color: '#7b6141', cursor: 'pointer',
-                }}>
+                className="p-1.5 rounded-xl border-none cursor-pointer text-[#7b6141] hover:bg-[#f5e8d5] transition-colors">
                 <Menu size={20} />
               </button>
             </div>
           </div>
-          {menuOpen && (
-            <>
-              <div style={{ position: 'fixed', inset: 0, zIndex: 40 }} onClick={() => setMenuOpen(false)} />
-              <div style={{
-                position: 'absolute', right: 16, top: 52, zIndex: 50,
-                background: 'linear-gradient(180deg, rgba(255,252,247,0.98), rgba(249,239,225,0.98))',
-                borderRadius: 20, boxShadow: '0 14rpx 34rpx rgba(121,58,31,0.12)',
-                border: '1rpx solid rgba(219,191,155,0.22)',
-                padding: 8, width: 180,
-              }}>
-                {extraLinks.map(item => {
-                  const Icon = item.icon;
-                  return (
-                    <button key={item.path} onClick={() => { navigate(item.path); setMenuOpen(false); }}
-                      style={{
-                        width: '100%', display: 'flex', alignItems: 'center', gap: 10,
-                        padding: '12rpx 14rpx', border: 'none', borderRadius: 12,
-                        background: 'transparent', color: '#5a4430', fontSize: 14,
-                        cursor: 'pointer',
-                      }}>
-                      <Icon size={16} style={{ color: '#9f2d22' }} />
-                      {item.label}
-                    </button>
-                  );
-                })}
-              </div>
-            </>
-          )}
         </header>
       )}
 
-      {/* Content */}
-      <main style={{ paddingBottom: isAiPage ? 0 : 120 }}>
+      {/* Menu dropdown */}
+      {menuOpen && (
+        <>
+          <div className="fixed inset-0 z-40" onClick={() => setMenuOpen(false)} />
+          <div className="absolute right-4 top-[52px] z-50 rounded-[20px] p-2 w-[180px]"
+            style={{
+              background: 'linear-gradient(180deg, rgba(255,252,247,0.98), rgba(249,239,225,0.98))',
+              boxShadow: '0 14px 34px rgba(121,58,31,0.12)',
+              border: '1px solid rgba(219,191,155,0.22)',
+            }}>
+            {extraLinks.map(item => { const Icon = item.icon; return (
+              <button key={item.path} onClick={() => { navigate(item.path); setMenuOpen(false); }}
+                className="w-full flex items-center gap-2.5 px-3.5 py-3 border-none rounded-xl bg-transparent text-sm text-[#5a4430] cursor-pointer hover:bg-[#f5e8d5]/50 transition-colors">
+                <Icon size={16} className="text-brand" /> {item.label}
+              </button>
+            ); })}
+          </div>
+        </>
+      )}
+
+      {/* Main content */}
+      <main style={{ paddingBottom: isAiPage ? 0 : 90 }}>
         <PageTransition key={location.pathname}>
           <Outlet />
         </PageTransition>
       </main>
 
-      {/* TabBar — floating pill (小程序风格) */}
+      {/* Floating capsule tab bar */}
       {!isAiPage && (
-        <nav style={{
-          position: 'fixed', bottom: '14rpx', left: '50%', transform: 'translateX(-50%)',
-          zIndex: 100, maxWidth: 440, width: '92%',
-        }}>
-          <div style={{
-            display: 'flex', alignItems: 'center', justifyContent: 'space-around',
-            height: 56, borderRadius: 999,
-            background: 'linear-gradient(135deg, #fffdf8, #f5e8d5)',
-            boxShadow: '0 12rpx 32rpx rgba(97, 63, 33, 0.16)',
-            border: '1rpx solid rgba(182, 141, 95, 0.2)',
-            padding: '0 6rpx',
-          }}>
+        <nav className="fixed bottom-3.5 left-1/2 -translate-x-1/2 z-[100] max-w-[440px] w-[92%]">
+          <div className="flex items-center justify-around h-14 rounded-full px-1.5"
+            style={{
+              background: 'linear-gradient(135deg, #fffdf8, #f5e8d5)',
+              boxShadow: '0 12px 32px rgba(97,63,33,0.16)',
+              border: '1px solid rgba(182,141,95,0.2)',
+            }}>
             {tabs.map((tab, idx) => {
-              const isActive = idx === activeIdx;
-              const Glyph = tab.Glyph;
+              const isActive = idx === effectiveIdx;
               return (
                 <button key={tab.path} onClick={() => navigate(tab.path)}
+                  className="flex items-center justify-center gap-1.5 h-11 px-3.5 rounded-full border-none cursor-pointer transition-all duration-200"
                   style={{
-                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-                    height: 44, padding: '0 14rpx', borderRadius: 999,
-                    border: 'none', cursor: 'pointer',
-                    transition: 'all 0.22s ease',
                     background: isActive ? 'linear-gradient(135deg, #9f2d22, #bf563f)' : 'transparent',
-                    boxShadow: isActive ? '0 10rpx 20rpx rgba(159,45,34,0.24)' : 'none',
+                    boxShadow: isActive ? '0 10px 20px rgba(159,45,34,0.24)' : 'none',
                     color: isActive ? '#fff7ef' : '#8c6a42',
                     fontWeight: isActive ? 700 : 500,
                     fontSize: 13,
                   }}>
-                  <Glyph active={isActive} />
+                  <TabGlyph active={isActive} type={tab.type} />
                   {isActive && tab.label}
                 </button>
               );

@@ -28,242 +28,137 @@ export default function LoginPage() {
     try {
       const res = await apiRequest<ApiResponse<Session>>('/auth/guest', { method: 'POST' });
       if (res.code === 0 && res.data) { setSession(res.data); navigate('/', { replace: true }); }
-    } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : '网络错误');
-    } finally { setLoading(false); }
+    } catch (err: unknown) { setError(err instanceof Error ? err.message : '网络错误'); }
+    finally { setLoading(false); }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(''); setLoading(true);
+    e.preventDefault(); setError(''); setLoading(true);
     try {
       if (isRegister) {
         const res = await apiRequest<ApiResponse<{ userId: number }>>('/auth/register', {
-          method: 'POST',
-          data: { username, password, nickname: nickname || username },
+          method: 'POST', data: { username, password, nickname: nickname || username },
         });
         if (res.code === 0) { setIsRegister(false); setError('注册成功，请登录'); }
         else setError(res.message || '注册失败');
       } else {
-        const res = await apiRequest<ApiResponse<Session>>('/auth/login', {
-          method: 'POST', data: { username, password },
-        });
+        const res = await apiRequest<ApiResponse<Session>>('/auth/login', { method: 'POST', data: { username, password } });
         if (res.code === 0 && res.data) { setSession(res.data); navigate('/', { replace: true }); }
         else setError(res.message || '登录失败');
       }
-    } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : '网络错误');
-    } finally { setLoading(false); }
+    } catch (err: unknown) { setError(err instanceof Error ? err.message : '网络错误'); }
+    finally { setLoading(false); }
   };
 
   const fillTest = () => {
     if (testAccount) { setUsername(testAccount.username); setPassword(testAccount.password); setError(''); }
   };
 
+  const inputCls = "w-full h-12 rounded-full px-5 text-[15px] text-white/85 placeholder:text-white/40 bg-white/[0.07] border border-white/[0.12] outline-none focus:border-amber-400/40 transition-colors box-border";
+
   return (
-    <div className="text-white" style={{
-      minHeight: '100vh',
-      background: `radial-gradient(ellipse 120% 80% at 50% -10%, rgba(139,69,19,0.35) 0%, transparent 60%),
-        radial-gradient(ellipse 100% 60% at 20% 90%, rgba(128,0,32,0.25) 0%, transparent 55%),
-        radial-gradient(ellipse 80% 70% at 85% 70%, rgba(184,134,11,0.18) 0%, transparent 55%),
-        linear-gradient(175deg, #1a0f07 0%, #2d1810 15%, #4a2816 30%, #5c3018 48%, #6b3a14 65%, #7a4012 82%, #8b4513 95%, #9c4e15 100%)`,
-      display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-      padding: '48rpx 24rpx', position: 'relative', overflow: 'hidden',
-    }}>
-      {/* Glow orbs */}
-      <div style={{ position: 'absolute', width: 280, height: 280, left: '-10%', top: '-8%',
-        background: 'radial-gradient(circle, rgba(200,80,40,0.22), transparent 70%)', filter: 'blur(90rpx)', borderRadius: '50%' }} />
-      <div style={{ position: 'absolute', width: 240, height: 240, right: '-5%', bottom: '10%',
-        background: 'radial-gradient(circle, rgba(218,165,32,0.16), transparent 70%)', filter: 'blur(90rpx)', borderRadius: '50%' }} />
+    <div className="min-h-screen flex flex-col items-center justify-center px-6 py-12 relative overflow-hidden text-white"
+      style={{ background: 'linear-gradient(175deg, #1a0f07 0%, #2d1810 15%, #4a2816 30%, #5c3018 48%, #6b3a14 65%, #7a4012 82%, #8b4513 95%, #9c4e15 100%)' }}>
 
-      {/* Floating clouds / xiangyun */}
-      {['☁','✦','◈','☁','✦'].map((s, i) => (
-        <span key={i} style={{
-          position: 'absolute', fontSize: i % 2 ? 28 : 40,
-          left: `${10 + i * 22}%`, top: `${5 + i * 18}%`,
-          color: i % 3 === 0 ? '#d4a574' : i % 3 === 1 ? '#c9965a' : '#e8c88b',
-          opacity: 0.08 + i * 0.025, animation: `floatCloud ${7 + i * 3}s ease-in-out infinite`,
-          animationDelay: `${i * 2}s`,
-        }}>{s}</span>
-      ))}
+      {/* Glow orbs — pointer-events-none so they don't block clicks */}
+      <div className="absolute w-72 h-72 -left-10 -top-10 rounded-full pointer-events-none"
+        style={{ background: 'radial-gradient(circle, rgba(200,80,40,0.22), transparent 70%)', filter: 'blur(90px)' }} />
+      <div className="absolute w-60 h-60 -right-5 bottom-10 rounded-full pointer-events-none"
+        style={{ background: 'radial-gradient(circle, rgba(218,165,32,0.16), transparent 70%)', filter: 'blur(90px)' }} />
 
-      {/* Huiwen top border */}
-      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 4,
-        background: 'repeating-linear-gradient(90deg, rgba(212,175,86,0.25) 0 12rpx, transparent 12rpx 24rpx)' }} />
+      {/* Huiwen borders */}
+      <div className="absolute top-0 left-0 right-0 h-1 pointer-events-none"
+        style={{ background: 'repeating-linear-gradient(90deg, rgba(212,175,86,0.25) 0 12px, transparent 12px 24px)' }} />
+      <div className="absolute bottom-0 left-0 right-0 h-1 pointer-events-none"
+        style={{ background: 'repeating-linear-gradient(90deg, rgba(212,175,86,0.25) 0 12px, transparent 12px 24px)' }} />
 
-      {/* Rotating rings around digital human */}
-      <div style={{ position: 'relative', marginBottom: 24 }}>
-        <div style={{
-          width: 200, height: 200, borderRadius: '50%',
-          border: '1px solid rgba(212,175,86,0.28)',
-          animation: 'spin 18s linear infinite',
-          boxShadow: '0 0 40rpx rgba(212,175,86,0.08), inset 0 0 40rpx rgba(212,175,86,0.04)',
-          position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
-        }} />
-        <div style={{
-          width: 240, height: 240, borderRadius: '50%',
-          border: '1px solid rgba(212,175,86,0.15)',
-          animation: 'spin 24s linear infinite reverse',
-          position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
-        }} />
-        {/* Ring sparks */}
-        {['◆','✦','◇','✧'].map((s, i) => (
-          <span key={i} style={{
-            position: 'absolute',
-            top: '50%', left: '50%',
-            transform: `rotate(${i * 90}deg) translateY(-100px)`,
-            color: '#e8c96a', fontSize: 10,
-            textShadow: '0 0 12rpx rgba(212,175,86,0.5)',
-            animation: `sparkPulse ${3 + i}s ease-in-out infinite`,
-          }}>{s}</span>
-        ))}
-
-        <DigitalHumanModel variant="hero" mood="curious" size={160} />
-      </div>
-
-      {/* Brand */}
-      <div className="text-center" style={{ marginBottom: 32 }}>
-        <div className="seal-badge seal-badge-cinnabar" style={{
-          margin: '0 auto 16rpx', display: 'inline-flex',
-          background: 'linear-gradient(135deg, #b22222, #cd3333)',
-          borderRadius: '4rpx', fontSize: 20, padding: '6rpx 20rpx',
-          letterSpacing: '4rpx',
-        }}>
-          非遗
+      <div className="relative z-10 w-full max-w-sm flex flex-col items-center">
+        {/* Rings + Digital Human */}
+        <div className="relative mb-6 flex items-center justify-center">
+          <div className="absolute w-[200px] h-[200px] rounded-full border border-amber-300/25 animate-[spin_18s_linear_infinite]"
+            style={{ boxShadow: '0 0 40px rgba(212,175,86,0.08), inset 0 0 40px rgba(212,175,86,0.04)' }} />
+          <div className="absolute w-[240px] h-[240px] rounded-full border border-amber-300/15 animate-[spin_24s_linear_infinite_reverse]" />
+          <DigitalHumanModel variant="hero" mood="curious" size={160} />
         </div>
-        <h1 style={{
-          fontSize: 42, fontWeight: 800, letterSpacing: '5rpx',
-          textShadow: '0 2rpx 4rpx rgba(0,0,0,0.3), 0 0 30rpx rgba(212,175,86,0.15)',
-          fontFamily: 'var(--font-serif)',
-          margin: 0,
-        }}>〖 中国非物质文化遗产 〗</h1>
-        <p style={{ fontSize: 20, color: '#d4b896', letterSpacing: '3rpx', marginTop: 8 }}>
-          黑塔伴你 · 探寻千年文化瑰宝
+
+        {/* Brand */}
+        <div className="text-center mb-8">
+          <div className="inline-flex mx-auto mb-4 px-5 py-1.5 rounded text-base font-bold tracking-[4px]"
+            style={{ background: 'linear-gradient(135deg, #b22222, #cd3333)' }}>
+            非遗
+          </div>
+          <h1 className="text-[42px] font-extrabold tracking-[5px] mt-0 mb-2 font-[var(--font-serif)]"
+            style={{ textShadow: '0 2px 4px rgba(0,0,0,0.3), 0 0 30px rgba(212,175,86,0.15)' }}>
+            〖 中国非物质文化遗产 〗
+          </h1>
+          <p className="text-base text-amber-200/70 tracking-[3px]">黑塔伴你 · 探寻千年文化瑰宝</p>
+        </div>
+
+        {/* Feature Cards */}
+        <div className="flex gap-3 mb-8 w-full">
+          {[
+            { num: '壹', title: '智能推荐', desc: 'CRS精准匹配', color: '#8b5cf6' },
+            { num: '贰', title: 'AI数字人', desc: '黑塔导览互动', color: '#ef4444' },
+            { num: '叁', title: '非遗社区', desc: '分享传承之美', color: '#f59e0b' },
+          ].map((f, i) => (
+            <div key={i} className="flex-1 rounded-xl p-3.5 bg-black/20 border-l-[4px]" style={{ borderLeftColor: f.color }}>
+              <div className="text-lg font-[var(--font-serif)] mb-1" style={{ color: f.color }}>{f.num}</div>
+              <div className="text-[13px] font-bold text-amber-100/90">{f.title}</div>
+              <div className="text-[11px] text-amber-100/40 mt-0.5">{f.desc}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="w-full space-y-3">
+          {error && (
+            <div className={`p-3.5 rounded-2xl text-center text-sm ${error.includes('成功') ? 'bg-green-500/15 text-green-300 border border-green-500/30' : 'bg-red-500/15 text-red-300 border border-red-500/30'}`}>
+              {error}
+            </div>
+          )}
+
+          <input type="text" value={username} onChange={e => setUsername(e.target.value)}
+            placeholder="用户名" className={inputCls} required />
+          <input type="password" value={password} onChange={e => setPassword(e.target.value)}
+            placeholder="密码" className={inputCls} required />
+          {isRegister && (
+            <input type="text" value={nickname} onChange={e => setNickname(e.target.value)}
+              placeholder="昵称（选填）" className={inputCls} />
+          )}
+
+          <button type="submit" disabled={loading}
+            className="w-full h-[50px] rounded-full font-bold text-[17px] tracking-[4px] text-white border-none cursor-pointer mt-2"
+            style={{
+              background: 'linear-gradient(135deg, #a52a2a 0%, #b22222 30%, #c93c3c 60%, #d4af37 100%)',
+              boxShadow: '0 4px 20px rgba(180,60,30,0.3), 0 0 30px rgba(212,175,86,0.12)',
+            }}>
+            {loading ? '处理中...' : isRegister ? '注 册' : '登 录'}
+          </button>
+        </form>
+
+        {/* Guest & Test */}
+        <div className="w-full mt-4 space-y-2.5">
+          <button onClick={handleGuestLogin} disabled={loading}
+            className="w-full h-12 rounded-full text-amber-300/80 font-semibold bg-white/[0.07] border border-amber-300/20 cursor-pointer hover:bg-white/[0.12] transition-colors">
+            游客体验
+          </button>
+          {testAccount && (
+            <button onClick={fillTest}
+              className="w-full text-xs text-amber-200/40 bg-transparent border-none cursor-pointer tracking-[1px]">
+              填入测试账号：{testAccount.username} / {testAccount.password}
+            </button>
+          )}
+          <button onClick={() => { setIsRegister(!isRegister); setError(''); }}
+            className="w-full text-sm text-amber-200/60 bg-transparent border-none cursor-pointer mt-2">
+            {isRegister ? '已有账号？去登录' : '没有账号？去注册'}
+          </button>
+        </div>
+
+        {/* Footer */}
+        <p className="mt-10 text-base text-amber-200/30 font-[var(--font-serif)] tracking-[2px]">
+          「一问即达 · 懂非遗也懂你」
         </p>
       </div>
-
-      {/* Feature Cards */}
-      <div style={{ display: 'flex', gap: 12, marginBottom: 32, width: '100%', maxWidth: 400 }}>
-        {[
-          { num: '壹', title: '智能推荐', desc: 'CRS精准匹配', color: '#8b5cf6' },
-          { num: '贰', title: 'AI数字人', desc: '黑塔导览互动', color: '#ef4444' },
-          { num: '叁', title: '非遗社区', desc: '分享传承之美', color: '#f59e0b' },
-        ].map((f, i) => (
-          <div key={i} style={{
-            flex: 1, background: 'rgba(0,0,0,0.18)', borderRadius: '14rpx',
-            borderLeft: `4rpx solid ${f.color}`, padding: '16rpx 14rpx',
-          }}>
-            <div style={{ fontSize: 18, color: f.color, fontFamily: 'var(--font-serif)', marginBottom: 4 }}>{f.num}</div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: '#f0e0cc' }}>{f.title}</div>
-            <div style={{ fontSize: 11, color: 'rgba(212,175,150,0.6)', marginTop: 2 }}>{f.desc}</div>
-          </div>
-        ))}
-      </div>
-
-      {/* Form */}
-      <form onSubmit={handleSubmit} style={{ width: '100%', maxWidth: 400 }}>
-        {error && (
-          <div style={{
-            padding: '14rpx 20rpx', borderRadius: 14, marginBottom: 16,
-            background: error.includes('成功') ? 'rgba(34,197,94,0.15)' : 'rgba(239,68,68,0.15)',
-            color: error.includes('成功') ? '#86efac' : '#fca5a5',
-            border: `1px solid ${error.includes('成功') ? 'rgba(34,197,94,0.3)' : 'rgba(239,68,68,0.3)'}`,
-            fontSize: 13, textAlign: 'center',
-          }}>
-            {error}
-          </div>
-        )}
-
-        <input type="text" value={username} onChange={e => setUsername(e.target.value)}
-          placeholder="用户名"
-          style={inputStyle} required />
-
-        <input type="password" value={password} onChange={e => setPassword(e.target.value)}
-          placeholder="密码"
-          style={inputStyle} required />
-
-        {isRegister && (
-          <input type="text" value={nickname} onChange={e => setNickname(e.target.value)}
-            placeholder="昵称（选填）"
-            style={inputStyle} />
-        )}
-
-        <button type="submit" disabled={loading}
-          style={loginBtnStyle}>
-          {loading ? '处理中...' : isRegister ? '注 册' : '登 录'}
-        </button>
-      </form>
-
-      {/* Guest & Test account */}
-      <div style={{ width: '100%', maxWidth: 400, marginTop: 16, display: 'flex', flexDirection: 'column', gap: 10 }}>
-        <button onClick={handleGuestLogin} disabled={loading}
-          style={{
-            ...inputStyle, background: 'rgba(255,250,240,0.07)', border: '1px solid rgba(212,175,86,0.22)',
-            color: '#d4a574', textAlign: 'center', cursor: 'pointer', fontWeight: 600,
-          }}>
-          游客体验
-        </button>
-
-        {testAccount && (
-          <button type="button" onClick={fillTest}
-            style={{ fontSize: 12, color: 'rgba(212,167,116,0.6)', background: 'none', border: 'none',
-              cursor: 'pointer', textAlign: 'center', letterSpacing: '1rpx' }}>
-            快速填入测试账号：{testAccount.username} / {testAccount.password}
-          </button>
-        )}
-
-        <button type="button"
-          onClick={() => { setIsRegister(!isRegister); setError(''); }}
-          style={{ fontSize: 13, color: 'rgba(212,167,116,0.7)', background: 'none',
-            border: 'none', cursor: 'pointer', marginTop: 8 }}>
-          {isRegister ? '已有账号？去登录' : '没有账号？去注册'}
-        </button>
-      </div>
-
-      {/* Footer */}
-      <p style={{
-        marginTop: 40, fontSize: 18, color: 'rgba(212,175,116,0.5)',
-        fontFamily: 'var(--font-serif)', letterSpacing: '2rpx',
-      }}>
-        「一问即达 · 懂非遗也懂你」
-      </p>
-
-      {/* Bottom huiwen */}
-      <div style={{
-        position: 'absolute', bottom: 0, left: 0, right: 0, height: 4,
-        background: 'repeating-linear-gradient(90deg, rgba(212,175,86,0.25) 0 12rpx, transparent 12rpx 24rpx)',
-      }} />
-
-      <style>{`
-        @keyframes floatCloud {
-          0%, 100% { transform: translateY(0) translateX(0); }
-          33% { transform: translateY(-12rpx) translateX(8rpx); }
-          66% { transform: translateY(6rpx) translateX(-4rpx); }
-        }
-        @keyframes sparkPulse {
-          0%, 100% { opacity: 0.3; transform: rotate(var(--rot, 0deg)) translateY(-100px) scale(0.8); }
-          50% { opacity: 0.8; transform: rotate(var(--rot, 0deg)) translateY(-100px) scale(1.2); }
-        }
-        @keyframes spin {
-          from { transform: translate(-50%, -50%) rotate(0deg); }
-          to { transform: translate(-50%, -50%) rotate(360deg); }
-        }
-      `}</style>
     </div>
   );
 }
-
-const inputStyle: React.CSSProperties = {
-  width: '100%', height: 48, borderRadius: 24, marginBottom: 12,
-  background: 'rgba(255,250,240,0.07)', border: '1px solid rgba(212,175,86,0.22)',
-  color: '#f0e0cc', fontSize: 15, padding: '0 20rpx', outline: 'none',
-  boxSizing: 'border-box',
-};
-
-const loginBtnStyle: React.CSSProperties = {
-  width: '100%', height: 50, borderRadius: 25, marginTop: 8,
-  background: 'linear-gradient(135deg, #a52a2a 0%, #b22222 30%, #c93c3c 60%, #d4af37 100%)',
-  color: '#fff', fontWeight: 700, fontSize: 17, letterSpacing: '4rpx',
-  border: 'none', cursor: 'pointer',
-  boxShadow: '0 4rpx 20rpx rgba(180,60,30,0.3), 0 0 30rpx rgba(212,175,86,0.12)',
-};

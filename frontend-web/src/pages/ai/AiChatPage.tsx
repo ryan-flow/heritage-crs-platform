@@ -169,27 +169,27 @@ export default function AiChatPage() {
   return (
     <div className="ai-page-bg" style={{ display: 'flex', flexDirection: 'column', height: '100vh', maxWidth: 480, margin: '0 auto', position: 'relative' }}>
       {/* Aurora blobs */}
-      <div style={{ position: 'fixed', width: 200, height: 200, left: '-5%', top: '5%', background: 'radial-gradient(circle, rgba(255,201,135,0.22), transparent 70%)', filter: 'blur(20rpx)', pointerEvents: 'none', zIndex: 0 }} />
-      <div style={{ position: 'fixed', width: 240, height: 240, right: '-8%', top: '8%', background: 'radial-gradient(circle, rgba(142,122,240,0.13), transparent 70%)', filter: 'blur(20rpx)', pointerEvents: 'none', zIndex: 0 }} />
+      <div style={{ position: 'fixed', width: 200, height: 200, left: '-5%', top: '5%', background: 'radial-gradient(circle, rgba(255,201,135,0.22), transparent 70%)', filter: 'blur(20px)', pointerEvents: 'none', zIndex: 0 }} />
+      <div style={{ position: 'fixed', width: 240, height: 240, right: '-8%', top: '8%', background: 'radial-gradient(circle, rgba(142,122,240,0.13), transparent 70%)', filter: 'blur(20px)', pointerEvents: 'none', zIndex: 0 }} />
 
       {/* Mode Celebration Overlay */}
       {modeCelebrating && (
         <div style={{
           position: 'fixed', inset: 0, zIndex: 9999,
-          background: 'rgba(62,39,20,0.72)', backdropFilter: 'blur(8rpx)',
+          background: 'rgba(62,39,20,0.72)', backdropFilter: 'blur(8px)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           flexDirection: 'column', gap: 16,
         }}>
           <div style={{
             width: 210, height: 210, borderRadius: '50%',
-            border: '2rpx solid rgba(212,175,86,0.6)',
+            border: '2px solid rgba(212,175,86,0.6)',
             animation: 'celebRing 1.5s ease-out forwards',
           }} />
           <span style={{ fontSize: 48, animation: 'celebIcon 0.6s cubic-bezier(0.34,1.56,0.64,1) both' }}>{'🎉'}</span>
-          <h2 style={{ fontSize: 24, fontWeight: 800, color: '#fffaf3', textShadow: '0 0 20rpx rgba(200,60,30,0.5)', margin: 0 }}>
+          <h2 style={{ fontSize: 24, fontWeight: 800, color: '#fffaf3', textShadow: '0 0 20px rgba(200,60,30,0.5)', margin: 0 }}>
             {celebrationMode === 'precision' ? '精准模式已开启' : '探索模式已开启'}
           </h2>
-          <span style={{ padding: '8rpx 24rpx', borderRadius: 999, fontWeight: 900, fontSize: 28, color: '#fff',
+          <span style={{ padding: '8px 24px', borderRadius: 999, fontWeight: 900, fontSize: 28, color: '#fff',
             background: celebrationMode === 'precision' ? 'rgba(76,175,80,0.7)' : celebrationMode === 'mixed' ? 'rgba(33,150,243,0.7)' : 'rgba(255,152,0,0.7)',
           }}>{celebrationMode === 'precision' ? '已懂你' : celebrationMode === 'mixed' ? '思考中' : '了解中'}</span>
         </div>
@@ -197,7 +197,7 @@ export default function AiChatPage() {
 
       {/* Header */}
       <header style={{
-        padding: '8rpx 16rpx', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: '8px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         background: 'transparent', position: 'relative', zIndex: 10,
       }}>
         <button onClick={() => navigate('/')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#5a4430', padding: 8 }}>
@@ -218,33 +218,33 @@ export default function AiChatPage() {
 
       {/* CRS Detail Panel */}
       {crsDetailExpanded && (
-        <div className="card" style={{ margin: '0 16rpx 12rpx', padding: '16rpx 20rpx', fontSize: 12, color: '#5a4430' }}>
-          <p style={{ margin: '0 0 4rpx' }}>模式：{modeLabels[mode]} | 置信度：{Math.round(confidence)}%</p>
+        <div className="card" style={{ margin: '0 16px 12px', padding: '16px 20px', fontSize: 12, color: '#5a4430' }}>
+          <p style={{ margin: '0 0 4px' }}>模式：{modeLabels[mode]} | 置信度：{Math.round(confidence)}%</p>
           <p style={{ margin: 0 }}>显式={store.crsState.dimensions?.explicit ?? '-'} 隐式={store.crsState.dimensions?.implicit ?? '-'} 对话={store.crsState.dimensions?.dialogue ?? '-'}</p>
           {crsTimeline.length > 0 && crsTimeline.map((log, i) => (
-            <p key={i} style={{ margin: '2rpx 0 2rpx 12rpx', fontSize: 11 }}>#{log.ask_id}: {log.question_text} → {log.answer || '?'} ({log.score_delta || 0})</p>
+            <p key={i} style={{ margin: '2px 0 2px 12px', fontSize: 11 }}>#{log.ask_id}: {log.question_text} → {log.answer || '?'} ({log.score_delta || 0})</p>
           ))}
         </div>
       )}
 
       {/* Messages */}
-      <div style={{ flex: 1, overflowY: 'auto', padding: '0 16rpx 20rpx', position: 'relative', zIndex: 1 }}>
+      <div style={{ flex: 1, overflowY: 'auto', padding: '0 16px 20px', position: 'relative', zIndex: 1 }}>
         {/* Empty state with stage */}
         {store.messages.length === 0 && (
           <div style={{
             background: `radial-gradient(circle at 50% 30%, rgba(255,220,172,0.08), transparent 50%), linear-gradient(135deg, #5B3A7A 0%, #8B4513 100%)`,
-            borderRadius: 30, padding: '18rpx 22rpx 14rpx',
-            boxShadow: '0 18rpx 42rpx rgba(70,35,49,0.18)',
-            border: '1rpx solid rgba(255,238,220,0.08)',
+            borderRadius: 30, padding: '18px 22px 14px',
+            boxShadow: '0 18px 42px rgba(70,35,49,0.18)',
+            border: '1px solid rgba(255,238,220,0.08)',
             position: 'relative', marginBottom: 20, textAlign: 'center',
           }}>
-            <span style={{ display: 'inline-block', padding: '4rpx 14rpx', borderRadius: 999, background: 'rgba(255,245,230,0.14)', color: '#ffe1bc', fontSize: 12, marginBottom: 8 }}>
+            <span style={{ display: 'inline-block', padding: '4px 14px', borderRadius: 999, background: 'rgba(255,245,230,0.14)', color: '#ffe1bc', fontSize: 12, marginBottom: 8 }}>
               黑塔 · Heritage AI
             </span>
-            <h1 style={{ fontSize: 26, fontWeight: 900, color: '#fff9f1', textShadow: '0 4rpx 18rpx rgba(0,0,0,0.14)', margin: '0 0 8rpx' }}>
+            <h1 style={{ fontSize: 26, fontWeight: 900, color: '#fff9f1', textShadow: '0 4px 18px rgba(0,0,0,0.14)', margin: '0 0 8px' }}>
               你好，我是黑塔
             </h1>
-            <p style={{ fontSize: 13, color: 'rgba(255,244,232,0.92)', margin: '0 0 14rpx' }}>
+            <p style={{ fontSize: 13, color: 'rgba(255,244,232,0.92)', margin: '0 0 14px' }}>
               你的非遗文化导览官，问我任何关于非遗的问题
             </p>
             <DigitalHumanModel variant="ai" mood="curious" size={160} />
@@ -256,26 +256,26 @@ export default function AiChatPage() {
             <div style={{ maxWidth: '86%' }}>
               {msg.role === 'user' ? (
                 <div style={{
-                  padding: '14rpx 18rpx', borderRadius: '20rpx 20rpx 8rpx 20rpx',
+                  padding: '14px 18px', borderRadius: '20px 20px 8px 20px',
                   background: 'linear-gradient(135deg, #aa4634, #c65b43)',
                   color: '#fff9f4', fontSize: 14, lineHeight: 1.7,
-                  boxShadow: '0 8rpx 18rpx rgba(122,87,51,0.05)',
+                  boxShadow: '0 8px 18px rgba(122,87,51,0.05)',
                 }}>
                   {msg.text}
                 </div>
               ) : (
                 <div style={{
-                  padding: '14rpx 18rpx', borderRadius: '20rpx 20rpx 20rpx 8rpx',
+                  padding: '14px 18px', borderRadius: '20px 20px 20px 8px',
                   background: 'linear-gradient(180deg, #fbf4ea, #f7ead7)',
                   color: '#473022', fontSize: 14, lineHeight: 1.7,
-                  border: '1rpx solid rgba(226,197,163,0.34)',
-                  boxShadow: '0 4rpx 12rpx rgba(121,58,31,0.04)',
+                  border: '1px solid rgba(226,197,163,0.34)',
+                  boxShadow: '0 4px 12px rgba(121,58,31,0.04)',
                 }}>
                   <div className="whitespace-pre-wrap">{msg.text}</div>
                   {msg.isTransition && <div style={{ marginTop: 6, fontSize: 12, color: '#9f2d22', fontWeight: 600 }}>—— 黑塔的反馈</div>}
                   {idx === store.messages.length - 1 && sourceTag && !msg.isTransition && !store.sending && (
                     <div style={{ display: 'flex', gap: 8, marginTop: 8, alignItems: 'center' }}>
-                      <span style={{ fontSize: 11, padding: '2rpx 10rpx', borderRadius: 999, background: '#f6e8d8', color: '#8a5a20' }}>{sourceTag}</span>
+                      <span style={{ fontSize: 11, padding: '2px 10px', borderRadius: 999, background: '#f6e8d8', color: '#8a5a20' }}>{sourceTag}</span>
                       <button onClick={() => handleTTS(msg.text)}
                         style={{ background: '#f4e4d0', border: 'none', borderRadius: 999, width: 28, height: 28, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#8c5a31' }}>
                         {speaking ? <VolumeX size={14} /> : <Volume2 size={14} />}
@@ -292,8 +292,8 @@ export default function AiChatPage() {
         {store.sending && (
           <div style={{ display: 'flex', justifyContent: 'flex-start', marginBottom: 12 }}>
             <div style={{
-              padding: '14rpx 18rpx', borderRadius: 20, minWidth: 80,
-              background: '#faf0e3', border: '1rpx solid rgba(226,197,163,0.34)',
+              padding: '14px 18px', borderRadius: 20, minWidth: 80,
+              background: '#faf0e3', border: '1px solid rgba(226,197,163,0.34)',
               display: 'flex', gap: 6, alignItems: 'center',
             }}>
               {[0, 1, 2].map(i => (
@@ -310,17 +310,17 @@ export default function AiChatPage() {
         {/* ASK Prompt */}
         {store.askPrompt && !store.sending && (
           <div style={{
-            marginBottom: 14, padding: '18rpx 20rpx', borderRadius: 24,
+            marginBottom: 14, padding: '18px 20px', borderRadius: 24,
             background: 'linear-gradient(180deg, rgba(255,252,247,0.98), rgba(249,239,225,0.98))',
-            boxShadow: '0 12rpx 28rpx rgba(112,74,41,0.06)',
-            border: '1rpx solid rgba(219,191,155,0.22)',
+            boxShadow: '0 12px 28px rgba(112,74,41,0.06)',
+            border: '1px solid rgba(219,191,155,0.22)',
           }}>
-            <p style={{ margin: '0 0 12rpx', fontSize: 14, fontWeight: 600, color: '#2f2419' }}>{store.askPrompt}</p>
+            <p style={{ margin: '0 0 12px', fontSize: 14, fontWeight: 600, color: '#2f2419' }}>{store.askPrompt}</p>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
               {store.askOptions.map((opt, i) => (
                 <button key={i} onClick={() => handleAskAnswer(opt)}
                   style={{
-                    padding: '10rpx 18rpx', borderRadius: 999, border: '1rpx solid rgba(217,184,147,0.26)',
+                    padding: '10px 18px', borderRadius: 999, border: '1px solid rgba(217,184,147,0.26)',
                     background: 'linear-gradient(180deg, #fbefe3, #f3e2cf)', color: '#7b4d27',
                     fontSize: 12, cursor: 'pointer', fontWeight: 500,
                   }}>
@@ -343,15 +343,15 @@ export default function AiChatPage() {
                 navigate(card.type === 'content' ? `/content/${card.id}` : card.type === 'event' ? `/activity/${card.id}` : `/discussion/${card.id}`);
               }}
               style={{
-                width: '100%', textAlign: 'left', border: '1rpx solid rgba(238,216,191,0.82)',
-                borderRadius: 18, padding: '14rpx 16rpx', marginBottom: 8,
+                width: '100%', textAlign: 'left', border: '1px solid rgba(238,216,191,0.82)',
+                borderRadius: 18, padding: '14px 16px', marginBottom: 8,
                 background: 'rgba(255,250,243,0.92)', cursor: 'pointer',
               }}>
                 <div style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
                   {card.cover_url && <img src={buildImageUrl(card.cover_url)} alt="" style={{ width: 48, height: 48, borderRadius: 10, objectFit: 'cover' }} />}
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 4 }}>
-                      <span style={{ fontSize: 10, padding: '2rpx 8rpx', borderRadius: 999, background: '#f4e4d0', color: '#8a5a2b' }}>
+                      <span style={{ fontSize: 10, padding: '2px 8px', borderRadius: 999, background: '#f4e4d0', color: '#8a5a2b' }}>
                         {card.type === 'content' ? '文化' : card.type === 'event' ? '活动' : '讨论'}
                       </span>
                       <span style={{ fontSize: 13, fontWeight: 600, color: '#2f2419' }}>{card.title}</span>
@@ -380,9 +380,9 @@ export default function AiChatPage() {
               {presets.map((p, i) => (
                 <button key={i} onClick={() => handleSend(p.text)}
                   style={{
-                    padding: '10rpx 16rpx', borderRadius: 999, fontSize: 12, cursor: 'pointer',
+                    padding: '10px 16px', borderRadius: 999, fontSize: 12, cursor: 'pointer',
                     background: 'linear-gradient(180deg, #fbefe3, #f3e2cf)',
-                    border: '1rpx solid rgba(217,184,147,0.26)',
+                    border: '1px solid rgba(217,184,147,0.26)',
                     color: '#7b4d27',
                   }}>
                   {p.display || p.text}
@@ -397,9 +397,9 @@ export default function AiChatPage() {
 
       {/* Input bar */}
       <div style={{
-        padding: '10rpx 16rpx', paddingBottom: 'calc(10rpx + env(safe-area-inset-bottom, 16rpx))',
-        background: 'rgba(255,250,243,0.92)', backdropFilter: 'blur(12rpx)',
-        borderTop: '1rpx solid rgba(219,191,155,0.22)', position: 'relative', zIndex: 10,
+        padding: '10px 16px', paddingBottom: 'calc(10px + env(safe-area-inset-bottom, 16px))',
+        background: 'rgba(255,250,243,0.92)', backdropFilter: 'blur(12px)',
+        borderTop: '1px solid rgba(219,191,155,0.22)', position: 'relative', zIndex: 10,
       }}>
         <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
           <input
@@ -409,8 +409,8 @@ export default function AiChatPage() {
             placeholder="输入你的问题..."
             disabled={store.sending}
             style={{
-              flex: 1, height: 44, borderRadius: 20, padding: '0 16rpx', fontSize: 14,
-              background: '#fffdf8', border: '1rpx solid #eadbc8', color: '#2f2419',
+              flex: 1, height: 44, borderRadius: 20, padding: '0 16px', fontSize: 14,
+              background: '#fffdf8', border: '1px solid #eadbc8', color: '#2f2419',
               outline: 'none', boxSizing: 'border-box',
             }}
           />
@@ -422,7 +422,7 @@ export default function AiChatPage() {
                 ? 'linear-gradient(135deg, #ba7f34, #d9ab53)'
                 : '#e8d8c0',
               color: input.trim() && !store.sending ? '#fff' : '#b8a080',
-              boxShadow: input.trim() && !store.sending ? '0 4rpx 10rpx rgba(184,125,51,0.12)' : 'none',
+              boxShadow: input.trim() && !store.sending ? '0 4px 10px rgba(184,125,51,0.12)' : 'none',
             }}>
             <Send size={18} />
           </button>
