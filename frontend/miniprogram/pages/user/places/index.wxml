@@ -1,0 +1,17 @@
+<view class="container places-page">
+  <view class="places-hero card">
+    <view class="hero-kicker">线下目的地推荐</view>
+    <view class="page-title hero-title">非遗地点推荐</view>
+    <view class="page-subtitle hero-subtitle">结合地点特色与在地体验信息，快速选择更适合你的非遗目的地。</view>
+  </view>
+
+  <view wx:for="{{list}}" wx:key="id" class="card place-card">
+    <view class="place-top">
+      <view class="place-name">{{item.name}}</view>
+      <view class="chip place-chip">推荐</view>
+    </view>
+    <view class="place-line"><text class="place-label">地点</text>{{item.location}}</view>
+    <view class="place-intro">{{item.intro}}</view>
+    <view class="place-tip"><text class="place-label">旅行建议</text>{{item.tips}}</view>
+  </view>
+</view>

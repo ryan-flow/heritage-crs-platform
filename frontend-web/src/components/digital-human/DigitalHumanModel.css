@@ -1,0 +1,770 @@
+/* ═══════════════════════════════════════════════════
+   黑塔数字人 v3.0 — Web React 版
+   从小程序 CSS-drawn 完整迁移，保持所有动画和表情
+   rpx → px 换算：1rpx ≈ 0.5px
+   ═══════════════════════════════════════════════════ */
+
+/* ── 舞台 ── */
+.dhm-stage {
+  position: relative;
+  display: inline-block;
+}
+
+/* ── 背景光效 ── */
+.dhm-orbit,
+.dhm-pedestal,
+.dhm-spark {
+  position: absolute;
+}
+
+.dhm-orbit {
+  border-radius: 50%;
+  filter: blur(2px);
+  animation: orbitPulse 2.8s ease-in-out infinite;
+}
+
+.orbit-1 {
+  width: 100px;
+  height: 100px;
+  left: 20px;
+  top: 7px;
+  background: radial-gradient(circle, rgba(175, 139, 255, 0.34), rgba(175, 139, 255, 0.08) 72%, transparent 78%);
+}
+
+.orbit-2 {
+  width: 72px;
+  height: 72px;
+  left: 34px;
+  top: 21px;
+  background: radial-gradient(circle, rgba(128, 210, 255, 0.22), transparent 72%);
+}
+
+.dhm-spark {
+  background: linear-gradient(135deg, #8cf3ff, #bb8cff);
+  clip-path: polygon(50% 0%, 62% 36%, 100% 50%, 62% 64%, 50% 100%, 38% 64%, 0% 50%, 38% 36%);
+  animation: sparkFloat 2s ease-in-out infinite;
+}
+
+.spark-1 { width: 7px; height: 7px; left: 19px; top: 14px; }
+.spark-2 { width: 5px; height: 5px; right: 22px; top: 30px; animation-delay: 0.2s; }
+.spark-3 { width: 4px; height: 4px; right: 27px; top: 53px; animation-delay: 0.38s; }
+
+.dhm-pedestal {
+  left: 27px;
+  bottom: 38px;
+  width: 86px;
+  height: 18px;
+  border-radius: 999px;
+  background: radial-gradient(circle at center, rgba(175, 136, 255, 0.48), rgba(121, 93, 237, 0.24) 54%, transparent 78%);
+  animation: pedestalGlow 2.8s ease-in-out infinite;
+}
+
+/* ── Avatar 容器 ── */
+.dhm-avatar {
+  position: absolute;
+  left: 19px;
+  top: 9px;
+  width: 102px;
+  height: 146px;
+  transform-origin: center top;
+  animation: dhmFloat 3s ease-in-out infinite;
+}
+
+.variant-ai .dhm-avatar {
+  animation: dhmFloatActive 2.4s ease-in-out infinite;
+}
+
+.variant-hero .dhm-avatar {
+  animation: dhmFloat 3.6s ease-in-out infinite;
+}
+
+.dhm-shadow {
+  position: absolute;
+  left: 50%;
+  bottom: 7px;
+  width: 54px;
+  height: 11px;
+  border-radius: 50%;
+  transform: translateX(-50%);
+  background: rgba(51, 33, 94, 0.22);
+  filter: blur(3px);
+}
+
+/* ═══════════ 帽子 ═══════════ */
+.dhm-hat {
+  position: absolute;
+  top: -13px;
+  left: -8px;
+  width: 130px;
+  height: 90px;
+  z-index: 6;
+  animation: hatTilt 3.2s ease-in-out infinite;
+}
+
+.variant-ai .dhm-hat {
+  animation: hatTiltActive 2.4s ease-in-out infinite;
+}
+
+.dhm-hat-cone {
+  position: absolute;
+  left: 32px;
+  top: -2px;
+  width: 60px;
+  height: 54px;
+  border-radius: 35px 33px 17px 17px;
+  background: linear-gradient(180deg, #2b233b 0%, #1d1630 40%, #15101f 80%);
+  transform: rotate(-9deg);
+  transform-origin: center bottom;
+  clip-path: polygon(50% 0%, 60% 8%, 72% 24%, 84% 46%, 96% 100%, 4% 100%, 16% 48%, 28% 26%, 40% 10%);
+  box-shadow: inset -7px -9px 0 rgba(115, 95, 231, 0.18);
+}
+
+.dhm-hat-tip-glow {
+  position: absolute;
+  left: 54px;
+  top: -3px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(175, 148, 255, 0.5), rgba(175, 148, 255, 0.08) 60%, transparent 80%);
+  animation: tipGlow 2s ease-in-out infinite;
+}
+
+.dhm-hat-brim {
+  position: absolute;
+  left: -1px;
+  top: 48px;
+  width: 124px;
+  height: 20px;
+  border-radius: 52% 48% 56% 44%;
+  background: linear-gradient(180deg, #312742, #17121f);
+  box-shadow: inset 0 -2px 0 rgba(255,255,255,0.05);
+}
+
+.dhm-hat-band {
+  position: absolute;
+  left: 38px;
+  top: 42px;
+  width: 48px;
+  height: 5px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #704ae3, #ae74ff);
+}
+
+.dhm-hat-mark {
+  position: absolute;
+  right: 21px;
+  top: 18px;
+  width: 12px;
+  height: 8px;
+  border: 1.5px solid rgba(191, 166, 255, 0.76);
+  border-color: rgba(191, 166, 255, 0.76) transparent transparent transparent;
+  border-radius: 50%;
+  transform: rotate(20deg);
+}
+
+.dhm-flower {
+  position: absolute;
+  background: radial-gradient(circle at center, #ffebac 0 18%, transparent 19%), linear-gradient(135deg, #bb95ff, #7d52dd);
+  clip-path: polygon(50% 0%, 62% 30%, 100% 35%, 72% 56%, 82% 92%, 50% 70%, 18% 92%, 28% 56%, 0% 35%, 38% 30%);
+}
+
+.flower-main { left: 12px; top: 22px; width: 20px; height: 20px; }
+.flower-mini { left: 31px; top: 30px; width: 10px; height: 10px; }
+
+.dhm-star-pin {
+  position: absolute;
+  right: 28px;
+  top: 24px;
+  width: 9px;
+  height: 9px;
+  background: linear-gradient(135deg, #9fdcff, #a779ff);
+  clip-path: polygon(50% 0%, 62% 36%, 100% 50%, 62% 64%, 50% 100%, 38% 64%, 0% 50%, 38% 36%);
+}
+
+/* ═══════════ 头发 ═══════════ */
+.dhm-hair.back {
+  position: absolute;
+  top: 41px;
+  width: 42px;
+  height: 85px;
+  background: linear-gradient(180deg, #ebe1f7 0%, #d8c8ef 36%, #b38ce6 74%, #8d67dc 100%);
+  z-index: 1;
+}
+
+.dhm-hair.back.left {
+  left: 2px;
+  border-radius: 29px 11px 35px 16px;
+  animation: hairLeft 2.9s ease-in-out infinite;
+}
+
+.dhm-hair.back.right {
+  right: 2px;
+  border-radius: 11px 29px 16px 35px;
+  animation: hairRight 2.9s ease-in-out infinite;
+}
+
+.variant-ai .dhm-hair.back.left { animation: hairLeftActive 2.4s ease-in-out infinite; }
+.variant-ai .dhm-hair.back.right { animation: hairRightActive 2.4s ease-in-out infinite; }
+
+/* ═══════════ 脸部 ═══════════ */
+.dhm-face {
+  position: absolute;
+  top: 52px;
+  left: 28.5px;
+  width: 42px;
+  height: 44px;
+  border-radius: 45% 47% 42% 40%;
+  background: linear-gradient(180deg, #fffafd 0%, #f6edf9 100%);
+  box-shadow: 0 3px 0 rgba(93, 66, 132, 0.06);
+  z-index: 4;
+}
+
+/* 刘海 */
+.dhm-bangs {
+  position: absolute;
+  top: -4px;
+  background: linear-gradient(180deg, #d1c0e6, #baa2da);
+}
+
+.bang-left   { left: 2px;  width: 13.5px; height: 15px; border-radius: 0 0 11px 7px; transform: skewX(-16deg); }
+.bang-center { left: 14.5px; width: 15px; height: 17px; border-radius: 0 0 10px 10px; }
+.bang-right  { right: 2px; width: 12.5px; height: 14.5px; border-radius: 0 0 7px 11px; transform: skewX(16deg); }
+
+/* 眉毛 */
+.dhm-brow {
+  position: absolute;
+  top: 11.5px;
+  width: 9px;
+  height: 2px;
+  border-radius: 999px;
+  background: #6f6182;
+  z-index: 3;
+}
+
+.brow-left  { left: 7px; transform: rotate(-8deg); }
+.brow-right { right: 7px; transform: rotate(8deg); }
+
+/* 眼睛 — 豆豆眼渐变风 */
+.dhm-eye {
+  position: absolute;
+  top: 15.5px;
+  width: 9px;
+  height: 14px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #ead9f8 0%, #b58adc 48%, #654492 100%);
+  z-index: 5;
+}
+
+.dhm-eye.left  { left: 6px; }
+.dhm-eye.right { right: 6px; }
+
+/* 腮红 */
+.dhm-blush {
+  position: absolute;
+  top: 29px;
+  width: 11px;
+  height: 5.5px;
+  border-radius: 50%;
+  background: rgba(255, 168, 205, 0.34);
+}
+
+.blush-left  { left: 2px; }
+.blush-right { right: 2px; }
+
+/* 嘴巴 — 小圆点 */
+.dhm-mouth {
+  position: absolute;
+  left: 19px;
+  top: 35.5px;
+  width: 8px;
+  height: 2px;
+  border-radius: 999px;
+  background: #8f7385;
+}
+
+/* ── 说话状态 ── */
+.state-speaking .dhm-mouth {
+  width: 7px;
+  height: 5px;
+  left: 19.5px;
+  top: 34px;
+  border: none;
+  border-radius: 50%;
+  background: #8a687f;
+  animation: mouthTalk 0.5s ease-in-out infinite;
+}
+
+.state-speaking .dhm-hat {
+  animation: hatTiltSpeaking 0.8s ease-in-out infinite !important;
+}
+
+.state-speaking .dhm-avatar {
+  animation: dhmBounceSpeaking 0.9s ease-in-out infinite !important;
+}
+
+/* ═══════════ 身体 ═══════════ */
+.dhm-body {
+  position: absolute;
+  left: 25.5px;
+  top: 94px;
+  width: 51px;
+  height: 48px;
+  z-index: 3;
+  animation: bodyLift 2.9s ease-in-out infinite;
+}
+
+.variant-ai .dhm-body {
+  animation: bodyLiftActive 2.4s ease-in-out infinite;
+}
+
+.dhm-collar {
+  position: absolute;
+  left: 20px;
+  top: 3px;
+  width: 9px;
+  height: 10px;
+  background: linear-gradient(180deg, #ffffff, #e7dff7);
+  clip-path: polygon(0 0, 100% 0, 65% 100%, 35% 100%);
+}
+
+.dhm-vest {
+  position: absolute;
+  left: 12px;
+  top: 9px;
+  width: 27px;
+  height: 17px;
+  border-radius: 7px 7px 8px 8px;
+  background: linear-gradient(180deg, #272031, #14101a);
+}
+
+.dhm-tie {
+  position: absolute;
+  left: 23.5px;
+  top: 8px;
+  width: 4px;
+  height: 12px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #6f58e8, #a57dff);
+}
+
+.dhm-brooch {
+  position: absolute;
+  left: 23px;
+  top: 9px;
+  width: 4px;
+  height: 4px;
+  background: radial-gradient(circle at 40% 40%, #ffffff, #d7baff 30%, #8c63f5 72%, #603dbe 100%);
+  border-radius: 50%;
+  opacity: 0.82;
+}
+
+/* 手臂 */
+.dhm-arm-group {
+  position: absolute;
+  top: 11px;
+  z-index: 3;
+}
+
+.arm-group-left  { left: 4px; transform-origin: top center; }
+.arm-group-right { right: 4px; transform-origin: top center; }
+
+.dhm-arm {
+  position: absolute;
+  top: 0;
+  width: 5px;
+  height: 18px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #fff9fc, #efe4f6);
+}
+
+.arm-left  { left: 0;  transform: rotate(-12deg); }
+.arm-right { right: 0; transform: rotate(12deg); }
+
+.state-open .arm-group-right,
+.state-speaking .arm-group-right {
+  animation: rightWaveGroup 1.2s ease-in-out infinite;
+}
+
+.variant-ai.state-speaking .arm-group-left {
+  animation: leftWaveGroup 1.4s ease-in-out infinite;
+}
+
+/* 裙摆 */
+.dhm-skirt {
+  position: absolute;
+  left: 10px;
+  top: 26px;
+  width: 31px;
+  height: 17px;
+  background: linear-gradient(180deg, #5b4384, #2a223f);
+  clip-path: polygon(8% 0, 92% 0, 100% 100%, 0 100%);
+}
+
+.dhm-hem-line {
+  position: absolute;
+  left: 10px;
+  top: 41px;
+  width: 31px;
+  height: 1px;
+  border-radius: 999px;
+  background: rgba(173, 142, 255, 0.48);
+}
+
+/* TTS button */
+.dhm-tts-btn {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 4px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.6);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(229, 221, 208, 0.5);
+  cursor: pointer;
+  color: var(--color-ink-secondary);
+  z-index: 10;
+  transition: all 0.2s;
+}
+.dhm-tts-btn:hover {
+  background: rgba(255,255,255,0.9);
+  color: var(--color-ink);
+}
+
+/* ═══════════ 心情标签 ═══════════ */
+.mood-tag {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  padding: 2.5px 8px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  backdrop-filter: blur(5px);
+  border: 0.5px solid rgba(255, 255, 255, 0.22);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  animation: tagFadeIn 0.6s 0.4s ease forwards, tagPulse 3.5s ease-in-out infinite;
+  white-space: nowrap;
+  opacity: 0;
+}
+
+.mood-tag-text {
+  color: rgba(255, 255, 255, 0.92);
+  letter-spacing: 0.5px;
+}
+
+.mood-tag-curious {
+  background: rgba(180, 120, 70, 0.68);
+  border-color: rgba(220, 160, 100, 0.45);
+  text-shadow: 0 0.5px 2px rgba(100, 55, 20, 0.45);
+}
+
+.mood-tag-thinking {
+  background: rgba(85, 160, 130, 0.68);
+  border-color: rgba(120, 200, 160, 0.4);
+  text-shadow: 0 0.5px 2px rgba(30, 90, 60, 0.4);
+}
+
+.mood-tag-confident {
+  background: rgba(195, 55, 55, 0.68);
+  border-color: rgba(230, 110, 90, 0.42);
+  text-shadow: 0 0.5px 2px rgba(130, 20, 20, 0.45);
+}
+
+/* ═══════════ 关键帧动画 ═══════════ */
+
+@keyframes dhmFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+@keyframes dhmFloatActive {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-5px) rotate(1deg); }
+  75% { transform: translateY(-3px) rotate(-1deg); }
+}
+
+@keyframes hatTilt {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-2deg); }
+}
+
+@keyframes hatTiltActive {
+  0%, 100% { transform: rotate(0deg); }
+  30% { transform: rotate(-3deg); }
+  70% { transform: rotate(2deg); }
+}
+
+@keyframes hatTiltSpeaking {
+  0%, 100% { transform: rotate(-1deg); }
+  50% { transform: rotate(2deg); }
+}
+
+@keyframes dhmBounceSpeaking {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-2.5px) rotate(0.5deg); }
+}
+
+@keyframes tipGlow {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.15); }
+}
+
+@keyframes hairLeft {
+  0%, 100% { transform: rotate(7deg) translateY(0); }
+  50% { transform: rotate(11deg) translateY(2px); }
+}
+
+@keyframes hairRight {
+  0%, 100% { transform: rotate(-7deg) translateY(0); }
+  50% { transform: rotate(-11deg) translateY(2px); }
+}
+
+@keyframes hairLeftActive {
+  0%, 100% { transform: rotate(7deg) translateY(0); }
+  50% { transform: rotate(14deg) translateY(3px); }
+}
+
+@keyframes hairRightActive {
+  0%, 100% { transform: rotate(-7deg) translateY(0); }
+  50% { transform: rotate(-14deg) translateY(3px); }
+}
+
+@keyframes bodyLift {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(1px); }
+}
+
+@keyframes bodyLiftActive {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(1px) rotate(1deg); }
+}
+
+@keyframes mouthTalk {
+  0%, 100% { width: 7px; height: 5px; border-radius: 50%; background: #8a687f; }
+  50% { width: 6px; height: 7px; border-radius: 50%; background: #8a687f; }
+}
+
+@keyframes rightWaveGroup {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-20deg) translateX(-1.5px); }
+}
+
+@keyframes leftWaveGroup {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(16deg) translateX(1px); }
+}
+
+@keyframes orbitPulse {
+  0%, 100% { transform: scale(0.96); opacity: 0.9; }
+  50% { transform: scale(1.04); opacity: 1; }
+}
+
+@keyframes sparkFloat {
+  0%, 100% { transform: translateY(0) scale(1); opacity: 0.65; }
+  50% { transform: translateY(-4px) scale(1.14); opacity: 1; }
+}
+
+@keyframes pedestalGlow {
+  0%, 100% { transform: scaleX(0.96); opacity: 0.88; }
+  50% { transform: scaleX(1.04); opacity: 1; }
+}
+
+@keyframes tagFadeIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(4px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+@keyframes tagPulse {
+  0%, 100% { box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); }
+  50%       { box-shadow: 0 2px 11px rgba(0, 0, 0, 0.28); }
+}
+
+/* ═══════════ 表情系统 — mood 驱动 ═══════════ */
+.mood-curious .dhm-brow,
+.mood-thinking .dhm-brow,
+.mood-confident .dhm-brow,
+.mood-curious .dhm-eye,
+.mood-thinking .dhm-eye,
+.mood-confident .dhm-eye,
+.mood-curious .dhm-mouth,
+.mood-thinking .dhm-mouth,
+.mood-confident .dhm-mouth,
+.mood-curious .dhm-blush,
+.mood-thinking .dhm-blush,
+.mood-confident .dhm-blush,
+.mood-curious .dhm-orbit,
+.mood-thinking .dhm-orbit,
+.mood-confident .dhm-orbit,
+.mood-curious .dhm-pedestal,
+.mood-thinking .dhm-pedestal,
+.mood-confident .dhm-pedestal,
+.mood-curious .dhm-hat-tip-glow,
+.mood-thinking .dhm-hat-tip-glow,
+.mood-confident .dhm-hat-tip-glow {
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* MOOD: curious（好奇 / 冷启动）*/
+.mood-curious .dhm-brow { top: 11px; height: 2px; }
+.mood-curious .brow-left  { transform: rotate(-10deg); }
+.mood-curious .brow-right { transform: rotate(10deg); }
+.mood-curious .dhm-eye { width: 8.5px; height: 13px; border-radius: 45%; }
+.mood-curious .dhm-eye.left  { left: 6px; }
+.mood-curious .dhm-eye.right { right: 6px; }
+.mood-curious .dhm-mouth { width: 8px; height: 2px; border-radius: 999px; background: #947684; }
+.mood-curious.state-speaking .dhm-mouth {
+  width: 6px;
+  height: 6px;
+  left: 20px;
+  top: 34px;
+  animation: mouthTalkCurious 0.4s ease-in-out infinite;
+}
+.mood-curious .dhm-blush { width: 11px; height: 5.5px; background: rgba(220, 80, 80, 0.42); }
+.mood-curious .orbit-1 {
+  background: radial-gradient(circle, rgba(210, 140, 60, 0.36), rgba(210, 140, 60, 0.08) 72%, transparent 78%);
+}
+.mood-curious .orbit-2 {
+  background: radial-gradient(circle, rgba(240, 180, 100, 0.22), transparent 72%);
+}
+.mood-curious .dhm-pedestal {
+  background: radial-gradient(circle at center, rgba(200, 130, 50, 0.45), rgba(160, 100, 30, 0.2) 54%, transparent 78%);
+}
+.mood-curious .dhm-hat-tip-glow {
+  background: radial-gradient(circle, rgba(240, 170, 80, 0.5), rgba(240, 170, 80, 0.06) 60%, transparent 80%);
+}
+
+@keyframes mouthTalkCurious {
+  0%, 100% { width: 6px; height: 6px; border-radius: 50%; background: #9a7288; }
+  50% { width: 5px; height: 7px; border-radius: 50%; background: #9a7288; }
+}
+
+/* MOOD: thinking（思考 / 混合模式）*/
+.mood-thinking .dhm-brow { top: 11.5px; height: 2px; }
+.mood-thinking .brow-left  { transform: rotate(-6deg); }
+.mood-thinking .brow-right { transform: rotate(6deg); }
+.mood-thinking .dhm-eye { width: 8.5px; height: 13px; border-radius: 45%; }
+.mood-thinking .dhm-eye.left  { left: 6px; }
+.mood-thinking .dhm-eye.right { right: 6px; }
+.mood-thinking .dhm-mouth { width: 7px; height: 2px; border-radius: 999px; background: #8a687f; }
+.mood-thinking.state-speaking .dhm-mouth {
+  width: 6px;
+  height: 4px;
+  left: 20px;
+  top: 34.5px;
+  border-radius: 50%;
+  animation: mouthTalkThinking 0.5s ease-in-out infinite;
+}
+.mood-thinking .dhm-blush { background: rgba(220, 80, 80, 0.42); }
+.mood-thinking .orbit-1 {
+  background: radial-gradient(circle, rgba(80, 160, 130, 0.32), rgba(80, 160, 130, 0.06) 72%, transparent 78%);
+}
+.mood-thinking .orbit-2 {
+  background: radial-gradient(circle, rgba(120, 200, 170, 0.2), transparent 72%);
+}
+.mood-thinking .dhm-pedestal {
+  background: radial-gradient(circle at center, rgba(80, 160, 120, 0.42), rgba(50, 130, 90, 0.2) 54%, transparent 78%);
+}
+.mood-thinking .dhm-hat-tip-glow {
+  background: radial-gradient(circle, rgba(100, 200, 160, 0.5), rgba(100, 200, 160, 0.06) 60%, transparent 80%);
+}
+
+@keyframes mouthTalkThinking {
+  0%, 100% { width: 6px; height: 4px; border-radius: 50%; background: #8a687f; }
+  50% { width: 5px; height: 5px; border-radius: 50%; background: #8a687f; }
+}
+
+/* MOOD: confident（自信 / 精准模式）*/
+.mood-confident .dhm-brow { top: 11.5px; height: 2px; }
+.mood-confident .brow-left  { transform: rotate(-5deg); }
+.mood-confident .brow-right { transform: rotate(5deg); }
+.mood-confident .dhm-eye { width: 8.5px; height: 12px; border-radius: 45%; }
+.mood-confident .dhm-eye.left  { left: 6px; }
+.mood-confident .dhm-eye.right { right: 6px; }
+.mood-confident .dhm-mouth { width: 8px; height: 4px; border-radius: 0 0 999px 999px; background: #8a687f; }
+.mood-confident.state-speaking .dhm-mouth {
+  width: 8px;
+  height: 5px;
+  left: 19.5px;
+  top: 34px;
+  animation: mouthTalkConfident 0.45s ease-in-out infinite;
+}
+.mood-confident .dhm-blush { background: rgba(220, 80, 80, 0.42); }
+.mood-confident .orbit-1 {
+  background: radial-gradient(circle, rgba(200, 50, 50, 0.32), rgba(200, 50, 50, 0.06) 72%, transparent 78%);
+}
+.mood-confident .orbit-2 {
+  background: radial-gradient(circle, rgba(240, 120, 80, 0.2), transparent 72%);
+}
+.mood-confident .dhm-pedestal {
+  background: radial-gradient(circle at center, rgba(200, 60, 50, 0.45), rgba(160, 40, 30, 0.2) 54%, transparent 78%);
+}
+.mood-confident .dhm-hat-tip-glow {
+  background: radial-gradient(circle, rgba(240, 120, 80, 0.55), rgba(240, 120, 80, 0.06) 60%, transparent 80%);
+}
+.mood-confident .dhm-brooch {
+  animation: confidentSparkle 3s ease-in-out infinite;
+}
+
+@keyframes mouthTalkConfident {
+  0%, 100% { width: 8px; height: 5px; border-radius: 0 0 999px 999px; background: #8a687f; }
+  50% { width: 7px; height: 6px; border-radius: 0 0 999px 999px; background: #8a687f; }
+}
+
+@keyframes confidentSparkle {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 1; }
+}
+
+/* ═══════════ Mood 待机微动画 ═══════════ */
+.mood-curious .dhm-face {
+  animation: curiousLook 3.5s ease-in-out infinite;
+}
+@keyframes curiousLook {
+  0%, 100% { transform: rotate(0deg) translateX(0); }
+  30% { transform: rotate(-2deg) translateX(-0.5px); }
+  70% { transform: rotate(2deg) translateX(0.5px); }
+}
+.mood-curious .dhm-hat-cone {
+  animation: curiousHatWiggle 5s ease-in-out infinite;
+}
+@keyframes curiousHatWiggle {
+  0%, 100% { transform: rotate(-10deg); }
+  50% { transform: rotate(-5deg); }
+}
+
+.mood-thinking .dhm-face { animation: none; }
+.mood-thinking .arm-group-right {
+  animation: thinkingTap 2.5s ease-in-out infinite;
+}
+@keyframes thinkingTap {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(2deg); }
+  75% { transform: rotate(-1deg); }
+}
+
+.mood-confident .dhm-face {
+  animation: confidentChin 4s ease-in-out infinite;
+}
+@keyframes confidentChin {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-0.5px) rotate(-1deg); }
+}
+.mood-confident .dhm-hat-tip-glow {
+  animation: confidentGlow 2s ease-in-out infinite;
+}
+@keyframes confidentGlow {
+  0%, 100% { opacity: 0.7; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.15); }
+}
+
+/* 说话时停止idle动画 */
+.mood-curious.state-speaking .dhm-face,
+.mood-thinking.state-speaking .dhm-face,
+.mood-confident.state-speaking .dhm-face {
+  animation: none;
+}

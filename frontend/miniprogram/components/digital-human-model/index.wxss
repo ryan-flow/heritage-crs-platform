@@ -1,0 +1,978 @@
+/* ============================================================
+   黑塔数字人 v2.1 — 纯CSS绘制组件
+   v2.1修复：
+   - 眼睛：豆豆眼渐变风（去掉恐怖瞳孔层）
+   - 帽子：锥体与帽檐紧密衔接
+   - 脖子/身体：消除间隙，一体衔接
+   - 右手臂：袖臂打包组避免肩膀脱离动画
+   - 法杖：已移除
+   变体：hero(首页) / ai(对话) / fab(悬浮)
+   ============================================================ */
+
+/* ── 舞台 ── */
+.dhm-stage {
+  position: relative;
+  width: 280rpx;
+  height: 400rpx;
+  transform-origin: center center;
+}
+
+/* 变体缩放 */
+.variant-hero { transform: scale(1.04); }
+.variant-ai   { transform: scale(1); }
+.variant-fab  { transform: scale(0.72); }
+
+/* ── 背景光效 ── */
+.dhm-orbit,
+.dhm-pedestal,
+.dhm-spark {
+  position: absolute;
+}
+
+.dhm-orbit {
+  border-radius: 50%;
+  filter: blur(3rpx);
+  animation: orbitPulse 2.8s ease-in-out infinite;
+}
+
+.orbit-1 {
+  width: 200rpx;
+  height: 200rpx;
+  left: 40rpx;
+  top: 14rpx;
+  background: radial-gradient(circle, rgba(175, 139, 255, 0.34), rgba(175, 139, 255, 0.08) 72%, transparent 78%);
+}
+
+.orbit-2 {
+  width: 144rpx;
+  height: 144rpx;
+  left: 68rpx;
+  top: 42rpx;
+  background: radial-gradient(circle, rgba(128, 210, 255, 0.22), transparent 72%);
+}
+
+.dhm-spark {
+  background: linear-gradient(135deg, #8cf3ff, #bb8cff);
+  clip-path: polygon(50% 0%, 62% 36%, 100% 50%, 62% 64%, 50% 100%, 38% 64%, 0% 50%, 38% 36%);
+  animation: sparkFloat 2s ease-in-out infinite;
+}
+
+.spark-1 { width: 14rpx; height: 14rpx; left: 38rpx; top: 28rpx; }
+.spark-2 { width: 10rpx; height: 10rpx; right: 44rpx; top: 60rpx; animation-delay: .2s; }
+.spark-3 { width: 8rpx; height: 8rpx; right: 54rpx; top: 106rpx; animation-delay: .38s; }
+
+.dhm-pedestal {
+  left: 54rpx;
+  bottom: 76rpx;
+  width: 172rpx;
+  height: 36rpx;
+  border-radius: 999rpx;
+  background: radial-gradient(circle at center, rgba(175, 136, 255, 0.48), rgba(121, 93, 237, 0.24) 54%, transparent 78%);
+  animation: pedestalGlow 2.8s ease-in-out infinite;
+}
+
+/* ── Avatar 容器 ── */
+.dhm-avatar {
+  position: absolute;
+  left: 38rpx;
+  top: 18rpx;
+  width: 204rpx;
+  height: 292rpx;
+  transform-origin: center top;
+  animation: dhmFloat 3s ease-in-out infinite;
+}
+
+.variant-ai .dhm-avatar {
+  animation: dhmFloatActive 2.4s ease-in-out infinite;
+}
+
+.variant-hero .dhm-avatar {
+  animation: dhmFloat 3.6s ease-in-out infinite;
+}
+
+.dhm-shadow {
+  position: absolute;
+  left: 50%;
+  bottom: 14rpx;
+  width: 108rpx;
+  height: 22rpx;
+  border-radius: 50%;
+  transform: translateX(-50%);
+  background: rgba(51, 33, 94, 0.22);
+  filter: blur(6rpx);
+}
+
+/* ══════════════════════════════════════
+   帽子 — 高尖巫师帽（锥体+帽檐紧密衔接）
+   ══════════════════════════════════════ */
+.dhm-hat {
+  position: absolute;
+  top: -26rpx;
+  left: -16rpx;
+  width: 260rpx;
+  height: 180rpx;
+  z-index: 6;
+  animation: hatTilt 3.2s ease-in-out infinite;
+}
+
+.variant-ai .dhm-hat {
+  animation: hatTiltActive 2.4s ease-in-out infinite;
+}
+
+/* 帽锥：高尖锥形，底部宽以接帽檐（v2.3 加大加高） */
+.dhm-hat-cone {
+  position: absolute;
+  left: 64rpx;
+  top: -4rpx;
+  width: 120rpx;
+  height: 108rpx;
+  border-radius: 70rpx 66rpx 34rpx 34rpx;
+  background: linear-gradient(180deg, #2b233b 0%, #1d1630 40%, #15101f 80%);
+  transform: rotate(-9deg);
+  transform-origin: center bottom;
+  clip-path: polygon(50% 0%, 60% 8%, 72% 24%, 84% 46%, 96% 100%, 4% 100%, 16% 48%, 28% 26%, 40% 10%);
+  box-shadow: inset -14rpx -18rpx 0 rgba(115, 95, 231, 0.18);
+}
+
+/* 帽尖发光 */
+.dhm-hat-tip-glow {
+  position: absolute;
+  left: 108rpx;
+  top: -6rpx;
+  width: 24rpx;
+  height: 24rpx;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(175, 148, 255, 0.5), rgba(175, 148, 255, 0.08) 60%, transparent 80%);
+  animation: tipGlow 2s ease-in-out infinite;
+}
+
+/* 帽檐：紧贴帽锥底部（v2.3 加大匹配） */
+.dhm-hat-brim {
+  position: absolute;
+  left: -2rpx;
+  top: 96rpx;
+  width: 248rpx;
+  height: 40rpx;
+  border-radius: 52% 48% 56% 44%;
+  background: linear-gradient(180deg, #312742, #17121f);
+  box-shadow: inset 0 -4rpx 0 rgba(255,255,255,0.05);
+}
+
+/* 帽带：在锥体和帽檐交界处 */
+.dhm-hat-band {
+  position: absolute;
+  left: 76rpx;
+  top: 84rpx;
+  width: 96rpx;
+  height: 10rpx;
+  border-radius: 999rpx;
+  background: linear-gradient(90deg, #704ae3, #ae74ff);
+}
+
+/* 帽子装饰 */
+.dhm-hat-mark {
+  position: absolute;
+  right: 42rpx;
+  top: 36rpx;
+  width: 24rpx;
+  height: 16rpx;
+  border: 3rpx solid rgba(191, 166, 255, 0.76);
+  border-color: rgba(191, 166, 255, 0.76) transparent transparent transparent;
+  border-radius: 50%;
+  transform: rotate(20deg);
+}
+
+.dhm-flower {
+  position: absolute;
+  background: radial-gradient(circle at center, #ffebac 0 18%, transparent 19%), linear-gradient(135deg, #bb95ff, #7d52dd);
+  clip-path: polygon(50% 0%, 62% 30%, 100% 35%, 72% 56%, 82% 92%, 50% 70%, 18% 92%, 28% 56%, 0% 35%, 38% 30%);
+}
+
+.flower-main { left: 24rpx; top: 44rpx; width: 40rpx; height: 40rpx; }
+.flower-mini { left: 62rpx; top: 60rpx; width: 20rpx; height: 20rpx; }
+
+.dhm-star-pin {
+  position: absolute;
+  right: 56rpx;
+  top: 48rpx;
+  width: 18rpx;
+  height: 18rpx;
+  background: linear-gradient(135deg, #9fdcff, #a779ff);
+  clip-path: polygon(50% 0%, 62% 36%, 100% 50%, 62% 64%, 50% 100%, 38% 64%, 0% 50%, 38% 36%);
+}
+
+/* ══════════════════════════════════════
+   头发：蓬松长发（Q版萌系）
+   ══════════════════════════════════════ */
+.dhm-hair.back {
+  position: absolute;
+  top: 82rpx;
+  width: 84rpx;
+  height: 170rpx;
+  background: linear-gradient(180deg, #ebe1f7 0%, #d8c8ef 36%, #b38ce6 74%, #8d67dc 100%);
+  z-index: 1;
+}
+
+.dhm-hair.back.left {
+  left: 4rpx;
+  border-radius: 58rpx 22rpx 70rpx 32rpx;
+  animation: hairLeft 2.9s ease-in-out infinite;
+}
+
+.dhm-hair.back.right {
+  right: 4rpx;
+  border-radius: 22rpx 58rpx 32rpx 70rpx;
+  animation: hairRight 2.9s ease-in-out infinite;
+}
+
+.variant-ai .dhm-hair.back.left { animation: hairLeftActive 2.4s ease-in-out infinite; }
+.variant-ai .dhm-hair.back.right { animation: hairRightActive 2.4s ease-in-out infinite; }
+
+/* ══════════════════════════════════════
+   脸部：圆润大脸（Q版萌系）
+   ══════════════════════════════════════ */
+.dhm-face {
+  position: absolute;
+  top: 104rpx;
+  left: 57rpx;
+  width: 84rpx;
+  height: 88rpx;
+  border-radius: 45% 47% 42% 40%;
+  background: linear-gradient(180deg, #fffafd 0%, #f6edf9 100%);
+  box-shadow: 0 6rpx 0 rgba(93, 66, 132, 0.06);
+  z-index: 4;
+}
+
+/* 刘海 — 蓬松萌系 */
+.dhm-bangs {
+  position: absolute;
+  top: -8rpx;
+  background: linear-gradient(180deg, #d1c0e6, #baa2da);
+}
+
+.bang-left   { left: 4rpx;  width: 27rpx; height: 30rpx; border-radius: 0 0 22rpx 14rpx; transform: skewX(-16deg); }
+.bang-center { left: 29rpx; width: 30rpx; height: 34rpx; border-radius: 0 0 20rpx 20rpx; }
+.bang-right  { right: 4rpx; width: 25rpx; height: 29rpx; border-radius: 0 0 14rpx 22rpx; transform: skewX(16deg); }
+
+/* ══════════════════════════════════════
+   眉毛 — Q版短粗萌系
+   ══════════════════════════════════════ */
+.dhm-brow {
+  position: absolute;
+  top: 23rpx;
+  width: 18rpx;
+  height: 4rpx;
+  border-radius: 999rpx;
+  background: #6f6182;
+  z-index: 3;
+}
+
+.brow-left  { left: 14rpx; transform: rotate(-8deg); }
+.brow-right { right: 14rpx; transform: rotate(8deg); }
+
+
+/* ══════════════════════════════════════
+   ★★★ 眼睛：统一固定为最大版本 ★★★
+   所有情绪 / 场景 / 状态都使用同一套最大尺寸
+   ══════════════════════════════════════ */
+.dhm-eye {
+  position: absolute;
+  top: 31rpx;
+  width: 18rpx;
+  height: 28rpx;
+  border-radius: 999rpx;
+  background: linear-gradient(180deg, #ead9f8 0%, #b58adc 48%, #654492 100%);
+  z-index: 5;
+}
+
+.dhm-eye.left  { left: 12rpx; }
+.dhm-eye.right { right: 12rpx; }
+
+/* ══════════════════════════════════════
+   腮红 / 嘴巴 — Q版萌系
+   ══════════════════════════════════════ */
+.dhm-blush {
+  position: absolute;
+  top: 58rpx;
+  width: 22rpx;
+  height: 11rpx;
+  border-radius: 50%;
+  background: rgba(255, 168, 205, 0.34);
+}
+
+.blush-left  { left: 4rpx; }
+.blush-right { right: 4rpx; }
+
+/* 小圆点嘴 — 参考截图极简风格 */
+.dhm-mouth {
+  position: absolute;
+  left: 38rpx;
+  top: 71rpx;
+  width: 16rpx;
+  height: 4rpx;
+  border-radius: 999rpx;
+  background: #8f7385;
+}
+
+.state-speaking .dhm-mouth {
+  width: 14rpx;
+  height: 10rpx;
+  left: 39rpx;
+  top: 68rpx;
+  border: none;
+  border-radius: 50%;
+  background: #8a687f;
+  animation: mouthTalk 0.5s ease-in-out infinite;
+}
+
+/* speaking时帽子小幅快速摆动，增加活跃感 */
+.state-speaking .dhm-hat {
+  animation: hatTiltSpeaking 0.8s ease-in-out infinite !important;
+}
+
+/* speaking时整体轻微上下弹动 */
+.state-speaking .dhm-avatar {
+  animation: dhmBounceSpeaking 0.9s ease-in-out infinite !important;
+}
+
+/* speaking时眼睛保持稳定，不再闪动 */
+
+/* ══════════════════════════════════════
+   脖子 — 已去除，身体直接接脸
+   ══════════════════════════════════════ */
+.dhm-neck {
+  display: none;
+}
+
+/* ══════════════════════════════════════
+   身体 — 无脖子直接接脸
+   ══════════════════════════════════════ */
+.dhm-body {
+  position: absolute;
+  left: 51rpx;
+  top: 188rpx;
+  width: 102rpx;
+  height: 96rpx;
+  z-index: 3;
+  animation: bodyLift 2.9s ease-in-out infinite;
+}
+
+.variant-ai .dhm-body {
+  animation: bodyLiftActive 2.4s ease-in-out infinite;
+}
+
+/* 披肩（v2.3 隐藏，无肩膀不需要） */
+.dhm-cape {
+  display: none;
+}
+
+/* 领口：窄V领（v2.3 缩小） */
+.dhm-collar {
+  position: absolute;
+  left: 40rpx;
+  top: 6rpx;
+  width: 18rpx;
+  height: 20rpx;
+  background: linear-gradient(180deg, #ffffff, #e7dff7);
+  clip-path: polygon(0 0, 100% 0, 65% 100%, 35% 100%);
+}
+
+/* 马甲 */
+.dhm-vest {
+  position: absolute;
+  left: 24rpx;
+  top: 18rpx;
+  width: 54rpx;
+  height: 34rpx;
+  border-radius: 14rpx 14rpx 16rpx 16rpx;
+  background: linear-gradient(180deg, #272031, #14101a);
+}
+
+/* 领带 */
+.dhm-tie {
+  position: absolute;
+  left: 47rpx;
+  top: 16rpx;
+  width: 8rpx;
+  height: 24rpx;
+  border-radius: 999rpx;
+  background: linear-gradient(180deg, #6f58e8, #a57dff);
+}
+
+/* 胸针 */
+.dhm-brooch {
+  position: absolute;
+  left: 46rpx;
+  top: 18rpx;
+  width: 8rpx;
+  height: 8rpx;
+  background: radial-gradient(circle at 40% 40%, #ffffff, #d7baff 30%, #8c63f5 72%, #603dbe 100%);
+  border-radius: 50%;
+  opacity: 0.82;
+}
+
+/* ══════════════════════════════════════
+   手臂组 — 两根直棍（v2.3 去袖子去肩膀）
+   ══════════════════════════════════════ */
+.dhm-arm-group {
+  position: absolute;
+  top: 22rpx;
+  z-index: 3;
+}
+
+.arm-group-left  { left: 8rpx; transform-origin: top center; }
+.arm-group-right { right: 8rpx; transform-origin: top center; }
+
+/* 直棍手臂（v2.3 无袖子） */
+.dhm-arm {
+  position: absolute;
+  top: 0;
+  width: 10rpx;
+  height: 36rpx;
+  border-radius: 999rpx;
+  background: linear-gradient(180deg, #fff9fc, #efe4f6);
+}
+
+.arm-left  { left: 0;  transform: rotate(-12deg); }
+.arm-right { right: 0; transform: rotate(12deg); }
+
+/* 挥手动画作用于整个手臂组，不会脱离 */
+.state-open .arm-group-right,
+.state-speaking .arm-group-right {
+  animation: rightWaveGroup 1.2s ease-in-out infinite;
+}
+
+.variant-ai.state-speaking .arm-group-left {
+  animation: leftWaveGroup 1.4s ease-in-out infinite;
+}
+
+/* 裙摆 */
+.dhm-skirt {
+  position: absolute;
+  left: 20rpx;
+  top: 52rpx;
+  width: 62rpx;
+  height: 34rpx;
+  background: linear-gradient(180deg, #5b4384, #2a223f);
+  clip-path: polygon(8% 0, 92% 0, 100% 100%, 0 100%);
+}
+
+.dhm-hem-line {
+  position: absolute;
+  left: 20rpx;
+  top: 82rpx;
+  width: 62rpx;
+  height: 2rpx;
+  border-radius: 999rpx;
+  background: rgba(173, 142, 255, 0.48);
+}
+
+/* ══════════════════════════════════════
+   关键帧动画
+   ══════════════════════════════════════ */
+
+/* 浮动 */
+@keyframes dhmFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8rpx); }
+}
+
+@keyframes dhmFloatActive {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-10rpx) rotate(1deg); }
+  75% { transform: translateY(-6rpx) rotate(-1deg); }
+}
+
+/* 帽子轻摆 */
+@keyframes hatTilt {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-2deg); }
+}
+
+@keyframes hatTiltActive {
+  0%, 100% { transform: rotate(0deg); }
+  30% { transform: rotate(-3deg); }
+  70% { transform: rotate(2deg); }
+}
+
+/* speaking专用：帽子快速左右抖动 */
+@keyframes hatTiltSpeaking {
+  0%, 100% { transform: rotate(-1deg); }
+  50% { transform: rotate(2deg); }
+}
+
+/* speaking专用：整体轻微弹动（呼吸感加强） */
+@keyframes dhmBounceSpeaking {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-5rpx) rotate(0.5deg); }
+}
+
+/* 眨眼动画已停用，保留占位避免影响其它结构 */
+@keyframes blinkEyeFast {
+  0%, 100% { opacity: 1; filter: brightness(1); }
+}
+
+/* 帽尖发光 */
+@keyframes tipGlow {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.15); }
+}
+
+/* 头发摆动 */
+@keyframes hairLeft {
+  0%, 100% { transform: rotate(7deg) translateY(0); }
+  50% { transform: rotate(11deg) translateY(4rpx); }
+}
+
+@keyframes hairRight {
+  0%, 100% { transform: rotate(-7deg) translateY(0); }
+  50% { transform: rotate(-11deg) translateY(4rpx); }
+}
+
+@keyframes hairLeftActive {
+  0%, 100% { transform: rotate(7deg) translateY(0); }
+  50% { transform: rotate(14deg) translateY(6rpx); }
+}
+
+@keyframes hairRightActive {
+  0%, 100% { transform: rotate(-7deg) translateY(0); }
+  50% { transform: rotate(-14deg) translateY(6rpx); }
+}
+
+/* 身体浮动 */
+@keyframes bodyLift {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(2rpx); }
+}
+
+@keyframes bodyLiftActive {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(2rpx) rotate(1deg); }
+}
+
+/* 眨眼动画已停用，保留占位避免影响其它结构 */
+@keyframes blinkEye {
+  0%, 100% { opacity: 1; filter: brightness(1); }
+}
+
+/* AI双眨动画已停用 */
+.variant-ai .dhm-eye {
+}
+
+@keyframes blinkEyeAI {
+  0%, 100% { opacity: 1; filter: brightness(1); }
+}
+
+/* 张嘴 */
+@keyframes mouthTalk {
+  0%, 100% { width: 14rpx; height: 10rpx; border-radius: 50%; background: #8a687f; border: none; }
+  50% { width: 12rpx; height: 14rpx; border-radius: 50%; background: #8a687f; border: none; }
+}
+
+/* 手臂组挥手 — 整组一起动不脱离 */
+@keyframes rightWaveGroup {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-20deg) translateX(-3rpx); }
+}
+
+@keyframes leftWaveGroup {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(16deg) translateX(2rpx); }
+}
+
+/* 背景动画 */
+@keyframes orbitPulse {
+  0%, 100% { transform: scale(0.96); opacity: 0.9; }
+  50% { transform: scale(1.04); opacity: 1; }
+}
+
+@keyframes sparkFloat {
+  0%, 100% { transform: translateY(0) scale(1); opacity: 0.65; }
+  50% { transform: translateY(-8rpx) scale(1.14); opacity: 1; }
+}
+
+@keyframes pedestalGlow {
+  0%, 100% { transform: scaleX(0.96); opacity: 0.88; }
+  50% { transform: scaleX(1.04); opacity: 1; }
+}
+
+/* ══════════════════════════════════════
+  ★★★ 表情系统 — mood 驱动 ★★★
+  curious(好奇/冷启动)：大眼上挑、眉毛高抬、微笑、腮红淡
+  thinking(思考/混合)：统一大眼、眉头微皱、抿嘴、腮红中
+  confident(自信/精准)：眼亮、眉平、自信微笑、腮红浓
+  过渡动画 0.35s cubic-bezier 确保丝滑
+  ══════════════════════════════════════ */
+
+/* ── 全局过渡 ── */
+.mood-curious .dhm-brow,
+.mood-thinking .dhm-brow,
+.mood-confident .dhm-brow,
+.mood-curious .dhm-eye,
+.mood-thinking .dhm-eye,
+.mood-confident .dhm-eye,
+.mood-curious .dhm-mouth,
+.mood-thinking .dhm-mouth,
+.mood-confident .dhm-mouth,
+.mood-curious .dhm-blush,
+.mood-thinking .dhm-blush,
+.mood-confident .dhm-blush,
+.mood-curious .dhm-orbit,
+.mood-thinking .dhm-orbit,
+.mood-confident .dhm-orbit,
+.mood-curious .dhm-pedestal,
+.mood-thinking .dhm-pedestal,
+.mood-confident .dhm-pedestal,
+.mood-curious .dhm-hat-tip-glow,
+.mood-thinking .dhm-hat-tip-glow,
+.mood-confident .dhm-hat-tip-glow {
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ══════════════════════════════════════
+  MOOD: curious（好奇 / 冷启动）
+  大眼上挑、眉毛高抬、惊喜小嘴、淡腮红
+  背景光效：紫蓝色（探索感）
+  ══════════════════════════════════════ */
+
+/* 眉毛：高抬 + 内八上扬（好奇感） */
+.mood-curious .dhm-brow {
+  top: 22rpx;
+  height: 4rpx;
+}
+.mood-curious .brow-left  { transform: rotate(-10deg); }
+.mood-curious .brow-right { transform: rotate(10deg); }
+
+/* 眼睛：略大 + 更圆（好奇张望） */
+.mood-curious .dhm-eye {
+  width: 17rpx;
+  height: 26rpx;
+  border-radius: 45%;
+}
+.mood-curious .dhm-eye.left  { left: 12rpx; }
+.mood-curious .dhm-eye.right { right: 12rpx; }
+
+/* 嘴巴：小O嘴（惊喜/好奇） */
+.mood-curious .dhm-mouth {
+  width: 16rpx;
+  height: 4rpx;
+  border-radius: 999rpx;
+  background: #947684;
+}
+
+.mood-curious.state-speaking .dhm-mouth {
+  width: 12rpx;
+  height: 12rpx;
+  left: 40rpx;
+  top: 68rpx;
+  animation: mouthTalkCurious 0.4s ease-in-out infinite;
+}
+
+/* 腮红：统一为同一种红色 */
+.mood-curious .dhm-blush {
+  width: 22rpx;
+  height: 11rpx;
+  background: rgba(220, 80, 80, 0.42);
+}
+
+/* 背景光效：赭石琥珀（非遗古朴探索感） */
+.mood-curious .orbit-1 {
+  background: radial-gradient(circle, rgba(210, 140, 60, 0.36), rgba(210, 140, 60, 0.08) 72%, transparent 78%);
+}
+.mood-curious .orbit-2 {
+  background: radial-gradient(circle, rgba(240, 180, 100, 0.22), transparent 72%);
+}
+.mood-curious .dhm-pedestal {
+  background: radial-gradient(circle at center, rgba(200, 130, 50, 0.45), rgba(160, 100, 30, 0.2) 54%, transparent 78%);
+}
+.mood-curious .dhm-hat-tip-glow {
+  background: radial-gradient(circle, rgba(240, 170, 80, 0.5), rgba(240, 170, 80, 0.06) 60%, transparent 80%);
+}
+
+@keyframes mouthTalkCurious {
+  0%, 100% { width: 12rpx; height: 12rpx; border-radius: 50%; background: #9a7288; }
+  50% { width: 10rpx; height: 14rpx; border-radius: 50%; background: #9a7288; }
+}
+
+/* ══════════════════════════════════════
+  MOOD: thinking（思考 / 混合模式）
+  统一大眼、眉头微皱、抿嘴、腮红适中
+  背景光效：暖橙（思考/分析感）
+  ══════════════════════════════════════ */
+
+/* 眉毛：内侧下压+微内八（思考/认真） */
+.mood-thinking .dhm-brow {
+  top: 23rpx;
+  height: 4rpx;
+}
+.mood-thinking .brow-left  { transform: rotate(-6deg); }
+.mood-thinking .brow-right { transform: rotate(6deg); }
+
+/* 眼睛：统一为大眼版本，避免中间情绪脸部比例异常 */
+.mood-thinking .dhm-eye {
+  width: 17rpx;
+  height: 26rpx;
+  border-radius: 45%;
+}
+.mood-thinking .dhm-eye.left  { left: 12rpx; }
+.mood-thinking .dhm-eye.right { right: 12rpx; }
+
+/* 嘴巴：抿嘴横线（认真思考） */
+.mood-thinking .dhm-mouth {
+  width: 14rpx;
+  height: 4rpx;
+  border-radius: 999rpx;
+  background: #8a687f;
+}
+
+.mood-thinking.state-speaking .dhm-mouth {
+  width: 12rpx;
+  height: 8rpx;
+  left: 40rpx;
+  top: 69rpx;
+  border-radius: 50%;
+  animation: mouthTalkThinking 0.5s ease-in-out infinite;
+}
+
+/* 腮红：统一为同一种红色 */
+.mood-thinking .dhm-blush {
+  background: rgba(220, 80, 80, 0.42);
+}
+
+/* 背景光效：松石绿（非遗沉稳思考感） */
+.mood-thinking .orbit-1 {
+  background: radial-gradient(circle, rgba(80, 160, 130, 0.32), rgba(80, 160, 130, 0.06) 72%, transparent 78%);
+}
+.mood-thinking .orbit-2 {
+  background: radial-gradient(circle, rgba(120, 200, 170, 0.2), transparent 72%);
+}
+.mood-thinking .dhm-pedestal {
+  background: radial-gradient(circle at center, rgba(80, 160, 120, 0.42), rgba(50, 130, 90, 0.2) 54%, transparent 78%);
+}
+.mood-thinking .dhm-hat-tip-glow {
+  background: radial-gradient(circle, rgba(100, 200, 160, 0.5), rgba(100, 200, 160, 0.06) 60%, transparent 80%);
+}
+
+@keyframes mouthTalkThinking {
+  0%, 100% { width: 12rpx; height: 8rpx; border-radius: 50%; background: #8a687f; }
+  50% { width: 10rpx; height: 10rpx; border-radius: 50%; background: #8a687f; }
+}
+
+/* ══════════════════════════════════════
+  MOOD: confident（自信 / 精准模式）
+  眼睛明亮、眉平、自信微笑、腮红浓
+  背景光效：翠绿金（自信/完成感）
+  ══════════════════════════════════════ */
+
+/* 眉毛：舒展微内八（自信/从容） */
+.mood-confident .dhm-brow {
+  top: 23rpx;
+  height: 4rpx;
+}
+.mood-confident .brow-left  { transform: rotate(-5deg); }
+.mood-confident .brow-right { transform: rotate(5deg); }
+
+/* 眼睛：明亮略大（自信笃定） */
+.mood-confident .dhm-eye {
+  width: 17rpx;
+  height: 24rpx;
+  border-radius: 45%;
+}
+.mood-confident .dhm-eye.left  { left: 12rpx; }
+.mood-confident .dhm-eye.right { right: 12rpx; }
+
+/* 嘴巴：自信微笑（上翘弧线） */
+.mood-confident .dhm-mouth {
+  width: 16rpx;
+  height: 8rpx;
+  border-radius: 0 0 999rpx 999rpx;
+  background: #8a687f;
+}
+
+.mood-confident.state-speaking .dhm-mouth {
+  width: 16rpx;
+  height: 10rpx;
+  left: 39rpx;
+  top: 68rpx;
+  animation: mouthTalkConfident 0.45s ease-in-out infinite;
+}
+
+/* 腮红：统一为同一种红色 */
+.mood-confident .dhm-blush {
+  background: rgba(220, 80, 80, 0.42);
+}
+
+/* 背景光效：朱红（非遗热烈自信感） */
+.mood-confident .orbit-1 {
+  background: radial-gradient(circle, rgba(200, 50, 50, 0.32), rgba(200, 50, 50, 0.06) 72%, transparent 78%);
+}
+.mood-confident .orbit-2 {
+  background: radial-gradient(circle, rgba(240, 120, 80, 0.2), transparent 72%);
+}
+.mood-confident .dhm-pedestal {
+  background: radial-gradient(circle at center, rgba(200, 60, 50, 0.45), rgba(160, 40, 30, 0.2) 54%, transparent 78%);
+}
+.mood-confident .dhm-hat-tip-glow {
+  background: radial-gradient(circle, rgba(240, 120, 80, 0.55), rgba(240, 120, 80, 0.06) 60%, transparent 80%);
+}
+
+@keyframes mouthTalkConfident {
+  0%, 100% { width: 16rpx; height: 10rpx; border-radius: 0 0 999rpx 999rpx; background: #8a687f; }
+  50% { width: 14rpx; height: 12rpx; border-radius: 0 0 999rpx 999rpx; background: #8a687f; }
+}
+
+/* ══════════════════════════════════════════
+   Mood待机微动画 v2.0.7e
+   curious → 轻微左右张望
+   thinking → 脸部稳定，仅保留手臂轻微动作
+   confident → 自信微抬下巴 + 帽尖闪烁
+   ══════════════════════════════════════════ */
+
+/* curious：好奇张望——头部微微左右偏转 */
+.mood-curious .dhm-face {
+  animation: curiousLook 3.5s ease-in-out infinite;
+}
+@keyframes curiousLook {
+  0%, 100% { transform: rotate(0deg) translateX(0); }
+  30% { transform: rotate(-2deg) translateX(-1rpx); }
+  70% { transform: rotate(2deg) translateX(1rpx); }
+}
+
+/* curious：眼睛保持稳定，不再闪动 */
+.mood-curious .dhm-eye {
+  width: 17rpx;
+  height: 26rpx;
+  border-radius: 45%;
+}
+.mood-curious .dhm-eye.left  { left: 12rpx; }
+.mood-curious .dhm-eye.right { right: 12rpx; }
+
+/* curious：帽子尖端微颤 */
+.mood-curious .dhm-hat-cone {
+  animation: curiousHatWiggle 5s ease-in-out infinite;
+}
+@keyframes curiousHatWiggle {
+  0%, 100% { transform: rotate(-10deg); }
+  50% { transform: rotate(-5deg); }
+}
+
+/* thinking：脸部保持稳定，和其它情绪统一 */
+.mood-thinking .dhm-face {
+  animation: none;
+}
+@keyframes thinkingNod {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(1rpx) rotate(1deg); }
+}
+
+/* thinking：眼睛保持稳定，统一为大眼版本 */
+.mood-thinking .dhm-eye {
+  width: 17rpx;
+  height: 26rpx;
+  border-radius: 45%;
+}
+.mood-thinking .dhm-eye.left  { left: 12rpx; }
+.mood-thinking .dhm-eye.right { right: 12rpx; }
+
+/* thinking：手指轻敲（右臂微动） */
+.mood-thinking .arm-group-right {
+  animation: thinkingTap 2.5s ease-in-out infinite;
+}
+@keyframes thinkingTap {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(2deg); }
+  75% { transform: rotate(-1deg); }
+}
+
+/* confident：自信抬下巴 */
+.mood-confident .dhm-face {
+  animation: confidentChin 4s ease-in-out infinite;
+}
+@keyframes confidentChin {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-1rpx) rotate(-1deg); }
+}
+
+/* confident：帽尖金光闪烁 */
+.mood-confident .dhm-hat-tip-glow {
+  animation: confidentGlow 2s ease-in-out infinite;
+}
+@keyframes confidentGlow {
+  0%, 100% { opacity: 0.7; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.15); }
+}
+
+/* confident：领结/胸针微闪 */
+.mood-confident .dhm-brooch {
+  animation: confidentSparkle 3s ease-in-out infinite;
+}
+@keyframes confidentSparkle {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 1; }
+}
+
+/* speaking状态覆盖idle动画——说话时脸不要乱动 */
+.mood-curious.state-speaking .dhm-face,
+.mood-thinking.state-speaking .dhm-face,
+.mood-confident.state-speaking .dhm-face {
+  animation: none;
+}
+
+/* ══════════════════════════════════════════
+  心情标签 v2.2：悬挂在数字人脚底
+  替代旧的心情气泡，轻盈地挂在脚下
+  ══════════════════════════════════════════ */
+.mood-tag {
+  position: absolute;
+  bottom: 24rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  padding: 5rpx 16rpx;
+  border-radius: 999rpx;
+  font-size: 20rpx;
+  font-weight: 700;
+  letter-spacing: 1rpx;
+  backdrop-filter: blur(10rpx);
+  border: 1rpx solid rgba(255, 255, 255, 0.22);
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.2);
+  animation: tagFadeIn 0.6s 0.4s ease forwards, tagPulse 3.5s ease-in-out infinite;
+  white-space: nowrap;
+  opacity: 0;
+}
+
+.mood-tag-text {
+  color: rgba(255, 255, 255, 0.92);
+  letter-spacing: 1rpx;
+}
+
+/* curious：赭石褐（非遗古朴探索感） */
+.mood-tag-curious {
+  background: rgba(180, 120, 70, 0.68);
+  border-color: rgba(220, 160, 100, 0.45);
+  text-shadow: 0 1rpx 4rpx rgba(100, 55, 20, 0.45);
+}
+
+/* thinking：松石绿（非遗沉稳思考感） */
+.mood-tag-thinking {
+  background: rgba(85, 160, 130, 0.68);
+  border-color: rgba(120, 200, 160, 0.4);
+  text-shadow: 0 1rpx 4rpx rgba(30, 90, 60, 0.4);
+}
+
+/* confident：朱红（非遗热烈自信感） */
+.mood-tag-confident {
+  background: rgba(195, 55, 55, 0.68);
+  border-color: rgba(230, 110, 90, 0.42);
+  text-shadow: 0 1rpx 4rpx rgba(130, 20, 20, 0.45);
+}
+
+@keyframes tagFadeIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(8rpx); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+@keyframes tagPulse {
+  0%, 100% { box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.2); }
+  50%       { box-shadow: 0 4rpx 22rpx rgba(0, 0, 0, 0.28); }
+}

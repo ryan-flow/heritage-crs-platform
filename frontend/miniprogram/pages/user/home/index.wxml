@@ -1,0 +1,119 @@
+<view class="container home-page">
+
+  <view class="ai-hero">
+    <view class="ai-hero-copy">
+      <view class="hero-badge">数字导览中枢</view>
+      <view class="hero-title">{{heroTitle}}</view>
+      <view class="hero-desc">{{heroDesc}}</view>
+      <view class="hero-crs-tag" wx:if="{{crsModeDisplay}}">
+        <view class="hero-crs-pill crs-mode-{{crsState.mode}}">{{crsModeDisplay}} · {{crsConfidencePercent}}%</view>
+      </view>
+      <view class="hero-cta-wrap">
+        <button class="main-cta-btn" bindtap="toAi">{{heroCtaText}}</button>
+      </view>
+    </view>
+
+    <view class="ai-hero-figure" bindtap="triggerHeroDigitalHumanInteraction">
+      <digital-human-model variant="hero" state="{{heroState}}" mood="{{heroMood}}" />
+    </view>
+  </view>
+
+  <!-- 精选推荐 -->
+  <view class="card today-focus-card" wx:if="{{primaryRecommend}}" data-id="{{primaryRecommend.id}}" data-type="{{primaryRecommend.type}}" bindtap="openPrimaryRecommend">
+    <view class="focus-row">
+      <view class="section-title">精选推荐</view>
+      <view class="focus-chip {{primaryRecommend.type}}">{{primaryRecommend.type === 'event' ? '活动' : '内容'}}</view>
+      <view class="focus-action">{{primaryRecommend.actionText}} ›</view>
+    </view>
+    <view class="focus-body">
+      <image class="focus-cover" wx:if="{{primaryRecommend.cover_url}}" src="{{primaryRecommend.cover_url}}" mode="aspectFill" lazy-load />
+      <view class="focus-cover focus-cover-empty focus-cover-{{primaryRecommend.type}}" wx:else>
+        <view class="cover-pattern {{primaryRecommend.type}}"></view>
+      </view>
+      <view class="focus-info">
+        <view class="today-focus-title">{{primaryRecommend.title}}</view>
+        <view class="today-focus-summary clamp-2">{{primaryRecommend.summary}}</view>
+      </view>
+    </view>
+    <view class="today-focus-note clamp-1">{{primaryRecommend.note}}</view>
+  </view>
+
+  <!-- 今日推荐 -->
+  <view class="card recommend-card">
+    <view class="section-title-row">
+      <view class="section-title">今日推荐</view>
+      <view class="crs-strategy-tag crs-mode-{{crsState.mode}}" wx:if="{{crsModeDisplay}}">{{crsModeDisplay}}</view>
+    </view>
+    <view class="recommend-split" wx:if="{{recommend.contents.length}}">
+      <view class="split-title">内容</view>
+      <view wx:for="{{recommend.contents}}" wx:for-item="item" wx:for-index="idx" wx:key="id" wx:if="{{idx < 2}}" class="rec-card" data-id="{{item.id}}" bindtap="toContentDetail">
+        <image class="rec-cover" wx:if="{{item.cover_url}}" src="{{item.cover_url}}" mode="aspectFill" lazy-load />
+        <view class="rec-cover rec-cover-empty" wx:else>
+          <view class="cover-pattern content"></view>
+        </view>
+        <view class="rec-info">
+          <view class="rec-title clamp-1">{{item.title}}</view>
+          <view class="rec-summary clamp-2" wx:if="{{item.snippet}}">{{item.snippet}}</view>
+          <view class="rec-reason-tag" wx:if="{{item.reason}}">{{item.reason}}</view>
+          <view class="rec-meta">
+            <text wx:if="{{item.freshness_label}}" class="rec-tag">{{item.freshness_label}}</text>
+            <block wx:if="{{item.tags && item.tags.length}}">
+              <text wx:for="{{item.tags}}" wx:for-item="tag" wx:key="*this" class="rec-tag">{{tag}}</text>
+            </block>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="recommend-split" wx:if="{{recommend.events.length}}">
+      <view class="split-title">活动</view>
+      <view wx:for="{{recommend.events}}" wx:for-item="item" wx:for-index="idx" wx:key="id" wx:if="{{idx < 1}}" class="rec-card" data-id="{{item.id}}" bindtap="toEventDetail">
+        <image class="rec-cover" wx:if="{{item.cover_url}}" src="{{item.cover_url}}" mode="aspectFill" lazy-load />
+        <view class="rec-cover rec-cover-empty" wx:else>
+          <view class="cover-pattern event"></view>
+        </view>
+        <view class="rec-info">
+          <view class="rec-title clamp-1">{{item.title}}</view>
+          <view class="rec-summary clamp-2" wx:if="{{item.snippet}}">{{item.snippet}}</view>
+          <view class="rec-reason-tag" wx:if="{{item.reason}}">{{item.reason}}</view>
+          <view class="rec-meta">
+            <text wx:if="{{item.location}}" class="rec-tag">{{item.location}}</text>
+            <text wx:if="{{item.status}}" class="rec-tag">{{item.status === 'open' ? '开放报名' : '已关闭'}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="recommend-split" wx:if="{{recommend.topics.length}}">
+      <view class="split-title">讨论</view>
+      <view wx:for="{{recommend.topics}}" wx:for-item="item" wx:for-index="idx" wx:key="id" wx:if="{{idx < 1}}" class="rec-card" data-id="{{item.id}}" bindtap="toTopicDetail">
+        <image class="rec-cover" wx:if="{{item.cover_url}}" src="{{item.cover_url}}" mode="aspectFill" lazy-load />
+        <view class="rec-info">
+          <view class="rec-title clamp-1">{{item.title}}</view>
+          <view class="rec-summary clamp-2" wx:if="{{item.snippet}}">{{item.snippet}}</view>
+          <view class="rec-reason-tag" wx:if="{{item.reason}}">{{item.reason}}</view>
+          <view class="rec-meta">
+            <block wx:if="{{item.tags && item.tags.length}}">
+              <text wx:for="{{item.tags}}" wx:for-item="tag" wx:key="*this" class="rec-tag">{{tag}}</text>
+            </block>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="rec-source-bar" wx:if="{{strategySummary}}">
+      <text class="rec-source-text">兴趣来源：{{strategySummary}}</text>
+    </view>
+  </view>
+    <view class="section-title">快速入口</view>
+    <view class="quick-grid">
+      <view class="quick-item" bindtap="toHistory">
+        <view class="quick-name">非遗发展史</view>
+        <view class="quick-note">时间轴回溯关键节点</view>
+      </view>
+      <view class="quick-item" bindtap="toPlaces">
+        <view class="quick-name">非遗地点</view>
+        <view class="quick-note">规划体验目的地路线</view>
+      </view>
+    </view>
+</view>

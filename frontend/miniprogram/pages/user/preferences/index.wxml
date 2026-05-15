@@ -1,0 +1,90 @@
+<view class="container pref-page">
+
+  <!-- 页面头部 -->
+  <view class="pref-header">
+    <view class="pref-header-badge"></view>
+    <view class="pref-header-text">
+      <view class="pref-header-title">推荐偏好设置</view>
+      <view class="pref-header-desc">告诉黑塔你感兴趣的方向，获得更精准的推荐</view>
+    </view>
+  </view>
+
+  <!-- 非遗类型 -->
+  <view class="card pref-section">
+    <view class="pref-section-header">
+      <view class="pref-dot dot-heritage"></view>
+      <view class="pref-section-info">
+        <view class="pref-section-title">非遗类型</view>
+        <view class="pref-section-hint">选择你感兴趣的非遗类别，可多选</view>
+      </view>
+    </view>
+    <view class="pref-chips">
+      <view wx:for="{{heritageOptions}}" wx:key="*this"
+        class="pref-chip {{selectedHeritage.indexOf(item) >= 0 ? 'active' : ''}} {{tapTarget === 'heritage-' + index ? 'tapped' : ''}}"
+        data-type="heritage" data-index="{{index}}" data-value="{{item}}"
+        bindtap="togglePref" hover-class="pref-chip-hover">
+        <text wx:if="{{selectedHeritage.indexOf(item) < 0}}">{{item}}</text>
+        <view wx:else class="chip-active-inner">
+          <text>{{item}}</text>
+          <text class="chip-check">✓</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 浏览场景 -->
+  <view class="card pref-section">
+    <view class="pref-section-header">
+      <view class="pref-dot dot-scene"></view>
+      <view class="pref-section-info">
+        <view class="pref-section-title">浏览场景</view>
+        <view class="pref-section-hint">你通常怎么了解非遗内容</view>
+      </view>
+    </view>
+    <view class="pref-chips">
+      <view wx:for="{{sceneOptions}}" wx:key="*this"
+        class="pref-chip {{selectedScene.indexOf(item) >= 0 ? 'active' : ''}} {{tapTarget === 'scene-' + index ? 'tapped' : ''}}"
+        data-type="scene" data-index="{{index}}" data-value="{{item}}"
+        bindtap="togglePref" hover-class="pref-chip-hover">
+        <text wx:if="{{selectedScene.indexOf(item) < 0}}">{{item}}</text>
+        <view wx:else class="chip-active-inner">
+          <text>{{item}}</text>
+          <text class="chip-check">✓</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 地区风格 -->
+  <view class="card pref-section">
+    <view class="pref-section-header">
+      <view class="pref-dot dot-region"></view>
+      <view class="pref-section-info">
+        <view class="pref-section-title">地区风格</view>
+        <view class="pref-section-hint">偏好哪个地域的非遗文化</view>
+      </view>
+    </view>
+    <view class="pref-chips">
+      <view wx:for="{{regionOptions}}" wx:key="*this"
+        class="pref-chip {{selectedRegion.indexOf(item) >= 0 ? 'active' : ''}} {{tapTarget === 'region-' + index ? 'tapped' : ''}}"
+        data-type="region" data-index="{{index}}" data-value="{{item}}"
+        bindtap="togglePref" hover-class="pref-chip-hover">
+        <text wx:if="{{selectedRegion.indexOf(item) < 0}}">{{item}}</text>
+        <view wx:else class="chip-active-inner">
+          <text>{{item}}</text>
+          <text class="chip-check">✓</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 保存按钮 -->
+  <view class="pref-btn-wrapper">
+    <button class="save-btn {{totalSelected > 0 ? 'save-btn-ready' : 'save-btn-disabled'}}"
+      loading="{{savingPrefs}}"
+      disabled="{{totalSelected === 0 && !savingPrefs}}"
+      bindtap="savePreferences">
+      {{savingPrefs ? '保存中...' : '保存偏好'}}
+    </button>
+  </view>
+</view>

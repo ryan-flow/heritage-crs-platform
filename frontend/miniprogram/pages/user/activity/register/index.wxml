@@ -1,0 +1,23 @@
+<view class="container register-page">
+  <view class="register-hero card">
+    <view class="hero-kicker">活动报名确认</view>
+    <view class="page-title hero-title">提交报名信息</view>
+    <view class="page-subtitle hero-subtitle">完善备注后即可提交，完成报名后可继续返回导览页获取下一步体验建议。</view>
+  </view>
+
+  <view class="card register-card {{submitFx ? 'fx-success' : ''}}">
+    <view class="label">活动ID：{{eventId}}</view>
+    <textarea class="textarea" placeholder="填写报名备注（可选）" value="{{remark}}" bindinput="onRemarkInput" />
+
+    <view class="notice-box">
+      <checkbox-group bindchange="onAgreeChange">
+        <label class="notice-check">
+          <checkbox value="agree" color="#9f2d22" />
+          <text>我已阅读活动须知，并承诺按时参与、遵守现场秩序。</text>
+        </label>
+      </checkbox-group>
+    </view>
+
+    <button class="btn" loading="{{submitting}}" bindtap="submitRegister">提交报名</button>
+  </view>
+</view>

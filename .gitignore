@@ -1,0 +1,97 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+.env.production
+
+# IDE
+.idea/
+.vscode/
+.trae/
+
+# Logs
+*.log
+
+# WeChat miniprogram build/cache
+frontend/miniprogram/miniprogram_npm/
+frontend/miniprogram/node_modules/
+frontend/miniprogram/dist/
+
+# Database
+backend/*.db
+backend/*.sqlite3
+
+# Compiled archives
+*.rar
+*.zip
+*.7z
+
+# Installers
+cpolar*
+
+# Voice/audio cache
+backend/storage/tts/
+
+# Temp Office files
+~$*
+
+# Crawler output
+backend/crawler/output/
+
+# Large reference materials (PPT courseware, not source code)
+300+个非遗美术课件*/
+中国古代百工合集/
+罗定市太平镇耕读文化/
+帖子图片/
+
+# Large compiled deliverables
+展示录频/
+程序/
+
+# Thesis draft docx files (large binaries, keep only final)
+论文正文/**/*.docx
+论文正文/**/*.pdf
+论文正文/附件*.docx
+论文正文/*.zip
+论文正文/unpacked_thesis/
+论文正文/新建文件夹/
+论文正文/_docx_tmp_update/
+
+# Thesis image attachments (large installers snuck in)
+论文正文/论文图片/*.exe
+论文正文/论文图片/*.msi
+
+# Defense large files
+答辩演示文件夹/*.mp4
+答辩演示文件夹/*基于CRS推荐与AI数字人的非遗文化传播系统实现.pptx
+
+# Reference papers (third-party)
+参考论文/*.docx
+参考论文/*.pdf
+
+# Backend storage & temp files
+backend/storage/
+backend/tools/archive/
+
+# Thesis admin/guide directories (not source code)
+参考论文/
+开题报告/
+指导记录/
+
+# Root level loose deliverables (not source)
+herti_snapshot.html
+大数据222-*.docx
+# Large binary files
+*.exe
+*.msi
+
+# GitHub API push scripts (contains PAT, never commit)
+.git_push_via_api.py
+__push*.py
+
+# Frontend web build output
+frontend-web/node_modules/
+frontend-web/dist/
+frontend-web/.vite/

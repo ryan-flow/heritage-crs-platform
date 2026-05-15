@@ -1,0 +1,125 @@
+.admin-page {
+  --admin-bg: #0f1622;
+  --admin-card: #141f2e;
+  --admin-text: #e7eef9;
+  --admin-sub: #9cb0c9;
+  --admin-accent: #4db3ff;
+  min-height: 100vh;
+  padding-bottom: 40rpx;
+}
+
+page {
+  background: linear-gradient(180deg, #0d1420 0%, #111a27 100%);
+}
+
+.admin-header {
+  background: linear-gradient(135deg, #162536 0%, #1f3350 55%, #2f5f8f 100%);
+  color: var(--admin-text);
+}
+
+.page-title { color: var(--admin-text); }
+.page-subtitle { color: #d8e6f7; }
+
+.search-row,
+.action-row,
+.item-top,
+.status-row {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  flex-wrap: wrap;
+}
+
+.filter-card,
+.item-card,
+.form-card {
+  background: linear-gradient(180deg, #142132, #111b2a);
+}
+
+.field {
+  width: 100%;
+  box-sizing: border-box;
+  background: #1a2a3d;
+  border: 1rpx solid #2f4762;
+  color: #e7eef9;
+  border-radius: 14rpx;
+  padding: 12rpx 14rpx;
+  margin-bottom: 10rpx;
+  font-size: 24rpx;
+}
+
+.mini-btn {
+  min-height: 60rpx;
+  line-height: 60rpx;
+  padding: 0 20rpx;
+  font-size: 24rpx;
+}
+
+.status-chip {
+  padding: 8rpx 14rpx;
+  border-radius: 999rpx;
+  background: #1f3349;
+  color: #9fd2ff;
+  font-size: 22rpx;
+}
+
+.status-chip.active {
+  background: #2b8bd6;
+  color: #fff;
+}
+
+.item-title {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #e7eef9;
+  flex: 1;
+}
+
+.minor {
+  font-size: 22rpx;
+  color: #9cb0c9;
+  line-height: 1.7;
+  margin-bottom: 4rpx;
+}
+
+.primary-btn {
+  background: linear-gradient(135deg, #2b8bd6, #4db3ff);
+  color: #fff;
+}
+
+.secondary-btn {
+  background: linear-gradient(135deg, #245f94, #2f7ec6);
+  color: #fff;
+}
+
+.ghost-btn {
+  background: #1d3046;
+  color: #b7d9ff;
+}
+
+.danger-btn {
+  border-radius: 999rpx;
+  background: #c84c4c;
+  color: #fff;
+}
+
+.behavior-box {
+  margin-top: 10rpx;
+  padding-top: 10rpx;
+  border-top: 1rpx dashed rgba(120,150,185,.25);
+}
+
+.chip {
+  background: #1d3046;
+  color: #9fd2ff;
+}
+
+.mask {
+  position: fixed;
+  inset: 0;
+  background: rgba(7, 12, 18, 0.58);
+  padding: 36rpx 20rpx;
+  box-sizing: border-box;
+  z-index: 999;
+  overflow-y: auto;
+}

@@ -1,0 +1,90 @@
+{
+  "timestamp": "2026-05-03T23:59:59.049222",
+  "base_url": "http://127.0.0.1:8000/api/v1",
+  "tests": [
+    {
+      "test_name": "响应时间测试",
+      "success_rate": 66.66666666666666,
+      "avg_time_ms": 469.86,
+      "details": [
+        {
+          "endpoint": "/contents/",
+          "status": 200,
+          "time_ms": 14.51,
+          "success": true,
+          "name": "内容列表"
+        },
+        {
+          "endpoint": "/events/",
+          "status": 200,
+          "time_ms": 10.26,
+          "success": true,
+          "name": "活动列表"
+        },
+        {
+          "endpoint": "/discussion/topics",
+          "status": 200,
+          "time_ms": 30.47,
+          "success": true,
+          "name": "话题列表"
+        },
+        {
+          "endpoint": "/recommend/",
+          "status": 200,
+          "time_ms": 27.55,
+          "success": true,
+          "name": "推荐接口"
+        },
+        {
+          "endpoint": "/kg/similar?entity=苏绣",
+          "status": 404,
+          "time_ms": 2732.71,
+          "success": false,
+          "name": "知识图谱"
+        },
+        {
+          "endpoint": "/admin/contents/all",
+          "status": 401,
+          "time_ms": 3.67,
+          "success": false,
+          "name": "管理端内容"
+        }
+      ]
+    },
+    {
+      "test_name": "并发负载测试",
+      "concurrent_users": 10,
+      "total_requests": 50,
+      "success_count": 50,
+      "success_rate": 100.0,
+      "total_time_s": 0.22,
+      "throughput_rps": 225.5,
+      "avg_time_ms": 41.02,
+      "p50_ms": 39.44,
+      "p90_ms": 55.49
+    },
+    {
+      "test_name": "AI对话性能测试",
+      "results": [
+        {
+          "question": "昆曲有什么特点",
+          "status": 200,
+          "time_ms": 9199.42,
+          "success": true
+        },
+        {
+          "question": "苏绣和湘绣的区别",
+          "status": 200,
+          "time_ms": 7637.04,
+          "success": true
+        },
+        {
+          "question": "非遗保护的意义",
+          "status": 200,
+          "time_ms": 7122.99,
+          "success": true
+        }
+      ]
+    }
+  ]
+}

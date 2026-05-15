@@ -1,0 +1,33 @@
+version: "3.8"
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: heritage-crs-api
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - APP_ENV=production
+      - APP_DEBUG=false
+      - SQLITE_DB_FILE=data/heritage_platform.db
+      - ADMIN_USERNAME=admin
+      - ADMIN_PASSWORD=admin123
+      - ADMIN_TOKEN=REPLACED_ADMIN_TOKEN
+      - DOUBAO_API_URL=https://ark.cn-beijing.volces.com/api/v3/chat/completions
+      - DOUBAO_API_KEY=REPLACED_API_KEY
+      - DOUBAO_MODEL=doubao-seed-2-0-pro-260215
+    volumes:
+      - heritage-data:/app/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/')"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 30s
+
+volumes:
+  heritage-data:
+    driver: local

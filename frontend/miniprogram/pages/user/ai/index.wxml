@@ -1,0 +1,336 @@
+<view class="container ai-page">
+  <view class="ai-aurora ai-aurora-left"></view>
+  <view class="ai-aurora ai-aurora-right"></view>
+
+  <!-- CRS模式升级庆祝动效 -->
+  <view class="mode-celebration {{modeCelebrating ? 'active' : ''}} {{celebrationFading ? 'fading' : ''}}" wx:if="{{modeCelebrating}}" bindtap="_onCelebrationTap">
+    <view class="celebration-particles">
+      <view class="particle p1"></view>
+      <view class="particle p2"></view>
+      <view class="particle p3"></view>
+      <view class="particle p4"></view>
+      <view class="particle p5"></view>
+      <view class="particle p6"></view>
+      <view class="particle p7"></view>
+      <view class="particle p8"></view>
+      <view class="particle p9"></view>
+      <view class="particle p10"></view>
+      <view class="particle p11"></view>
+      <view class="particle p12"></view>
+    </view>
+    <view class="celebration-content">
+      <view class="celebration-icon">{{celebrationMode === 'precision' ? '🎯' : '🔮'}}</view>
+      <view class="celebration-title">了解升级</view>
+      <view class="celebration-mode crs-mode-{{celebrationMode}}">
+        {{celebrationMode === 'mixed' ? '探索模式' : '精准模式'}}
+      </view>
+      <view class="celebration-desc">
+        {{celebrationMode === 'mixed' ? '黑塔已初步了解你的偏好' : '黑塔已深度理解你的偏好，精准推荐已开启'}}
+      </view>
+    </view>
+  </view>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- L1 任务主线：Hero + CRS内联 + ASK + 对话 -->
+  <!-- ═══════════════════════════════════════════ -->
+
+  <view class="ai-top-stage card">
+    <text class="clear-chat-btn" bindtap="clearHistory">清空</text>
+    <view class="stage-copy centered">
+      <view class="stage-badge">黑塔 · Heritage AI</view>
+      <view class="stage-title">{{crsMode === 'precision' ? '已懂你，精准推荐' : crsMode === 'mixed' ? '正在了解你' : '想认识你'}}</view>
+    </view>
+
+    <view class="avatar-float-wrap centered">
+      <view class="ai-model-wrap" bindtap="onAvatarSpeakTap">
+        <digital-human-model variant="ai" state="{{digitalHumanSpeaking ? 'speaking' : 'open'}}" mood="{{digitalHumanMood}}" />
+      </view>
+      <view class="avatar-hint">{{digitalHumanSpeaking ? '轻触黑塔可停止讲解' : '轻触黑塔，30 秒讲完这一轮重点'}}</view>
+    </view>
+
+    <view class="stage-actions centered">
+      <button class="stage-primary" bindtap="askRandomPreset">
+        <text>随机问一个问题</text>
+      </button>
+    </view>
+  </view>
+
+  <!-- ASK策略卡片（L1核心交互） -->
+  <view class="card ask-clarify-card" wx:if="{{askPrompt}}">
+    <view class="ask-clarify-header">
+      <view class="ask-clarify-avatar">🧙</view>
+      <view class="ask-clarify-title">黑塔想确认一下</view>
+    </view>
+    <view class="ask-clarify-body">{{askPrompt}}</view>
+    <view class="ask-clarify-options" wx:if="{{askOptions.length}}">
+      <view
+        wx:for="{{askOptions}}"
+        wx:key="index"
+        class="ask-clarify-chip {{selectedAskOption === item ? 'active' : ''}}"
+        data-text="{{item}}"
+        bindtap="applyAskOption"
+      >{{item}}</view>
+    </view>
+  </view>
+
+  <!-- 对话栏 -->
+  <view class="card chat-card">
+    <view class="chat-head">
+      <view>
+        <view class="chat-title">对话栏</view>
+      </view>
+    </view>
+    <scroll-view class="chat-list" scroll-y scroll-with-animation scroll-top="{{scrollTop}}" scroll-anchoring="{{true}}">
+      <view
+        wx:for="{{messages}}"
+        wx:key="_id"
+        wx:if="{{item.text || item.recommendCards}}"
+        class="bubble-row {{item.role === 'user' ? 'user' : 'ai'}}"
+      >
+        <view class="bubble-meta">{{item.role === 'user' ? '我' : '黑塔'}}</view>
+        <view wx:if="{{item.role === 'ai' && digitalHumanSpeaking && item.text}}" class="inline-speaking-badge">讲解中 {{digitalHumanCaptionProgress}}%</view>
+        <view class="bubble {{item.role === 'user' ? 'user' : 'ai'}} {{index === typingIndex ? 'typing' : ''}}">
+          <text user-select="{{true}}" class="bubble-text">{{item.text}}</text>
+          <view wx:if="{{index === typingIndex}}" class="typing-dot"></view>
+        </view>
+        <view wx:if="{{item.role === 'ai' && item.text}}" class="bubble-actions">
+          <text class="bubble-action" data-text="能再详细说说吗" bindtap="applySuggestion">继续追问</text>
+          <text class="bubble-action" data-text="{{item.text}}" bindtap="speakCurrentMessage">听语音</text>
+          <text class="bubble-action" data-text="围绕这个方向推荐相关内容" bindtap="applySuggestion">围绕这个方向</text>
+        </view>
+      </view>
+      <view wx:if="{{sending}}" class="typing-indicator-row">
+        <view class="typing-indicator">
+          <view class="typing-avatar">黑塔</view>
+          <view class="typing-indicator-bubble">
+            <text class="typing-indicator-dot dot-1"></text>
+            <text class="typing-indicator-dot dot-2"></text>
+            <text class="typing-indicator-dot dot-3"></text>
+          </view>
+        </view>
+      </view>
+      <view wx:if="{{!messages.length}}" class="empty-block">
+        <view class="empty-title">先和黑塔聊聊你想了解的非遗方向</view>
+        <view class="empty-desc">支持本地知识优先回答，也会顺手给你补上活动和延伸推荐。</view>
+      </view>
+    </scroll-view>
+    <view class="input-hint">问题会优先命中本地权威知识库，换一批可查看更多推荐方向。</view>
+    <view class="chat-presets" wx:if="{{presets.length}}">
+      <view class="chat-presets-head">
+        <view class="chat-presets-label {{presetMode === 'followup' ? 'followup' : ''}}">{{presetTitle}}</view>
+        <view class="chat-presets-refresh" bindtap="refreshPresetQuestions">换一批</view>
+      </view>
+      <scroll-view class="chat-presets-scroll recommend-tags" scroll-x enable-flex show-scrollbar="false">
+        <view wx:for="{{presets}}" wx:key="text" class="chat-preset-chip tag-item" data-text="{{item.text}}" bindtap="askPreset">{{item.display || item.text}}</view>
+      </scroll-view>
+    </view>
+    <view class="input-bar">
+      <input
+        class="input"
+        placeholder="输入你想了解的非遗问题"
+        value="{{question}}"
+        bindinput="onQuestionInput"
+      />
+      <button class="send-btn" loading="{{sending}}" bindtap="sendQuestion">
+        <text>➤</text>
+      </button>
+    </view>
+  </view>
+
+  <!-- 状态条 -->
+  <view class="status-strip" wx:if="{{sourceTag || sending || recommendSummary}}">
+    <view class="status-chip source" wx:if="{{sourceTag}}">
+      <text class="status-dot"></text>
+      <text>本次来源：{{sourceTag}}</text>
+    </view>
+    <view class="status-chip summary-toggle" wx:if="{{recommendSummary}}" bindtap="toggleRecommendSummary">
+      <text>推荐依据：{{recommendSummaryExpanded ? recommendSummary : recommendSummaryBrief}}</text>
+      <text class="summary-arrow">{{recommendSummaryExpanded ? '▴' : '▾'}}</text>
+    </view>
+    <view class="summary-panel" wx:if="{{recommendSummary && recommendSummaryExpanded}}">
+      <view wx:for="{{recommendSummarySources}}" wx:key="index" class="summary-pill">{{item}}</view>
+    </view>
+    <view class="status-chip warm" wx:if="{{sending}}">{{waitingTip || '正在生成回答...'}}</view>
+  </view>
+
+  <view class="fixed-cta-bar" wx:if="{{fixedCta.show}}">
+    <button class="fixed-cta-btn content" wx:if="{{fixedCta.contentId}}" bindtap="toFixedContent">去看相关内容</button>
+    <button class="fixed-cta-btn event" wx:if="{{fixedCta.eventId}}" bindtap="toFixedEvent">去报名相关活动</button>
+  </view>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- L2 核心结果：推荐 + 行动清单 -->
+  <!-- ═══════════════════════════════════════════ -->
+
+  <view class="layer-divider" wx:if="{{recommendCards.length || actionTasks.length}}">
+    <view class="layer-divider-line"></view>
+    <view class="layer-divider-label">本轮结果</view>
+    <view class="layer-divider-line"></view>
+  </view>
+
+  <view class="card ai-extra-card" wx:if="{{recommendCards.length}}">
+    <view class="extra-title">延伸推荐 <text class="crs-strategy-tag crs-mode-{{crsMode}}" wx:if="{{strategyDisplay}}">{{strategyDisplay}}</text></view>
+    <view class="recommend-prefix" wx:if="{{recommendPrefix}}">{{recommendPrefix}}</view>
+    <view class="extra-sub">回答之外，还可以顺着内容、活动和帖子继续看。</view>
+    <view wx:for="{{recommendCards}}" wx:key="id" class="recommend-card-item" data-index="{{index}}" bindtap="openRecommendCard">
+      <view class="recommend-card-top">
+        <view class="recommend-type">{{item.type === 'content' ? '内容' : item.type === 'event' ? '活动' : '帖子'}}</view>
+        <view class="recommend-open">查看 ›</view>
+      </view>
+      <view class="recommend-title">{{item.title}}</view>
+      <!-- L1：用户可读理由（始终可见） -->
+      <view class="recommend-reason">{{item.reason || '这条线索和你刚才的问题关联度更高，适合继续往下看。'}}</view>
+      <view class="recommend-detail-actions">
+        <text class="recommend-explain-toggle" data-index="{{index}}" catchtap="toggleExplain">{{explainExpandedMap[index] ? '收起解释' : '展开解释'}}</text>
+        <text class="recommend-open-combo" data-index="{{index}}" catchtap="openRecommendCard">查看详情</text>
+      </view>
+
+      <!-- 展开后：L2 系统依据 + L3 策略上下文 + L4 KG推理 -->
+      <block wx:if="{{explainExpandedMap[index]}}">
+        <view class="recommend-detail-actions">
+          <text class="recommend-explain-copy" data-index="{{index}}" catchtap="copyExplain">复制解释</text>
+        </view>
+        <!-- L2：系统依据（评分+子项分解） -->
+        <view class="recommend-explain" wx:if="{{item.explain && item.explain.final_score !== undefined}}">
+          综合匹配度 {{item.explain.final_score_text || '0.00'}}
+        </view>
+        <view class="recommend-explain" wx:if="{{item.explain && item.explain.display && item.explain.display.matchDetailText}}">
+          匹配依据：{{item.explain.display.matchDetailText}}
+        </view>
+
+        <!-- L3：策略上下文 -->
+        <view class="recommend-explain recommend-crs-tag" wx:if="{{item.explain && item.explain.crs_mode_label}}">
+          推荐方式：{{item.explain.crs_mode_label}}
+        </view>
+        <view class="recommend-explain" wx:if="{{item.explain && item.explain.display && item.explain.display.sources.length}}">
+          数据来源：{{item.explain.display.sources.join('、')}}
+        </view>
+        <view class="recommend-explain" wx:if="{{item.explain && item.explain.display && item.explain.display.heritageTerms.length}}">
+          兴趣维度：{{item.explain.display.heritageTerms.join('、')}}
+        </view>
+
+        <!-- L4：KG推理 -->
+        <view class="recommend-explain" wx:if="{{item.explain && item.explain.display && item.explain.display.similarEntities.length}}">
+          相似推荐：{{item.explain.display.similarEntities.join(' / ')}}
+        </view>
+        <view class="recommend-explain" wx:if="{{item.explain && item.explain.display && item.explain.display.expandPath}}">
+          关联路径：{{item.explain.display.expandPath}}
+        </view>
+        <view class="recommend-explain" wx:if="{{item.explain && item.explain.display && item.explain.display.kgReasonText}}">
+          推荐原因：{{item.explain.display.kgReasonText}}
+        </view>
+        <!-- 兼容：旧格式 kg_reason/kg_path_text 回退 -->
+        <view class="recommend-explain" wx:if="{{item.explain && !item.explain.kg_context && item.explain.kg_score !== undefined && item.explain.display && item.explain.display.kgReasonText}}">
+          相似度 {{item.explain.kg_score_text || '0.00'}} · {{item.explain.display.kgReasonText}}
+        </view>
+      </block>
+    </view>
+    <!-- 推荐满意度反馈 -->
+    <view class="recommend-feedback-bar">
+      <text class="feedback-label">这些推荐对你有帮助吗？</text>
+      <view class="feedback-btns">
+        <view class="feedback-btn {{feedbackMap._overall === 'like' ? 'active like' : ''}}" catchtap="feedbackOverall" data-type="like">👍 有帮助</view>
+        <view class="feedback-btn {{feedbackMap._overall === 'dislike' ? 'active dislike' : ''}}" catchtap="feedbackOverall" data-type="dislike">👎 没帮助</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="card ai-extra-card" wx:if="{{actionTasks.length}}">
+    <view class="extra-title">行动清单</view>
+    <view wx:for="{{actionTasks}}" wx:key="id" class="task-item action-item {{item.recommended ? 'recommended' : ''}}" data-index="{{index}}" bindtap="toggleTaskDone" hover-class="action-item-hover">
+      <view class="task-check action-radio {{item.done ? 'done selected' : ''}} {{item.recommended && !item.done ? 'recommend-hint' : ''}}">{{item.done ? '✓' : (item.recommended ? '★' : '')}}</view>
+      <view class="task-body {{item.done ? 'done' : ''}}">
+        <view class="task-title">{{item.title}}</view>
+        <view class="task-desc">{{item.desc}}</view>
+        <view class="task-meta" wx:if="{{item.metaTitle}}">{{item.metaTitle}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- L3 深入细节：CRS详情 + 时间线 + KG + 运营 + 换问法 -->
+  <!-- ═══════════════════════════════════════════ -->
+
+  <view class="layer-divider dashed" wx:if="{{crsDetailExpanded || kgEntity || rewriteSuggestions.length}}">
+    <view class="layer-divider-line dashed"></view>
+    <view class="layer-divider-label">深入细节</view>
+    <view class="layer-divider-line dashed"></view>
+  </view>
+
+  <!-- 换个问法 -->
+  <view class="card ai-extra-card layer-detail-card" wx:if="{{rewriteSuggestions.length}}">
+    <view class="extra-title">换个问法</view>
+    <view class="extra-sub">如果你想问得更具体，可以直接点下面这些句子。</view>
+    <view wx:for="{{rewriteSuggestions}}" wx:key="index" class="suggestion-item" data-text="{{item}}" bindtap="applySuggestion">{{item}}</view>
+  </view>
+
+  <!-- 了解进度面板（折叠展开） -->
+  <view class="card ai-extra-card layer-detail-card crs-state-card" wx:if="{{crsMode && crsDetailExpanded}}">
+    <view class="crs-state-header">
+      <view class="crs-confidence-text">了解进度 {{crsConfidence}}% · 原始置信度 {{crsConfidenceRaw}}%</view>
+      <view class="crs-toggle-icon" bindtap="toggleCrsDetail">收起 ▲</view>
+    </view>
+    <view class="crs-confidence-bar">
+      <view class="crs-confidence-fill crs-fill-{{crsMode}}" style="width: {{crsConfidence}}%"></view>
+    </view>
+    <!-- 三维度可视化条形图 -->
+    <view class="crs-dim-bars" wx:if="{{crsDimensions}}">
+      <view class="crs-dim-bar-row">
+        <text class="crs-dim-bar-label">你的选择</text>
+        <view class="crs-dim-bar-track">
+          <view class="crs-dim-bar-fill fill-explicit" style="width: {{crsDimensions.explicit || 0}}%"></view>
+        </view>
+        <text class="crs-dim-bar-val">{{crsDimensions.explicit || 0}}</text>
+      </view>
+      <view class="crs-dim-bar-row">
+        <text class="crs-dim-bar-label">你的行为</text>
+        <view class="crs-dim-bar-track">
+          <view class="crs-dim-bar-fill fill-implicit" style="width: {{crsDimensions.implicit || 0}}%"></view>
+        </view>
+        <text class="crs-dim-bar-val">{{crsDimensions.implicit || 0}}</text>
+      </view>
+      <view class="crs-dim-bar-row">
+        <text class="crs-dim-bar-label">你的对话</text>
+        <view class="crs-dim-bar-track">
+          <view class="crs-dim-bar-fill fill-dialogue" style="width: {{crsDimensions.dialogue || 0}}%"></view>
+        </view>
+        <text class="crs-dim-bar-val">{{crsDimensions.dialogue || 0}}</text>
+      </view>
+    </view>
+    <view class="crs-strategy-note" wx:if="{{strategyNote}}">{{strategyNote}}</view>
+  </view>
+
+  <!-- 决策时间线 -->
+  <view class="card ai-extra-card layer-detail-card decision-timeline-card" wx:if="{{askTimeline.length && crsDetailExpanded}}">
+    <view class="extra-title">了解进度</view>
+    <view class="timeline-list">
+      <view wx:for="{{askTimeline}}" wx:key="index" class="timeline-step">
+        <view class="timeline-dot"></view>
+        <view class="timeline-line" wx:if="{{index < askTimeline.length - 1}}"></view>
+        <view class="timeline-content">
+          <view class="timeline-attr">{{item.attribute === 'category' ? '类目' : item.attribute === 'region' ? '地域' : item.attribute === 'scene' ? '场景' : item.attribute === 'level' ? '等级' : item.attribute}}</view>
+          <view class="timeline-q" wx:if="{{item.question}}">{{item.question}}</view>
+          <view class="timeline-a" wx:if="{{item.answer}}">
+            <text class="timeline-answer-icon">→</text> {{item.answer}}
+            <text class="timeline-delta" wx:if="{{item.score_delta > 0}}">+{{item.score_delta}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 图谱推理依据 -->
+  <view class="card ai-extra-card layer-detail-card" wx:if="{{kgEntity}}">
+    <view class="extra-title">关联推荐依据</view>
+    <view class="extra-sub">当前识别实体：{{kgEntity}}</view>
+    <view class="strategy-note" wx:if="{{kgPathText}}">关联路径：{{kgPathText}}</view>
+    <view class="strategy-options" wx:if="{{kgSimilarNames.length}}">
+      <view wx:for="{{kgSimilarNames}}" wx:key="index" class="strategy-chip">相似：{{item}}</view>
+    </view>
+    <view class="strategy-options" wx:if="{{kgExpandItems.length}}">
+      <view wx:for="{{kgExpandItems}}" wx:key="index" class="strategy-chip">扩展：{{item.entity}}</view>
+    </view>
+  </view>
+
+
+</view>

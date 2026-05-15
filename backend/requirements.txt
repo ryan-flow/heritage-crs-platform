@@ -1,0 +1,13 @@
+fastapi
+uvicorn[standard]
+sqlalchemy
+python-dotenv
+pydantic-settings
+httpx
+python-multipart
+edge-tts
+pypdf
+PyMuPDF
+beautifulsoup4
+trafilatura
+lxml

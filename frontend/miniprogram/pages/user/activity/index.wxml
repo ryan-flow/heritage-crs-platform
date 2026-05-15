@@ -1,0 +1,54 @@
+<view class="container activity-page">
+  <view class="activity-hero card">
+    <view class="hero-kicker">活动日历中心</view>
+    <view class="page-title hero-title">非遗体验活动</view>
+    <view class="page-subtitle hero-subtitle">按月份筛选活动，快速定位你的时间窗口。</view>
+  </view>
+
+  <scroll-view class="month-scroll" scroll-x enable-flex show-scrollbar="false">
+    <view wx:for="{{months}}" wx:key="*this" class="month-pill {{monthFilter===item ? 'active' : ''}}" data-month="{{item}}" bindtap="switchMonth">{{item==='all' ? '全年' : item + '月'}}</view>
+  </scroll-view>
+
+  <view wx:if="{{recommend.events.length}}" class="card recommend-inline activity-highlight">
+    <view class="recommend-inline-title">为你推荐的活动</view>
+    <view wx:for="{{recommend.events}}" wx:for-item="item" wx:for-index="index" wx:key="id" wx:if="{{index < 2}}" class="recommend-inline-item" data-id="{{item.id}}" bindtap="toDetail">
+      <image wx:if="{{item.cover_url || item.cover_full_url}}" class="recommend-inline-cover" src="{{item.cover_url || item.cover_full_url}}" mode="aspectFill"></image>
+      <view wx:else class="recommend-inline-cover recommend-inline-cover-fallback">封面</view>
+      <view>
+        <view class="recommend-inline-name clamp-1">{{item.title}}</view>
+        <view class="recommend-inline-note clamp-1">{{item.location || '地点待定'}} · {{item.status === 'open' ? '开放报名' : '已关闭'}}</view>
+        <view class="recommend-reason clamp-1">{{item.reason}}</view>
+      </view>
+      <view class="recommend-inline-arrow">›</view>
+    </view>
+  </view>
+
+  <view wx:if="{{loading}}" class="skeleton-wrap">
+    <view wx:for="{{[1,2,3]}}" wx:key="*this" class="card skeleton-card">
+      <view class="skeleton-line w75"></view>
+      <view class="skeleton-line w60"></view>
+      <view class="skeleton-line w45"></view>
+    </view>
+  </view>
+  <view wx:elif="{{!list.length}}" class="empty">当前月份暂无活动，试试切换到全年看看</view>
+
+  <view wx:for="{{list}}" wx:key="id" class="card activity-card {{successFxId===item.id ? 'fx-pulse' : ''}}">
+    <view class="event-cover-wrap" data-id="{{item.id}}" bindtap="toDetail">
+      <image wx:if="{{item.cover_full_url}}" class="event-cover" src="{{item.cover_full_url}}" mode="aspectFill"></image>
+      <view wx:else class="event-cover placeholder-cover">活动主视觉</view>
+      <view class="event-badge">{{item.heat_text}}</view>
+    </view>
+    <view class="row-top" data-id="{{item.id}}" bindtap="toDetail">
+      <view class="title">{{item.title}}</view>
+      <view class="status {{item.status === 'open' ? 'is-open' : 'is-closed'}}">{{item.status === 'open' ? '报名中' : '已关闭'}}</view>
+    </view>
+    <view class="meta-row">
+      <view class="meta-chip">{{item.month_key || '--'}} 月</view>
+      <view class="meta-chip">{{item.quota_text}}</view>
+    </view>
+    <view class="desc">地点：{{item.location || '待定'}}</view>
+    <button class="primary-btn mini-register" data-id="{{item.id}}" bindtap="toRegisterFx">立即报名</button>
+  </view>
+
+  <digital-human scene="activity" />
+</view>

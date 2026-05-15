@@ -1,0 +1,58 @@
+<view wx:if="{{digitalHumanVisible}}" class="digital-human-shell">
+  <!-- 遮罩层（仅展开时显示） -->
+  <view wx:if="{{digitalHumanExpanded}}" class="digital-human-mask" bindtap="closeDigitalHumanPanel"></view>
+
+  <!-- 展开面板（仅展开时显示） -->
+  <view wx:if="{{digitalHumanExpanded}}" class="digital-human-panel card">
+    <view class="digital-human-panel-head">
+      <view class="digital-human-panel-title">{{digitalHumanPersonaName}} · {{digitalHumanPersonaTitle}}</view>
+      <view class="digital-human-close" bindtap="closeDigitalHumanPanel">收起</view>
+    </view>
+
+    <scroll-view id="dhMsgList" class="digital-human-message-list" scroll-y enhanced show-scrollbar="{{false}}" scroll-into-view="{{scrollToMsg}}">
+      <block wx:for="{{digitalHumanMessages}}" wx:key="index">
+        <view
+          wx:for="{{item.textLines || [item.text]}}"
+          wx:key="*this"
+          wx:for-item="line"
+          class="digital-human-msg {{item.role === 'user' ? 'is-user' : 'is-guide'}}"
+          id="dh-msg-{{index}}"
+        >{{line}}</view>
+      </block>
+      <view id="dhMsgBottom"></view>
+    </scroll-view>
+
+    <view class="digital-human-actions">
+      <button class="ghost-btn digital-human-action-btn" bindtap="speakDigitalHumanLatest">
+        {{digitalHumanSpeaking ? "停止播报" : "语音播报"}}
+      </button>
+    </view>
+
+    <view class="digital-human-input-row">
+      <input
+        class="digital-human-input"
+        placeholder="问黑塔..."
+        value="{{digitalHumanInput}}"
+        bindinput="onDigitalHumanInput"
+        bindconfirm="sendDigitalHumanQuestion"
+      />
+      <view class="digital-human-send-circle {{digitalHumanInput ? 'send-active' : ''}}" bindtap="sendDigitalHumanQuestion">
+        <text class="send-icon">➤</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 浮动按钮（始终显示，独立于遮罩层） -->
+  <view class="digital-human-fab-wrap" bindtap="toggleDigitalHuman" catchtouchmove="preventMove">
+    <view class="digital-human-fab-inner">
+      <digital-human-model variant="fab" state="{{digitalHumanVisualState}}" mood="{{digitalHumanMood || 'curious'}}" />
+    </view>
+  </view>
+
+  <!-- 状态卡（仅AI场景显示，文化/活动页不显示） -->
+  <view class="digital-human-status-card" catchtap="toggleDigitalHuman" wx:if="{{!digitalHumanExpanded && digitalHumanScene === 'ai'}}">
+    <view class="digital-human-status-kicker">{{digitalHumanPersonaName}}</view>
+    <view class="digital-human-status-title">{{digitalHumanMood}}</view>
+    <view class="digital-human-status-desc">{{digitalHumanBubble}}</view>
+  </view>
+</view>

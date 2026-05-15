@@ -1,0 +1,39 @@
+{
+  "timestamp": "2026-05-04T00:02:54.533215",
+  "test_type": "白盒测试",
+  "total": 7,
+  "passed": 6,
+  "failed": 1,
+  "pass_rate": 85.7,
+  "results": [
+    {
+      "name": "CRS阈值配置",
+      "passed": true
+    },
+    {
+      "name": "置信度计算函数",
+      "passed": true
+    },
+    {
+      "name": "ASK模板完整性",
+      "passed": true
+    },
+    {
+      "name": "跳过答案集合",
+      "passed": true
+    },
+    {
+      "name": "知识图谱结构",
+      "passed": false,
+      "error": "'set' object has no attribute 'keys'"
+    },
+    {
+      "name": "CRS决策函数",
+      "passed": true
+    },
+    {
+      "name": "核心数据模型",
+      "passed": true
+    }
+  ]
+}

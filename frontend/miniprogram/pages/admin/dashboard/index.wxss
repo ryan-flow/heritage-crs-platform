@@ -1,0 +1,88 @@
+.admin-panel {
+  --admin-bg: #0f1622;
+  --admin-card: #141f2e;
+  --admin-text: #e7eef9;
+  --admin-sub: #9cb0c9;
+  --admin-accent: #4db3ff;
+  min-height: 100vh;
+  padding-bottom: 40rpx;
+}
+
+page {
+  background: linear-gradient(180deg, #0d1420 0%, #111a27 100%);
+}
+
+.admin-hero {
+  background: linear-gradient(135deg, #162536 0%, #1f3350 55%, #2f5f8f 100%);
+  color: var(--admin-text);
+}
+
+.admin-kicker {
+  display: inline-block;
+  padding: 6rpx 14rpx;
+  border-radius: 999rpx;
+  background: rgba(134, 196, 255, 0.18);
+  font-size: 22rpx;
+  margin-bottom: 10rpx;
+}
+
+.admin-title {
+  font-size: 38rpx;
+  font-weight: 700;
+  margin-bottom: 10rpx;
+}
+
+.admin-sub {
+  font-size: 24rpx;
+  color: #d8e6f7;
+}
+
+.action-card {
+  background: linear-gradient(180deg, #142132, #111b2a);
+}
+
+.action-row {
+  display: flex;
+  gap: 10rpx;
+  flex-wrap: wrap;
+}
+
+.mini-btn {
+  min-height: 58rpx;
+  line-height: 58rpx;
+  font-size: 23rpx;
+  padding: 0 18rpx;
+  border-radius: 12rpx;
+}
+
+.primary-btn {
+  background: linear-gradient(135deg, #2b8bd6, #4db3ff);
+  color: #fff;
+}
+
+.secondary-btn {
+  background: linear-gradient(135deg, #245f94, #2f7ec6);
+  color: #fff;
+}
+
+.admin-metric-card {
+  background: linear-gradient(180deg, #142132, #111b2a);
+}
+
+.admin-metric-card .section-title {
+  color: var(--admin-text);
+}
+
+.metric-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12rpx 0;
+  border-bottom: 1rpx solid rgba(120, 150, 185, 0.16);
+  color: #d4e2f3;
+  font-size: 26rpx;
+}
+
+.metric-row:last-child {
+  border-bottom: 0;
+}

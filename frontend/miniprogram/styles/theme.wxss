@@ -1,0 +1,9 @@
+/* UI优化：统一 Banner 主题变量 */
+page {
+  --banner-ai-start: #5B3A7A;
+  --banner-ai-end: #8B4513;
+  --banner-content-start: #5C3317;
+  --banner-content-end: #8B5A3C;
+  --banner-interact-start: #6B3A2A;
+  --banner-interact-end: #9B4F3C;
+}

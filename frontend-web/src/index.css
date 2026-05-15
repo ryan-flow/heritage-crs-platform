@@ -1,0 +1,382 @@
+@import "tailwindcss";
+
+/* ═══════════════════════════════════════════════════
+   黑塔 · 非遗数字平台 — 融合高端设计系统
+   ═══════════════════════════════════════════════════ */
+
+@theme {
+  /* ── 主色调：朱砂红 ── */
+  --color-cinnabar-50: #fef5f5;
+  --color-cinnabar-100: #fde8e8;
+  --color-cinnabar-200: #fbd0d0;
+  --color-cinnabar-300: #f7aaaa;
+  --color-cinnabar-400: #f07b7b;
+  --color-cinnabar-500: #e04e4e;
+  --color-cinnabar-600: #c93434;
+  --color-cinnabar-700: #a92727;
+  --color-cinnabar-800: #b5342e;
+  --color-cinnabar-900: #8b1a1a;
+
+  /* ── 墨色系：主文字 ── */
+  --color-ink: #2c2416;
+  --color-ink-secondary: #6b5e4a;
+  --color-ink-muted: #9c8e7a;
+  --color-ink-border: #e5ddd0;
+
+  /* ── 宣纸系：背景 ── */
+  --color-parchment: #fdfaf3;
+  --color-parchment-dark: #f5eed8;
+  --color-parchment-card: #fefcf7;
+
+  /* ── 青玉色：辅助 ── */
+  --color-jade-50: #f2f8f5;
+  --color-jade-100: #dceee4;
+  --color-jade-200: #b8dcc8;
+  --color-jade-300: #8cc4a2;
+  --color-jade-400: #5b8c7a;
+  --color-jade-500: #4a7566;
+  --color-jade-600: #3d6254;
+
+  /* ── 琉璃金：点缀 ── */
+  --color-gold-50: #fdf8ed;
+  --color-gold-100: #faf0d8;
+  --color-gold-200: #f4e0ab;
+  --color-gold-300: #edcc74;
+  --color-gold-400: #c49b3f;
+  --color-gold-500: #a67e2e;
+  --color-gold-600: #7d5e20;
+
+  /* ── 字体 ── */
+  --font-serif: "Noto Serif SC", "Source Han Serif SC", "STSong", "SimSun", serif;
+  --font-sans: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", sans-serif;
+
+  /* ── 阴影系统 ── */
+  --shadow-card: 0 1px 3px rgba(44, 36, 22, 0.04), 0 4px 12px rgba(44, 36, 22, 0.04);
+  --shadow-card-hover: 0 2px 8px rgba(44, 36, 22, 0.06), 0 8px 24px rgba(44, 36, 22, 0.08);
+  --shadow-glow-cinnabar: 0 0 24px rgba(181, 52, 46, 0.12);
+  --shadow-glow-gold: 0 0 20px rgba(196, 155, 63, 0.15);
+
+  /* ── 圆角系统 ── */
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.25rem;
+  --radius-2xl: 1.75rem;
+}
+
+/* ═══════════════════════════════════════════════════
+   全局基础样式
+   ═══════════════════════════════════════════════════ */
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background-color: var(--color-parchment);
+  color: var(--color-ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.6;
+}
+
+#root {
+  max-width: 100%;
+  margin: 0 auto;
+  min-height: 100vh;
+}
+
+/* ── 纸张纹理背景 ── */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(245, 238, 216, 0.5) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 20%, rgba(250, 240, 216, 0.4) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 80%, rgba(232, 220, 200, 0.3) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+/* ── 标题样式 ── */
+h1, h2, h3, h4 {
+  font-family: var(--font-serif);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+/* ═══════════════════════════════════════════════════
+   组件：毛玻璃卡片 GlassCard
+   ═══════════════════════════════════════════════════ */
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(229, 221, 208, 0.6);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-card);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-card:hover {
+  background: rgba(255, 255, 255, 0.8);
+  box-shadow: var(--shadow-card-hover);
+  border-color: rgba(196, 155, 63, 0.3);
+}
+
+.glass-card-elevated {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(229, 221, 208, 0.7);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-card-hover);
+}
+
+/* ═══════════════════════════════════════════════════
+   组件：水墨按钮 InkButton
+   ═══════════════════════════════════════════════════ */
+
+.ink-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.5rem;
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: 0.875rem;
+  border-radius: var(--radius-lg);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
+
+.ink-btn-primary {
+  background: linear-gradient(135deg, var(--color-cinnabar-800) 0%, var(--color-cinnabar-700) 100%);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(181, 52, 46, 0.25);
+}
+
+.ink-btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(181, 52, 46, 0.35);
+}
+
+.ink-btn-primary:active {
+  transform: scale(0.97);
+}
+
+.ink-btn-outline {
+  background: transparent;
+  color: var(--color-cinnabar-800);
+  border: 1.5px solid var(--color-cinnabar-200);
+}
+
+.ink-btn-outline:hover {
+  background: var(--color-cinnabar-50);
+  border-color: var(--color-cinnabar-400);
+}
+
+.ink-btn-ghost {
+  background: transparent;
+  color: var(--color-ink-secondary);
+}
+
+.ink-btn-ghost:hover {
+  background: rgba(44, 36, 22, 0.05);
+  color: var(--color-ink);
+}
+
+/* ═══════════════════════════════════════════════════
+   组件：印章徽章 SealBadge
+   ═══════════════════════════════════════════════════ */
+
+.seal-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem 0.75rem;
+  font-family: var(--font-serif);
+  font-size: 0.75rem;
+  font-weight: 700;
+  border-radius: 0;
+  position: relative;
+  transform: rotate(-2deg);
+  letter-spacing: 0.1em;
+}
+
+.seal-badge::before {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  border: 1.5px solid currentColor;
+  opacity: 0.6;
+}
+
+.seal-badge-cinnabar {
+  background: var(--color-cinnabar-800);
+  color: #fff;
+}
+
+.seal-badge-gold {
+  background: var(--color-gold-400);
+  color: #fff;
+}
+
+.seal-badge-jade {
+  background: var(--color-jade-400);
+  color: #fff;
+}
+
+/* ═══════════════════════════════════════════════════
+   组件：页面过渡 PageTransition
+   ═══════════════════════════════════════════════════ */
+
+.page-enter {
+  animation: pageIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes pageIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   通用微交互
+   ═══════════════════════════════════════════════════ */
+
+/* 卡片悬浮 */
+.card-lift {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.card-lift:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-card-hover);
+}
+
+/* 淡入上浮（Intersection Observer 触发） */
+.reveal-up {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal-up.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 水墨渐变背景 */
+.ink-gradient {
+  background: radial-gradient(ellipse at center, rgba(44, 36, 22, 0.03) 0%, transparent 70%),
+              linear-gradient(180deg, var(--color-parchment) 0%, var(--color-parchment-dark) 100%);
+}
+
+/* 朱砂渐变 */
+.cinnabar-gradient {
+  background: linear-gradient(135deg, var(--color-cinnabar-700) 0%, var(--color-cinnabar-800) 50%, var(--color-cinnabar-900) 100%);
+}
+
+/* 金边装饰线 */
+.gold-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, var(--color-gold-300) 20%, var(--color-gold-300) 80%, transparent 100%);
+}
+
+/* ═══════════════════════════════════════════════════
+   云纹装饰
+   ═══════════════════════════════════════════════════ */
+
+.cloud-pattern {
+  position: relative;
+}
+
+.cloud-pattern::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 24px;
+  background:
+    radial-gradient(ellipse 60px 24px at 0% 100%, var(--color-parchment-dark) 50%, transparent 51%) 0 0 / 60px 24px repeat-x,
+    radial-gradient(ellipse 60px 24px at 100% 100%, var(--color-parchment-dark) 50%, transparent 51%) 30px 0 / 60px 24px repeat-x;
+  opacity: 0.6;
+}
+
+/* 骨架屏加载 */
+.skeleton {
+  background: linear-gradient(90deg, var(--color-parchment-dark) 25%, var(--color-ink-border) 37%, var(--color-parchment-dark) 63%);
+  background-size: 400% 100%;
+  animation: skeletonShimmer 1.4s ease infinite;
+  border-radius: var(--radius-md);
+}
+
+@keyframes skeletonShimmer {
+  0% { background-position: 100% 50%; }
+  100% { background-position: 0 50%; }
+}
+
+/* 滚动条美化 */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-ink-border);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-ink-muted);
+}
+
+/* ═══════════════════════════════════════════════════
+   数字人动画关键帧
+   ═══════════════════════════════════════════════════ */
+
+@keyframes dhmFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8rpx); }
+}
+
+@keyframes hatTilt {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(1.5deg); }
+  75% { transform: rotate(-1.5deg); }
+}
+
+@keyframes glowPulse {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.15); }
+}
+
+@keyframes mouthTalk {
+  0%, 100% { transform: scaleY(0.3); border-radius: 50%; }
+  50% { transform: scaleY(1); border-radius: 30%; }
+}
+
+@keyframes sparkFloat {
+  0% { opacity: 0; transform: translateY(0) scale(0); }
+  50% { opacity: 1; transform: translateY(-10px) scale(1); }
+  100% { opacity: 0; transform: translateY(-20px) scale(0); }
+}
+
+@keyframes orbitSpin {
+  from { transform: rotate(0deg) translateX(30px) rotate(0deg); }
+  to { transform: rotate(360deg) translateX(30px) rotate(-360deg); }
+}
+
+@keyframes celebrateParticle {
+  0% { opacity: 1; transform: translate(0, 0) scale(1); }
+  100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0); }
+}

@@ -1,0 +1,54 @@
+<view class="container admin-page">
+  <view class="card admin-header">
+    <view class="page-title">帖子管理</view>
+    <view class="page-subtitle">快捷编辑标题、正文、热度与精选状态，方便运营演示推荐效果。</view>
+  </view>
+
+  <view class="card filter-card">
+    <view class="search-row">
+      <input class="field" placeholder="按标题/正文搜索帖子" value="{{keyword}}" bindinput="onKeywordInput" confirm-type="search" bindconfirm="fetchList" />
+      <button class="ghost-btn mini-btn" bindtap="fetchList">搜索</button>
+    </view>
+  </view>
+
+  <view wx:if="{{loading}}" class="empty">加载中...</view>
+  <view wx:elif="{{!list.length}}" class="empty">暂无帖子数据</view>
+
+  <view wx:for="{{list}}" wx:key="id" class="card item-card">
+    <view class="item-top">
+      <view class="item-title">{{item.title}}</view>
+      <view class="card-tags">
+        <view class="chip feature-chip {{item.is_featured ? 'on' : ''}}">{{item.is_featured ? '精选' : '普通'}}</view>
+        <view class="chip">热度 {{item.heat_score}}</view>
+      </view>
+    </view>
+    <view class="minor">ID: {{item.id}} · 作者: {{item.nickname || '匿名用户'}}</view>
+    <view class="minor">点赞 {{item.like_count}} · 收藏 {{item.favorite_count}} · 评论 {{item.comment_count}}</view>
+    <view class="action-row">
+      <button class="ghost-btn mini-btn" data-item="{{item}}" bindtap="openEdit">编辑</button>
+      <button class="secondary-btn mini-btn" data-id="{{item.id}}" data-featured="{{item.is_featured}}" bindtap="toggleFeatured">{{item.is_featured ? '取消精选' : '设为精选'}}</button>
+    </view>
+  </view>
+
+  <view wx:if="{{showForm}}" class="mask">
+    <view class="card form-card">
+      <view class="section-title">快捷编辑帖子</view>
+      <input class="field" placeholder="帖子标题" value="{{form.title}}" data-key="title" bindinput="onFormInput" />
+      <input class="field" placeholder="作者昵称" value="{{form.nickname}}" data-key="nickname" bindinput="onFormInput" />
+      <input class="field" placeholder="封面URL（可选）" value="{{form.cover_url}}" data-key="cover_url" bindinput="onFormInput" />
+      <input class="field" placeholder="点赞数" value="{{form.like_count}}" data-key="like_count" bindinput="onFormInput" />
+      <input class="field" placeholder="收藏数" value="{{form.favorite_count}}" data-key="favorite_count" bindinput="onFormInput" />
+      <input class="field" placeholder="评论数" value="{{form.comment_count}}" data-key="comment_count" bindinput="onFormInput" />
+      <view class="toggle-row">
+        <text class="toggle-label">推荐精选</text>
+        <switch checked="{{form.is_featured}}" data-key="is_featured" bindchange="onSwitchChange" color="#4db3ff" />
+      </view>
+      <textarea class="field area tall" placeholder="帖子正文" value="{{form.content}}" data-key="content" bindinput="onFormInput" />
+
+      <view class="action-row">
+        <button class="ghost-btn mini-btn" bindtap="closeForm">取消</button>
+        <button class="primary-btn mini-btn" loading="{{saving}}" bindtap="saveForm">保存</button>
+      </view>
+    </view>
+  </view>
+</view>

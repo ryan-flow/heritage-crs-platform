@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "主页",
+  "usingComponents": {
+    "digital-human-model": "/components/digital-human-model/index"
+  }
+}

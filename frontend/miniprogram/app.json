@@ -1,0 +1,69 @@
+{
+  "pages": [
+    "pages/auth/login/index",
+    "pages/user/home/index",
+    "pages/user/history/index",
+    "pages/user/places/index",
+    "pages/user/culture/index",
+    "pages/user/heritage/detail/index",
+    "pages/user/content/index",
+    "pages/user/content/detail/index",
+    "pages/user/activity/index",
+    "pages/user/activity/detail/index",
+    "pages/user/activity/register/index",
+    "pages/user/ai/index",
+    "pages/user/discussion/index",
+    "pages/user/discussion/detail/index",
+    "pages/user/profile/index",
+    "pages/user/preferences/index"
+  ],
+  "subpackages": [
+    {
+      "root": "pages/admin",
+      "pages": [
+        "dashboard/index",
+        "content-manage/index",
+        "activity-manage/index",
+        "topic-manage/index",
+        "user-manage/index"
+      ]
+    }
+  ],
+  "window": {
+    "navigationBarTitleText": "中国非遗文化平台",
+    "navigationBarBackgroundColor": "#fffaf3",
+    "navigationBarTextStyle": "black",
+    "backgroundTextStyle": "light"
+  },
+  "tabBar": {
+    "custom": true,
+    "color": "#8c6a42",
+    "selectedColor": "#9f2d22",
+    "backgroundColor": "#fffaf3",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/user/home/index",
+        "text": "主页"
+      },
+      {
+        "pagePath": "pages/user/content/index",
+        "text": "文化"
+      },
+      {
+        "pagePath": "pages/user/activity/index",
+        "text": "活动"
+      },
+      {
+        "pagePath": "pages/user/discussion/index",
+        "text": "讨论"
+      },
+      {
+        "pagePath": "pages/user/profile/index",
+        "text": "我的"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

@@ -1,0 +1,386 @@
+@import "/styles/theme.wxss";
+
+page {
+  background: linear-gradient(180deg, #fff8ef 0%, #f7efe0 42%, #f7f3eb 100%);
+  color: #2f2419;
+  font-size: 28rpx;
+  --brand: #9f2d22;
+  --brand-deep: #7f1d1d;
+  --brand-soft: #f7e7dc;
+  --accent: #c08a3e;
+  --accent-soft: #f7ecd6;
+  --text-main: #2f2419;
+  --text-sub: #7b6141;
+  --card-bg: rgba(255, 251, 245, 0.96);
+  --card-radius: 28rpx;
+  --shadow-soft: 0 14rpx 34rpx rgba(121, 58, 31, 0.10);
+}
+
+.container {
+  padding: 28rpx 24rpx 36rpx;
+  box-sizing: border-box;
+}
+
+.page-title {
+  font-size: 40rpx;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 12rpx;
+}
+
+.page-subtitle {
+  font-size: 26rpx;
+  color: var(--text-sub);
+  margin-bottom: 24rpx;
+  line-height: 1.7;
+}
+
+.card {
+  background: var(--card-bg);
+  border-radius: var(--card-radius);
+  box-shadow: var(--shadow-soft);
+  padding: 24rpx;
+  margin-bottom: 18rpx;
+  box-sizing: border-box;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40rpx;
+  padding: 0 16rpx;
+  border-radius: 999rpx;
+  background: var(--brand-soft);
+  color: var(--brand);
+  font-size: 22rpx;
+}
+
+.empty {
+  color: #9f8b72;
+  text-align: center;
+  padding: 64rpx 0;
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: 700;
+  margin: 14rpx 0 16rpx;
+  color: var(--text-main);
+}
+
+.primary-btn,
+.secondary-btn,
+.ghost-btn {
+  border-radius: 999rpx;
+  font-size: 28rpx;
+  line-height: 2.2;
+}
+
+.primary-btn {
+  background: linear-gradient(135deg, #9f2d22, #c04833);
+  color: #fff;
+}
+
+.secondary-btn {
+  background: linear-gradient(135deg, #c08a3e, #d5a24d);
+  color: #fff;
+}
+
+.ghost-btn {
+  background: #f9f0e2;
+  color: #8a5a20;
+}
+
+.digital-human-shell {
+  position: fixed;
+  right: 26rpx;
+  bottom: 160rpx;
+  z-index: 99;
+}
+
+.digital-human-panel {
+  width: 420rpx;
+  margin-left: auto;
+  margin-bottom: 18rpx;
+  border-radius: 28rpx;
+  background: rgba(255, 250, 243, 0.98);
+}
+
+.digital-human-panel-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12rpx;
+  margin-bottom: 18rpx;
+}
+
+.digital-human-panel-title {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #312318;
+  margin-bottom: 6rpx;
+}
+
+.digital-human-panel-sub {
+  font-size: 22rpx;
+  color: #86674a;
+  line-height: 1.6;
+}
+
+.digital-human-close {
+  color: #9f2d22;
+  font-size: 22rpx;
+}
+
+.digital-human-message-list {
+  max-height: 300rpx;
+  margin-bottom: 16rpx;
+}
+
+.digital-human-msg {
+  max-width: 100%;
+  border-radius: 20rpx;
+  padding: 14rpx 16rpx;
+  font-size: 24rpx;
+  line-height: 1.7;
+  margin-bottom: 12rpx;
+  word-break: break-word;
+}
+
+.digital-human-msg.is-guide {
+  background: #f8ece0;
+  color: #5f4631;
+}
+
+.digital-human-msg.is-user {
+  background: linear-gradient(135deg, #9f2d22, #bf563f);
+  color: #fff;
+}
+
+.digital-human-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 14rpx;
+}
+
+.digital-human-action-btn {
+  min-width: 160rpx;
+  font-size: 22rpx;
+}
+
+.digital-human-input-row {
+  display: flex;
+  gap: 10rpx;
+}
+
+.digital-human-input {
+  flex: 1;
+  height: 70rpx;
+  border-radius: 16rpx;
+  background: #fffdf8;
+  border: 1rpx solid #eadbc8;
+  padding: 0 16rpx;
+  box-sizing: border-box;
+}
+
+.digital-human-send {
+  width: 124rpx;
+  min-height: 70rpx;
+  padding: 0;
+}
+
+.digital-human-fab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10rpx;
+}
+
+.digital-human-avatar {
+  position: relative;
+  width: 138rpx;
+  height: 168rpx;
+  border-radius: 70rpx 70rpx 46rpx 46rpx;
+  background: linear-gradient(180deg, #c97553 0%, #9f2d22 100%);
+  box-shadow: 0 16rpx 30rpx rgba(159, 45, 34, 0.22);
+  animation: floatHuman 2.8s ease-in-out infinite;
+}
+
+.digital-human-avatar.is-open .right {
+  animation: waveHand 1s ease-in-out infinite;
+  transform-origin: 50% 10%;
+}
+
+.digital-human-hair {
+  position: absolute;
+  top: 10rpx;
+  left: 18rpx;
+  width: 102rpx;
+  height: 88rpx;
+  border-radius: 52rpx 52rpx 34rpx 34rpx;
+  background: #2f2118;
+}
+
+.digital-human-face {
+  position: absolute;
+  top: 34rpx;
+  left: 28rpx;
+  width: 82rpx;
+  height: 84rpx;
+  border-radius: 40rpx;
+  background: #fde7d2;
+}
+
+.digital-human-eyes {
+  display: flex;
+  justify-content: space-between;
+  width: 42rpx;
+  margin: 26rpx auto 0;
+  animation: blinkEye 4s infinite;
+}
+
+.eye {
+  width: 10rpx;
+  height: 10rpx;
+  border-radius: 50%;
+  background: #4c3323;
+}
+
+.digital-human-mouth {
+  width: 18rpx;
+  height: 6rpx;
+  border-radius: 999rpx;
+  background: #bf6b5e;
+  margin: 16rpx auto 0;
+}
+
+.digital-human-mouth.is-speaking {
+  animation: talkMouth 0.45s infinite;
+}
+
+.digital-human-sleeve {
+  position: absolute;
+  bottom: 18rpx;
+  width: 30rpx;
+  height: 68rpx;
+  border-radius: 20rpx;
+  background: linear-gradient(180deg, #e1b27a, #c48b47);
+}
+
+.digital-human-sleeve.left {
+  left: -8rpx;
+  transform: rotate(14deg);
+}
+
+.digital-human-sleeve.right {
+  right: -8rpx;
+  transform: rotate(-16deg);
+}
+
+.digital-human-label {
+  padding: 6rpx 16rpx;
+  border-radius: 999rpx;
+  background: rgba(255, 248, 238, 0.95);
+  color: #8d2b21;
+  font-size: 22rpx;
+  box-shadow: 0 10rpx 20rpx rgba(116, 64, 32, 0.10);
+}
+
+@keyframes floatHuman {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10rpx);
+  }
+}
+
+@keyframes blinkEye {
+  0%,
+  44%,
+  48%,
+  100% {
+    transform: scaleY(1);
+  }
+  46% {
+    transform: scaleY(0.18);
+  }
+}
+
+@keyframes talkMouth {
+  0%,
+  100% {
+    height: 6rpx;
+    width: 18rpx;
+  }
+  50% {
+    height: 12rpx;
+    width: 16rpx;
+  }
+}
+
+@keyframes waveHand {
+  0%,
+  100% {
+    transform: rotate(-16deg);
+  }
+  50% {
+    transform: rotate(-34deg);
+  }
+}
+
+/* 全站统一动效节奏：入场、卡片悬停、按钮反馈 */
+.container > .card,
+.container > .hero-card,
+.container > .ai-entry,
+.container > .entry-card,
+.container > .quick-panel,
+.container > .timeline,
+.container > .detail-shell,
+.container > .detail-card,
+.container > .chat-card,
+.container > .live-caption,
+.container > .content-grid,
+.container > .ai-stage {
+  animation: riseIn 0.44s ease-out both;
+}
+
+.card,
+.chip,
+.primary-btn,
+.secondary-btn,
+.ghost-btn {
+  transition: transform 0.22s ease, box-shadow 0.22s ease, filter 0.22s ease, opacity 0.22s ease;
+}
+
+.card:active {
+  transform: translateY(1rpx) scale(0.996);
+  filter: saturate(0.98);
+}
+
+.primary-btn:active,
+.secondary-btn:active,
+.ghost-btn:active {
+  transform: translateY(2rpx) scale(0.985);
+  filter: brightness(0.98);
+}
+
+.page-title {
+  letter-spacing: 0.6rpx;
+}
+
+.page-subtitle {
+  max-width: 96%;
+}
+
+@keyframes riseIn {
+  from {
+    opacity: 0;
+    transform: translateY(16rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

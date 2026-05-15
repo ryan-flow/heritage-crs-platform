@@ -1,0 +1,108 @@
+<view class="login-wrap">
+  <!-- 背景层：国风水墨渐变 -->
+  <view class="login-bg">
+    <view class="bg-ink-wash"></view>
+    <view class="bg-glow glow-a"></view>
+    <view class="bg-glow glow-b"></view>
+
+    <!-- 祥云装饰 -->
+    <view class="xiangyun-container">
+      <text class="xiangyun xy1">☁</text><text class="xiangyun xy2">☁</text><text class="xiangyun xy3">☁</text>
+      <text class="xiangyun xy4">✦</text><text class="xiangyun xy5">◈</text>
+    </view>
+
+    <!-- 顶部回纹边饰 -->
+    <view class="huifen-border top-huifen"></view>
+    <!-- 底部回纹边饰 -->
+    <view class="huifen-border bottom-huifen"></view>
+  </view>
+
+  <!-- 主内容区 -->
+  <view class="login-body">
+
+    <!-- 黑塔形象区（保持不变） -->
+    <view class="hero-section">
+      <view class="hero-model-wrap" bindtap="triggerLoginHeroInteraction">
+        <digital-human-model variant="hero" state="{{loginHeroState}}" mood="{{loginHeroMood}}" />
+      </view>
+      <!-- 外圈光环：国风圆环 -->
+      <view class="hero-ring"></view>
+      <view class="hero-ring ring-inner"></view>
+      <!-- 四角祥光 -->
+      <text class="ring-spark rs1">✦</text>
+      <text class="ring-spark rs2">✧</text>
+      <text class="ring-spark rs3">◆</text>
+      <text class="ring-spark rs4">◇</text>
+    </view>
+
+    <!-- 品牌文案区 -->
+    <view class="brand-section">
+
+      <!-- 印章式徽章 -->
+      <view class="yin-badge">AI · 智慧传承</view>
+
+      <view class="brand-title-row">
+        <text class="title-deco">〖</text>
+        <text class="brand-title">中国非物质文化遗产</text>
+        <text class="title-deco">〗</text>
+      </view>
+      <view class="brand-subtitle">黑塔伴你 · 探寻千年文化瑰宝</view>
+
+      <!-- 三大亮点：书签式卡片 -->
+      <view class="features-row">
+        <view class="feat-card feat-ai">
+          <view class="feat-ribbon"></view>
+          <text class="feat-num">壹</text>
+          <text class="feat-name">AI 数字人</text>
+          <text class="feat-desc">黑塔在线 · 一问即答</text>
+        </view>
+        <view class="feat-card feat-rec">
+          <view class="feat-ribbon"></view>
+          <text class="feat-num">贰</text>
+          <text class="feat-name">个性推荐</text>
+          <text class="feat-desc">千人千面 · 懂你所好</text>
+        </view>
+        <view class="feat-card feat-kb">
+          <view class="feat-ribbon"></view>
+          <text class="feat-num">叁</text>
+          <text class="feat-name">知识图谱</text>
+          <text class="feat-desc">脉络关联 · 深度洞察</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 登录表单区 -->
+    <view class="form-section">
+      <view class="input-wrap">
+        <input
+          class="nickname-input"
+          placeholder="给自己取个昵称（可选）"
+          placeholder-class="ph-text"
+          value="{{nickname}}"
+          bindinput="onNicknameInput"
+        />
+      </view>
+
+      <!-- 国风登录按钮 -->
+      <button
+        class="guofeng-login-btn {{loading ? 'btn-loading' : ''}}"
+        bindtap="doWxLogin"
+        loading="{{loading}}"
+      >微信授权登录</button>
+
+      <view class="agreement-line">
+        <text>登录即表示同意</text>
+        <text class="link-text">用户协议</text>
+        <text>与</text>
+        <text class="link-text">隐私政策</text>
+      </view>
+    </view>
+
+    <!-- 底部Slogan -->
+    <view class="footer-slogan">
+      <text class="slogan-left">「 一问即达</text>
+      <text class="slogan-dot">·</text>
+      <text class="slogan-right">懂非遗也懂你 」</text>
+    </view>
+  </view>
+</view>

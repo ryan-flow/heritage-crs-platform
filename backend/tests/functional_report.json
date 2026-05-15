@@ -1,0 +1,84 @@
+{
+  "timestamp": "2026-05-04T00:03:19.339713",
+  "total": 15,
+  "passed": 10,
+  "failed": 5,
+  "pass_rate": 66.7,
+  "results": [
+    {
+      "name": "管理员登录成功",
+      "passed": true,
+      "detail": "status=200"
+    },
+    {
+      "name": "管理员登录失败验证",
+      "passed": true,
+      "detail": "status=401"
+    },
+    {
+      "name": "获取内容列表",
+      "passed": true,
+      "detail": "items=20"
+    },
+    {
+      "name": "获取内容详情",
+      "passed": true,
+      "detail": "status=200"
+    },
+    {
+      "name": "获取活动列表",
+      "passed": true,
+      "detail": "items=90"
+    },
+    {
+      "name": "获取话题列表",
+      "passed": true,
+      "detail": "status=200"
+    },
+    {
+      "name": "获取推荐结果",
+      "passed": true,
+      "detail": "status=200"
+    },
+    {
+      "name": "AI对话接口",
+      "passed": true,
+      "detail": "status=200"
+    },
+    {
+      "name": "知识图谱查询",
+      "passed": true,
+      "detail": "status=404"
+    },
+    {
+      "name": "管理端内容列表",
+      "passed": false,
+      "detail": "无法获取token"
+    },
+    {
+      "name": "CRS阈值配置",
+      "passed": false,
+      "detail": "No module named 'app'"
+    },
+    {
+      "name": "置信度计算公式",
+      "passed": false,
+      "detail": "C=41.0, expected=40.5"
+    },
+    {
+      "name": "模式判定逻辑",
+      "passed": true,
+      "detail": "阈值判断逻辑正确"
+    },
+    {
+      "name": "ASK模板完整性",
+      "passed": false,
+      "detail": "No module named 'app'"
+    },
+    {
+      "name": "知识图谱实体类型",
+      "passed": false,
+      "detail": "No module named 'app'"
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+<view class="container heritage-page">
+  <view class="heritage-hero card">
+    <view class="hero-kicker">非遗数字期刊</view>
+    <view class="page-title hero-title">本周策展精选</view>
+    <view class="page-subtitle hero-subtitle">从一篇主专题开始，再按栏目浏览重点内容，像读一本非遗杂志。</view>
+  </view>
+
+  <view wx:if="{{recommend.contents.length}}" class="card recommend-inline heritage-highlight">
+    <view class="recommend-inline-title">为你推荐的内容</view>
+    <view wx:for="{{recommend.contents}}" wx:for-item="item" wx:for-index="index" wx:key="id" wx:if="{{index < 2}}" class="recommend-inline-item" data-id="{{item.id}}" bindtap="toDetail">
+      <image wx:if="{{item.cover_url || item.cover_full_url}}" class="recommend-inline-cover" src="{{item.cover_url || item.cover_full_url}}" mode="aspectFill"></image>
+      <view wx:else class="recommend-inline-cover recommend-inline-cover-fallback">封面</view>
+      <view>
+        <view class="recommend-inline-name clamp-1">{{item.title}}</view>
+        <view class="recommend-inline-note clamp-1">{{item.summary || '点击进入详情页'}}</view>
+        <view class="recommend-reason clamp-1">{{item.reason}}</view>
+      </view>
+      <view class="recommend-inline-arrow">›</view>
+    </view>
+  </view>
+
+  <view wx:if="{{featured}}" class="card featured-card" data-id="{{featured.id}}" bindtap="toDetail">
+    <image wx:if="{{featured.cover_full_url}}" class="featured-cover" src="{{featured.cover_full_url}}" mode="aspectFill"></image>
+    <view class="featured-content">
+      <view class="featured-topline">
+        <view class="featured-label">主专题</view>
+        <view class="featured-tag">{{featured.display_tag}}</view>
+      </view>
+      <view class="featured-title">{{featured.title}}</view>
+      <view class="featured-summary">{{featured.summary || '点击查看完整专题导读'}}</view>
+      <view class="featured-meta">{{featured.chapter || '非遗文化'}} · {{featured.sub_chapter || featured.content_type || '专题'}}</view>
+    </view>
+  </view>
+
+  <view class="spotlight-row" wx:if="{{spotlight.length}}">
+    <view wx:for="{{spotlight}}" wx:key="id" class="card spotlight-card" data-id="{{item.id}}" bindtap="toDetail">
+      <image wx:if="{{item.cover_full_url}}" class="spotlight-cover" src="{{item.cover_full_url}}" mode="aspectFill"></image>
+      <view class="spotlight-tag">{{item.display_tag}}</view>
+      <view class="recommend-inline-name clamp-1">{{item.title}}</view>
+      <view class="recommend-inline-note clamp-1">{{item.summary || '点击查看详情'}}</view>
+    </view>
+  </view>
+
+  <view wx:if="{{loading}}" class="skeleton-wrap">
+    <view wx:for="{{[1,2,3]}}" wx:key="*this" class="card skeleton-card">
+      <view class="skeleton-line w70"></view>
+      <view class="skeleton-line w100"></view>
+      <view class="skeleton-line w85"></view>
+    </view>
+  </view>
+
+  <view class="waterfall" wx:if="{{!loading}}">
+    <view class="column">
+      <view wx:for="{{columns.left}}" wx:key="id" class="card mini-card" data-id="{{item.id}}" bindtap="toDetail">
+        <image wx:if="{{item.cover_full_url}}" class="mini-cover" src="{{item.cover_full_url}}" mode="aspectFill"></image>
+        <view class="mini-tag">{{item.display_tag}}</view>
+        <view class="mini-title clamp-1">{{item.title}}</view>
+        <view class="mini-summary clamp-1">{{item.summary || '点击查看详情'}}</view>
+      </view>
+    </view>
+    <view class="column">
+      <view wx:for="{{columns.right}}" wx:key="id" class="card mini-card" data-id="{{item.id}}" bindtap="toDetail">
+        <image wx:if="{{item.cover_full_url}}" class="mini-cover" src="{{item.cover_full_url}}" mode="aspectFill"></image>
+        <view class="mini-tag">{{item.display_tag}}</view>
+        <view class="mini-title clamp-1">{{item.title}}</view>
+        <view class="mini-summary clamp-1">{{item.summary || '点击查看详情'}}</view>
+      </view>
+    </view>
+  </view>
+
+  <digital-human scene="content" />
+</view>

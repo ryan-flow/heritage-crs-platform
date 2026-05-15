@@ -1,0 +1,57 @@
+<view class="container admin-page">
+  <view class="card admin-header">
+    <view class="page-title">用户管理</view>
+    <view class="page-subtitle">用户列表 / 封禁启用 / 行为统计</view>
+  </view>
+
+  <view class="card filter-card">
+    <view class="search-row">
+      <input class="field" placeholder="按昵称/openid/手机号搜索" value="{{keyword}}" bindinput="onKeywordInput" confirm-type="search" bindconfirm="fetchList" />
+      <button class="ghost-btn mini-btn" bindtap="fetchList">搜索</button>
+    </view>
+    <view class="status-row">
+      <view class="status-chip {{active==='all'?'active':''}}" data-active="all" bindtap="onActiveChange">全部</view>
+      <view class="status-chip {{active==='true'?'active':''}}" data-active="true" bindtap="onActiveChange">已启用</view>
+      <view class="status-chip {{active==='false'?'active':''}}" data-active="false" bindtap="onActiveChange">已封禁</view>
+    </view>
+  </view>
+
+  <view wx:if="{{loading}}" class="empty">加载中...</view>
+  <view wx:elif="{{!list.length}}" class="empty">暂无用户数据</view>
+
+  <view wx:for="{{list}}" wx:key="id" class="card item-card">
+    <view class="item-top">
+      <view class="item-title">{{item.nickname || '未命名用户'}}</view>
+      <view class="chip">{{item.is_active ? '启用' : '封禁'}}</view>
+    </view>
+    <view class="minor">ID: {{item.id}} · 角色: {{item.role}}</view>
+    <view class="minor">openid: {{item.openid}}</view>
+    <view class="minor">行为总量: {{item.total_actions}}（问答{{item.qa_count}} / 点击{{item.recommend_click_count}} / 报名{{item.registration_count}} / 发帖{{item.topic_count}} / 评论{{item.comment_count}}）</view>
+
+    <view class="action-row">
+      <button class="ghost-btn mini-btn" data-item="{{item}}" bindtap="openEdit">编辑</button>
+      <button class="secondary-btn mini-btn" data-id="{{item.id}}" data-active="{{item.is_active}}" bindtap="toggleUserActive">{{item.is_active ? '封禁' : '启用'}}</button>
+      <button class="ghost-btn mini-btn" data-id="{{item.id}}" bindtap="toggleBehavior">行为统计</button>
+      <button class="danger-btn mini-btn" data-id="{{item.id}}" bindtap="deleteUser">删除</button>
+    </view>
+
+    <view wx:if="{{behaviorVisibleMap[item.id]}}" class="behavior-box">
+      <view class="minor" wx:if="{{behaviorMap[item.id]}}">推荐曝光 {{behaviorMap[item.id].recommend_expose}} · 推荐点击 {{behaviorMap[item.id].recommend_click}} · CTR {{behaviorMap[item.id].recommend_ctr}}%</view>
+      <view class="minor" wx:if="{{behaviorMap[item.id]}}">问答 {{behaviorMap[item.id].qa_count}} · 报名 {{behaviorMap[item.id].registration_count}} · 发帖 {{behaviorMap[item.id].topic_count}} · 评论 {{behaviorMap[item.id].comment_count}}</view>
+    </view>
+  </view>
+
+  <view wx:if="{{editingUserId}}" class="mask">
+    <view class="card form-card">
+      <view class="section-title">编辑用户 #{{editingUserId}}</view>
+      <input class="field" placeholder="昵称" value="{{editNickname}}" data-key="editNickname" bindinput="onEditInput" />
+      <input class="field" placeholder="手机号" value="{{editPhone}}" data-key="editPhone" bindinput="onEditInput" />
+      <input class="field" placeholder="角色（user/admin）" value="{{editRole}}" data-key="editRole" bindinput="onEditInput" />
+
+      <view class="action-row">
+        <button class="ghost-btn mini-btn" bindtap="cancelEdit">取消</button>
+        <button class="primary-btn mini-btn" loading="{{saving}}" bindtap="saveEdit">保存</button>
+      </view>
+    </view>
+  </view>
+</view>

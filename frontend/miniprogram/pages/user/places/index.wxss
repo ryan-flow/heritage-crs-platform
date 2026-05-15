@@ -1,0 +1,71 @@
+.places-page {
+  padding-bottom: 40rpx;
+}
+
+.places-hero {
+  background: linear-gradient(135deg, #2a1712 0%, #733124 52%, #c9874f 100%);
+  color: #fff8f0;
+  margin-bottom: 20rpx;
+}
+
+.hero-kicker {
+  display: inline-block;
+  padding: 8rpx 18rpx;
+  border-radius: 999rpx;
+  background: rgba(255, 245, 230, 0.14);
+  color: #ffe1bc;
+  font-size: 22rpx;
+  margin-bottom: 14rpx;
+}
+
+.hero-title {
+  color: #fff8ef;
+  margin-bottom: 12rpx;
+}
+
+.hero-subtitle {
+  color: rgba(255, 244, 232, 0.9);
+}
+
+.place-card {
+  background: linear-gradient(180deg, rgba(255, 251, 245, 0.98), rgba(251, 242, 230, 0.96));
+}
+
+.place-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12rpx;
+  margin-bottom: 14rpx;
+}
+
+.place-name {
+  flex: 1;
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #322317;
+}
+
+.place-chip {
+  background: #f7e7dc;
+  color: #9f2d22;
+}
+
+.place-label {
+  display: inline-block;
+  margin-right: 12rpx;
+  color: #8c623f;
+}
+
+.place-line,
+.place-intro,
+.place-tip {
+  font-size: 26rpx;
+  line-height: 1.8;
+  color: #73583d;
+}
+
+.place-line,
+.place-intro {
+  margin-bottom: 10rpx;
+}

@@ -1,0 +1,9 @@
+{
+  "desc": "项目 sitemap",
+  "rules": [
+    {
+      "action": "allow",
+      "page": "*"
+    }
+  ]
+}

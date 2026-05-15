@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "非遗文化",
+  "enablePullDownRefresh": true,
+  "backgroundTextStyle": "dark",
+  "usingComponents": {
+    "digital-human": "/components/digital-human/index"
+  }
+}

@@ -1,0 +1,24 @@
+<view class="container history-page">
+  <view class="history-hero card">
+    <view class="hero-kicker">发展脉络导览</view>
+    <view class="page-title hero-title">中国非遗发展史</view>
+    <view class="page-subtitle hero-subtitle">按时间轴回看中国非遗保护与传承的重要节点，快速建立清晰的历史框架。</view>
+    <view class="hero-tags">
+      <text class="chip hero-chip">时间轴</text>
+      <text class="chip hero-chip">政策节点</text>
+      <text class="chip hero-chip">代表项目</text>
+    </view>
+  </view>
+
+  <view class="timeline card">
+    <view wx:for="{{list}}" wx:key="id" class="timeline-item">
+      <view class="timeline-dot"></view>
+      <view class="timeline-card">
+        <view class="timeline-year">{{item.year}}</view>
+        <view class="timeline-title">{{item.title}}</view>
+        <view class="timeline-summary">{{item.summary}}</view>
+        <view class="timeline-action" data-id="{{item.heritageId}}" bindtap="toDetail">查看代表项目</view>
+      </view>
+    </view>
+  </view>
+</view>

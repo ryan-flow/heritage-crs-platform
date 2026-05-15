@@ -1,0 +1,72 @@
+<view class="container detail-page">
+  <view wx:if="{{loading}}" class="empty">活动加载中...</view>
+  <view wx:elif="{{!detail}}" class="empty">暂未找到活动详情</view>
+  <view wx:else>
+    <view class="detail-hero card">
+      <view class="cover" wx:if="{{detail.cover_url}}">
+        <image class="cover-image" src="{{detail.cover_url}}" mode="aspectFill"></image>
+        <view class="cover-mask"></view>
+        <view class="cover-overlay-title">{{detail.title}}</view>
+      </view>
+      <view class="cover cover-fallback" wx:else>
+        <view class="cover-badge">非遗活动</view>
+        <view class="cover-title">{{detail.title}}</view>
+      </view>
+      <view class="title">{{detail.title}}</view>
+      <view class="status-chip">{{detail.status === 'open' ? '开放报名' : '已关闭'}}</view>
+      <view class="hero-meta-row">
+        <view class="hero-meta-chip">{{detail.location || '地点待定'}}</view>
+        <view class="hero-meta-chip">{{detail.registration_count}} / {{detail.max_participants}}</view>
+      </view>
+    </view>
+
+    <view class="card info-card">
+      <view class="section-title">导览信息</view>
+      <view class="info-row"><text class="info-label">活动时间</text><text class="info-value">{{detail.start_time_text}} - {{detail.end_time_text}}</text></view>
+      <view class="info-row"><text class="info-label">活动地点</text><text class="info-value">{{detail.location || '待定'}}</text></view>
+      <view class="info-row"><text class="info-label">主办方</text><text class="info-value">{{detail.organizer}}</text></view>
+      <view class="info-row"><text class="info-label">报名人数</text><text class="info-value">{{detail.registration_count}} / {{detail.max_participants}}</text></view>
+      <view class="progress-wrap">
+        <view class="progress-track">
+          <view class="progress-fill" style="width: {{detail.registration_progress}}%;"></view>
+        </view>
+        <view class="progress-text">报名进度 {{detail.registration_progress}}%</view>
+      </view>
+      <view class="status-flow">
+        <view class="flow-title">我的报名状态</view>
+        <view class="flow-badges">
+          <view class="flow-pill {{detail.my_registration_status==='registered' ? 'active' : ''}}">已报名</view>
+          <view class="flow-pill {{detail.my_registration_status==='checked_in' ? 'active' : ''}}">已签到</view>
+          <view class="flow-pill {{detail.my_registration_status==='completed' ? 'active' : ''}}">已完成</view>
+          <view class="flow-pill {{detail.my_registration_status==='cancelled' ? 'active' : ''}}">已取消</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="card">
+      <view class="section-title">导览说明</view>
+      <view class="desc">{{detail.description || '暂无介绍'}}</view>
+    </view>
+
+    <view class="card" wx:if="{{detail.displayBlocks.highlights.length}}">
+      <view class="section-title">活动亮点</view>
+      <view wx:for="{{detail.displayBlocks.highlights}}" wx:key="*this" class="bullet-item">{{index + 1}}. {{item}}</view>
+    </view>
+
+    <view class="card" wx:if="{{detail.displayBlocks.agenda.length}}">
+      <view class="section-title">参与流程</view>
+      <view wx:for="{{detail.displayBlocks.agenda}}" wx:key="*this" class="bullet-item">{{index + 1}}. {{item}}</view>
+    </view>
+
+    <view class="card">
+      <view class="section-title">参与提醒</view>
+      <view class="desc">{{detail.notes}}</view>
+      <view wx:if="{{detail.displayBlocks.tips.length}}" class="tips-wrap">
+        <view wx:for="{{detail.displayBlocks.tips}}" wx:key="*this" class="tips-item">{{item}}</view>
+      </view>
+    </view>
+
+    <button wx:if="{{detail.my_registration_status==='registered'}}" class="cancel-btn" bindtap="cancelRegistration">取消报名</button>
+    <button wx:else class="register-btn" bindtap="toRegister" disabled="{{detail.status!=='open'}}">立即报名</button>
+  </view>
+</view>

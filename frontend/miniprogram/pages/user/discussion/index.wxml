@@ -1,0 +1,113 @@
+<view class="container discussion-page">
+  <view class="discussion-hero card">
+    <view class="hero-kicker">非遗社区交流</view>
+    <view class="page-title hero-title">讨论区 · 热榜与模板发帖</view>
+    <view class="page-subtitle hero-subtitle">先看热点，再输出观点。</view>
+  </view>
+
+  <view class="card hot-rank-card" wx:if="{{recommendTopics.length}}">
+    <view class="section-title">为你推荐的讨论</view>
+    <view wx:for="{{recommendTopics}}" wx:key="id" class="hot-rank-item" data-id="{{item.id}}" bindtap="toDetail">
+      <view class="hot-rank-index">荐</view>
+      <view class="hot-rank-main">
+        <view class="hot-rank-title clamp-1">{{item.title}}</view>
+        <view class="hot-rank-meta clamp-1">{{item.reason}}</view>
+      </view>
+      <view class="hot-rank-arrow">›</view>
+    </view>
+  </view>
+
+  <view class="card hot-rank-card" wx:if="{{hotList.length}}">
+    <view class="section-title">今日热榜</view>
+    <view wx:for="{{hotList}}" wx:key="id" class="hot-rank-item hot-top-{{index + 1}}" data-id="{{item.id}}" bindtap="toDetail">
+      <view class="hot-rank-index">{{index + 1}}</view>
+      <view class="hot-rank-main">
+        <view class="hot-rank-title clamp-1">{{item.title_short}}</view>
+        <view class="hot-rank-meta clamp-1">{{item.heat_level_text}} · {{item.nickname}} {{item.is_featured ? '· 加精' : ''}}</view>
+      </view>
+      <view class="hot-rank-arrow">›</view>
+    </view>
+  </view>
+
+
+  <view class="card filter-card">
+    <view class="template-strip" wx:if="{{templates.length}}">
+      <view class="template-strip-label">快捷模板</view>
+      <scroll-view class="template-scroll" scroll-x enable-flex show-scrollbar="false">
+        <view wx:for="{{templates}}" wx:key="id" class="template-pill {{activeTemplateId===item.id ? 'active' : ''}}" data-id="{{item.id}}" bindtap="applyTemplate">{{item.name}}</view>
+      </scroll-view>
+    </view>
+
+    <view class="search-row">
+      <input class="search-input" placeholder="搜索标题/正文" value="{{keyword}}" bindinput="onKeywordInput" confirm-type="search" bindconfirm="onSearch" />
+      <button class="ghost-btn mini-btn" bindtap="onSearch">搜索</button>
+    </view>
+
+    <view class="sort-row">
+      <view class="sort-pill {{sort==='hot' ? 'active' : ''}}" data-sort="hot" bindtap="switchSort">最热</view>
+      <view class="sort-pill {{sort==='new' ? 'active' : ''}}" data-sort="new" bindtap="switchSort">最新</view>
+      <view class="sort-pill {{favoriteOnly ? 'active' : ''}}" bindtap="toggleFavoriteOnly">我的收藏</view>
+    </view>
+
+    <scroll-view class="tag-scroll" scroll-x enable-flex show-scrollbar="false">
+      <view wx:for="{{tagOptions}}" wx:key="*this" class="tag-chip {{activeTag===item ? 'active' : ''}}" data-tag="{{item}}" bindtap="toggleFilterTag">{{item}}</view>
+    </scroll-view>
+  </view>
+
+  <view class="card composer-toggle" bindtap="toggleComposer">
+    <view class="composer-plus">＋</view>
+    <view class="composer-note">发帖</view>
+  </view>
+
+  <view wx:if="{{showComposer}}" class="card composer-card">
+    <input class="composer-input" placeholder="请输入话题标题" value="{{title}}" bindinput="onTitleInput" />
+    <textarea class="composer-textarea" placeholder="分享你的非遗体验、观看感受或观点..." value="{{content}}" bindinput="onContentInput"></textarea>
+
+    <view class="tag-select-wrap">
+      <view class="tag-select-title">选择标签（最多3个）</view>
+      <view class="tag-select-grid">
+        <view wx:for="{{tagOptions}}" wx:key="*this" class="tag-select-item {{selectedTags.indexOf(item)>=0 ? 'active' : ''}}" data-tag="{{item}}" bindtap="toggleTagSelect">{{item}}</view>
+      </view>
+    </view>
+
+    <view class="cover-box">
+      <view class="cover-title">帖子封面（可选）</view>
+      <view wx:if="{{coverUrl}}" class="cover-preview-wrap">
+        <image class="cover-preview" src="{{coverUrl}}" mode="aspectFill"></image>
+        <button class="ghost-btn mini-btn" bindtap="clearCover">移除封面</button>
+      </view>
+      <button wx:else class="secondary-btn mini-btn" loading="{{coverUploading}}" bindtap="chooseCover">从相册选择封面</button>
+    </view>
+
+    <button class="primary-btn" bindtap="submitTopic">立即发布</button>
+  </view>
+
+  <view wx:if="{{loading}}" class="empty">加载中...</view>
+  <view wx:elif="{{!list.length}}" class="empty">还没有讨论内容，快来发布第一条话题吧</view>
+
+  <view wx:for="{{list}}" wx:key="id" class="card topic-card">
+    <view wx:if="{{item.cover_full_url}}" class="topic-cover-wrap" data-id="{{item.id}}" bindtap="toDetail">
+      <image class="topic-cover" src="{{item.cover_full_url}}" mode="aspectFill"></image>
+    </view>
+
+    <view class="topic-head" data-id="{{item.id}}" bindtap="toDetail">
+      <view>
+        <view class="topic-title clamp-1">{{item.title_short}}</view>
+        <view class="topic-meta clamp-1">{{item.nickname}} · {{item.created_date}} {{item.is_featured ? '· 加精' : ''}}</view>
+      </view>
+      <view class="chip">{{item.heat_level_text}}</view>
+    </view>
+
+    <view class="topic-tag-row" wx:if="{{item.tags && item.tags.length}}">
+      <view wx:for="{{item.tags}}" wx:key="*this" class="topic-tag">{{item}}</view>
+    </view>
+
+    <view class="topic-content" data-id="{{item.id}}" bindtap="toDetail">{{item.content}}</view>
+
+    <view class="topic-actions">
+      <view class="action-pill" data-id="{{item.id}}" data-liked="{{item.liked}}" bindtap="toggleLike">{{item.liked ? '已赞' : '点赞'}} {{item.like_count}}</view>
+      <view class="action-pill" data-id="{{item.id}}" data-favorited="{{item.favorited}}" bindtap="toggleFavorite">{{item.favorited ? '已收藏' : '收藏'}} {{item.favorite_count}}</view>
+      <view class="action-pill" data-id="{{item.id}}" bindtap="toDetail">评论 {{item.comment_count}}</view>
+    </view>
+  </view>
+</view>

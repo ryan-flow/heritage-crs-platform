@@ -1,0 +1,134 @@
+.history-page {
+  padding-bottom: 40rpx;
+}
+
+.history-hero {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #24140f 0%, #6f2b21 50%, #c57d46 100%);
+  color: #fff8f0;
+  margin-bottom: 20rpx;
+}
+
+.history-hero::after {
+  content: "";
+  position: absolute;
+  right: -48rpx;
+  top: -52rpx;
+  width: 220rpx;
+  height: 220rpx;
+  border-radius: 50%;
+  background: rgba(255, 240, 219, 0.1);
+}
+
+.hero-kicker {
+  position: relative;
+  z-index: 1;
+  display: inline-block;
+  padding: 8rpx 18rpx;
+  border-radius: 999rpx;
+  background: rgba(255, 245, 230, 0.14);
+  color: #ffe1bd;
+  font-size: 22rpx;
+  margin-bottom: 14rpx;
+}
+
+.hero-title {
+  position: relative;
+  z-index: 1;
+  color: #fff8ef;
+  margin-bottom: 12rpx;
+}
+
+.hero-subtitle {
+  position: relative;
+  z-index: 1;
+  color: rgba(255, 244, 232, 0.9);
+  margin-bottom: 18rpx;
+}
+
+.hero-tags {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  gap: 12rpx;
+  flex-wrap: wrap;
+}
+
+.hero-chip {
+  background: rgba(255, 247, 236, 0.14);
+  color: #fff1dc;
+}
+
+.timeline {
+  position: relative;
+  padding: 12rpx 18rpx 12rpx 34rpx;
+}
+
+.timeline::before {
+  content: "";
+  position: absolute;
+  left: 12rpx;
+  top: 24rpx;
+  bottom: 24rpx;
+  width: 4rpx;
+  background: linear-gradient(180deg, #d79c53, #9f2d22);
+  border-radius: 999rpx;
+}
+
+.timeline-item {
+  position: relative;
+  margin-bottom: 20rpx;
+}
+
+.timeline-item:last-child {
+  margin-bottom: 0;
+}
+
+.timeline-dot {
+  position: absolute;
+  left: -32rpx;
+  top: 28rpx;
+  width: 22rpx;
+  height: 22rpx;
+  border-radius: 50%;
+  background: #fff8ef;
+  border: 5rpx solid #9f2d22;
+  box-sizing: border-box;
+}
+
+.timeline-card {
+  background: linear-gradient(180deg, rgba(255, 252, 247, 0.96), rgba(250, 241, 228, 0.96));
+  border-radius: 22rpx;
+  padding: 20rpx;
+}
+
+.timeline-year {
+  font-size: 23rpx;
+  color: #8c6039;
+  margin-bottom: 8rpx;
+}
+
+.timeline-title {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #332417;
+  margin-bottom: 10rpx;
+}
+
+.timeline-summary {
+  font-size: 26rpx;
+  line-height: 1.8;
+  color: #71573f;
+  margin-bottom: 14rpx;
+}
+
+.timeline-action {
+  display: inline-flex;
+  padding: 10rpx 18rpx;
+  border-radius: 999rpx;
+  background: #f7e7dc;
+  color: #972c22;
+  font-size: 24rpx;
+  font-weight: 600;
+}

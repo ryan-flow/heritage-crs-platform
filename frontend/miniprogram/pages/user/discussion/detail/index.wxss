@@ -1,0 +1,114 @@
+.discussion-detail-page {
+  padding-bottom: 40rpx;
+}
+
+.detail-card,
+.comment-composer,
+.comment-card {
+  background: linear-gradient(180deg, rgba(255, 251, 245, 0.98), rgba(251, 242, 230, 0.96));
+}
+
+.topic-cover-wrap {
+  margin-bottom: 14rpx;
+  border-radius: 16rpx;
+  overflow: hidden;
+}
+
+.topic-cover {
+  width: 100%;
+  height: 280rpx;
+  display: block;
+}
+
+.detail-title {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #312317;
+  line-height: 1.5;
+  margin-bottom: 10rpx;
+}
+
+.detail-meta,
+.comment-meta {
+  font-size: 23rpx;
+  color: #8c6d4d;
+  margin-bottom: 14rpx;
+}
+
+.detail-body,
+.comment-body {
+  font-size: 27rpx;
+  line-height: 1.85;
+  color: #604835;
+}
+
+.tone-chip {
+  display: inline-flex;
+  padding: 8rpx 16rpx;
+  border-radius: 999rpx;
+  background: #f6e8d8;
+  color: #8c5b2a;
+  font-size: 22rpx;
+  margin-bottom: 14rpx;
+}
+
+.detail-meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10rpx;
+  margin-bottom: 14rpx;
+}
+
+.tone-chip.subtle {
+  background: #f2e6d8;
+  color: #8b6947;
+}
+
+.topic-insight-box,
+.topic-guide-box {
+  margin-bottom: 18rpx;
+  padding: 18rpx;
+  border-radius: 18rpx;
+  background: rgba(247, 239, 226, 0.76);
+}
+
+.topic-insight-item,
+.topic-guide-item {
+  color: #6a503a;
+  font-size: 25rpx;
+  line-height: 1.8;
+  margin-bottom: 8rpx;
+}
+
+.detail-body {
+  margin-bottom: 18rpx;
+}
+
+.detail-actions {
+  display: flex;
+  gap: 12rpx;
+}
+
+.action-pill {
+  padding: 10rpx 18rpx;
+  border-radius: 999rpx;
+  background: #f6e8d8;
+  color: #8c5b2a;
+  font-size: 24rpx;
+}
+
+.action-pill.muted {
+  background: #efe5d8;
+  color: #8b6947;
+}
+
+.composer-textarea {
+  width: 100%;
+  min-height: 160rpx;
+  box-sizing: border-box;
+  background: #fffdf9;
+  border: 1rpx solid #eddcc8;
+  border-radius: 20rpx;
+  padding: 18rpx;
+  margin-bottom: 16rpx;
+}

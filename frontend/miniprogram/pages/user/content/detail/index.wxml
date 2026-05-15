@@ -1,0 +1,44 @@
+<view class="container">
+  <view wx:if="{{loading}}" class="empty">内容加载中...</view>
+  <view wx:elif="{{!detail}}" class="empty">暂未找到这篇内容</view>
+  <view wx:else class="detail-shell card">
+    <view class="detail-cover" wx:if="{{detail.cover_url}}">
+      <image class="detail-cover-image" src="{{detail.cover_url}}" mode="aspectFill"></image>
+      <view class="detail-cover-mask"></view>
+      <view class="detail-cover-content">
+        <view class="detail-chip">{{detail.chapter || '非遗文化'}}</view>
+        <view class="title on-cover">{{detail.title}}</view>
+        <view class="meta on-cover">{{detail.sub_chapter || detail.content_type || '中国非遗精选'}}</view>
+      </view>
+    </view>
+    <view wx:else>
+      <view class="title">{{detail.title}}</view>
+      <view class="meta">{{detail.chapter_text || detail.content_type || '非遗文化'}}</view>
+    </view>
+
+    <view class="detail-meta-strip">
+      <view class="detail-mini-chip">{{detail.chapter || '非遗文化'}}</view>
+      <view class="detail-mini-chip">{{detail.sub_chapter || detail.content_type || '专题导读'}}</view>
+    </view>
+
+    <view class="intro-card">
+      <view class="section-label">导览摘要</view>
+      <view class="summary">{{detail.displayBlocks.intro || detail.summary || '暂无简介'}}</view>
+    </view>
+
+    <view class="insight-card" wx:if="{{detail.displayBlocks.highlights.length}}">
+      <view class="section-label">三分钟看点</view>
+      <view wx:for="{{detail.displayBlocks.highlights}}" wx:key="*this" class="insight-item">{{index + 1}}. {{item}}</view>
+    </view>
+
+    <view class="insight-card soft" wx:if="{{detail.displayBlocks.reading_tips.length}}">
+      <view class="section-label">阅读建议</view>
+      <view wx:for="{{detail.displayBlocks.reading_tips}}" wx:key="*this" class="insight-item">{{item}}</view>
+    </view>
+
+    <view class="body-card">
+      <view class="section-label">延展讲解</view>
+      <view class="body">{{detail.body || detail.summary || '暂无内容'}}</view>
+    </view>
+  </view>
+</view>

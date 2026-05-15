@@ -1,0 +1,68 @@
+<view class="dhm-stage variant-{{variant}} state-{{state}} mood-{{mood}}">
+  <!-- 心情标签：悬挂在数字人脚下 -->
+  <view class="mood-tag mood-tag-{{mood}}" wx:if="{{variant === 'ai'}}">
+    <text class="mood-tag-text">{{mood === 'curious' ? '了解中' : mood === 'thinking' ? '思考中' : '已懂你'}}</text>
+  </view>
+  <!-- 背景光效 -->
+  <view class="dhm-orbit orbit-1"></view>
+  <view class="dhm-orbit orbit-2"></view>
+  <view class="dhm-spark spark-1"></view>
+  <view class="dhm-spark spark-2"></view>
+  <view class="dhm-spark spark-3"></view>
+  <view class="dhm-avatar">
+    <view class="dhm-shadow"></view>
+
+    <!-- 帽子：高尖巫师帽 -->
+    <view class="dhm-hat">
+      <view class="dhm-hat-cone"></view>
+      <view class="dhm-hat-tip-glow"></view>
+      <view class="dhm-hat-brim"></view>
+      <view class="dhm-hat-band"></view>
+      <view class="dhm-hat-mark"></view>
+      <view class="dhm-flower flower-main"></view>
+      <view class="dhm-flower flower-mini"></view>
+      <view class="dhm-star-pin"></view>
+    </view>
+
+    <!-- 头发：蓬松长发 -->
+    <view class="dhm-hair back left"></view>
+    <view class="dhm-hair back right"></view>
+
+    <!-- 脸部：圆润大脸 -->
+    <view class="dhm-face">
+      <view class="dhm-bangs bang-left"></view>
+      <view class="dhm-bangs bang-center"></view>
+      <view class="dhm-bangs bang-right"></view>
+      <!-- 眉毛：随mood变化 -->
+      <view class="dhm-brow brow-left"></view>
+      <view class="dhm-brow brow-right"></view>
+      <!-- 眼睛：随mood变化大小和形状 -->
+      <view class="dhm-eye left"></view>
+      <view class="dhm-eye right"></view>
+      <!-- 腮红：随mood变化强度 -->
+      <view class="dhm-blush blush-left"></view>
+      <view class="dhm-blush blush-right"></view>
+      <!-- 嘴巴：随mood变化形状 -->
+      <view class="dhm-mouth"></view>
+    </view>
+
+    <!-- 身体 -->
+    <view class="dhm-body">
+      <view class="dhm-collar"></view>
+      <view class="dhm-vest"></view>
+      <view class="dhm-tie"></view>
+      <view class="dhm-brooch"></view>
+      <!-- 手臂组：直棍（v2.3 无袖子） -->
+      <view class="dhm-arm-group arm-group-left">
+        <view class="dhm-arm arm-left"></view>
+      </view>
+      <view class="dhm-arm-group arm-group-right">
+        <view class="dhm-arm arm-right"></view>
+      </view>
+      <view class="dhm-skirt"></view>
+      <view class="dhm-hem-line"></view>
+    </view>
+  </view>
+
+
+</view>

@@ -1,0 +1,123 @@
+.admin-page {
+  --admin-bg: #0f1622;
+  --admin-card: #141f2e;
+  --admin-text: #e7eef9;
+  --admin-sub: #9cb0c9;
+  --admin-accent: #4db3ff;
+  min-height: 100vh;
+  padding-bottom: 40rpx;
+}
+
+.card-tags {
+  display: flex;
+  gap: 8rpx;
+  flex-wrap: wrap;
+}
+
+.feature-chip.on {
+  background: linear-gradient(135deg, #f0b35c, #ffd37d);
+  color: #5f3a03;
+}
+
+.toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8rpx 6rpx 14rpx;
+}
+
+.toggle-label {
+  color: #d5e2f3;
+  font-size: 24rpx;
+}
+
+page {
+  background: linear-gradient(180deg, #0d1420 0%, #111a27 100%);
+}
+
+.admin-header {
+  background: linear-gradient(135deg, #162536 0%, #1f3350 55%, #2f5f8f 100%);
+  color: var(--admin-text);
+}
+
+.page-title { color: var(--admin-text); }
+.page-subtitle { color: #d8e6f7; }
+
+.filter-card,
+.item-card,
+.form-card,
+.hot-rank-card,
+.template-card {
+  background: linear-gradient(180deg, #142132, #111b2a);
+}
+
+.field,
+.search-input,
+.composer-input,
+.composer-textarea {
+  background: #1a2a3d;
+  border: 1rpx solid #2f4762;
+  color: #e7eef9;
+}
+
+.minor,
+.topic-meta,
+.quick-note,
+.recommend-note,
+.task-desc {
+  color: #9cb0c9;
+}
+
+.item-title,
+.topic-title,
+.recommend-title,
+.quick-name,
+.section-title,
+.composer-title {
+  color: #e7eef9;
+}
+
+.status-chip,
+.tag-chip,
+.sort-pill,
+.template-pill,
+.topic-tag,
+.action-pill,
+.recommend-type,
+.featured-label {
+  background: #1f3349;
+  color: #9fd2ff;
+}
+
+.status-chip.active,
+.sort-pill.active,
+.template-pill.active,
+.tag-chip.active {
+  background: #2b8bd6;
+  color: #fff;
+}
+
+.primary-btn {
+  background: linear-gradient(135deg, #2b8bd6, #4db3ff);
+  color: #fff;
+}
+
+.secondary-btn {
+  background: linear-gradient(135deg, #245f94, #2f7ec6);
+  color: #fff;
+}
+
+.ghost-btn {
+  background: #1d3046;
+  color: #b7d9ff;
+}
+
+.danger-btn {
+  background: #c84c4c;
+  color: #fff;
+}
+
+.chip {
+  background: #1d3046;
+  color: #9fd2ff;
+}

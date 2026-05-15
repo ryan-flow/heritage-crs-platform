@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "非遗问答",
+  "usingComponents": {
+    "digital-human": "/components/digital-human/index",
+    "digital-human-model": "/components/digital-human-model/index"
+  }
+}

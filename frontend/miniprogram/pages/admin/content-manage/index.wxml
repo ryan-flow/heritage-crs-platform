@@ -1,0 +1,79 @@
+<view class="container admin-page">
+  <view class="card admin-header">
+    <view class="page-title">内容管理</view>
+    <view class="page-subtitle">列表 / 搜索 / 新建 / 编辑 / 上下架 / 删除</view>
+
+    <view wx:if="{{!hasAdminToken}}" class="login-box">
+      <input class="field" placeholder="管理员账号" value="{{adminUsername}}" disabled />
+      <input class="field" password placeholder="管理员密码" value="{{adminPassword}}" disabled />
+      <button class="primary-btn" loading="{{loggingIn}}" bindtap="adminLogin">管理员登录</button>
+    </view>
+
+    <view wx:else class="login-ok-row">
+      <view class="chip">管理员已登录</view>
+      <button class="ghost-btn mini-btn" bindtap="adminLogout">退出</button>
+    </view>
+  </view>
+
+  <view class="card filter-card">
+    <view class="search-row">
+      <input class="field" placeholder="按标题/摘要搜索" value="{{keyword}}" bindinput="onKeywordInput" confirm-type="search" bindconfirm="fetchList" />
+      <button class="ghost-btn mini-btn" bindtap="fetchList">搜索</button>
+      <button class="secondary-btn mini-btn" bindtap="openCreate">新建</button>
+    </view>
+    <view class="status-row">
+      <view class="status-chip {{status==='all'?'active':''}}" data-status="all" bindtap="onStatusChange">全部</view>
+      <view class="status-chip {{status==='published'?'active':''}}" data-status="published" bindtap="onStatusChange">已上架</view>
+      <view class="status-chip {{status==='draft'?'active':''}}" data-status="draft" bindtap="onStatusChange">草稿</view>
+      <view class="status-chip {{status==='archived'?'active':''}}" data-status="archived" bindtap="onStatusChange">归档</view>
+    </view>
+  </view>
+
+  <view wx:if="{{loading}}" class="empty">加载中...</view>
+  <view wx:elif="{{!list.length}}" class="empty">暂无内容数据</view>
+
+  <view wx:for="{{list}}" wx:key="id" class="card item-card">
+    <view class="item-top">
+      <view class="item-title">{{item.title}}</view>
+      <view class="card-tags">
+        <view class="chip feature-chip {{item.is_featured ? 'on' : ''}}">{{item.is_featured ? '精选' : '普通'}}</view>
+        <view class="chip">{{item.status}}</view>
+      </view>
+    </view>
+    <view class="minor">ID: {{item.id}} · 类型: {{item.content_type}}</view>
+    <view class="minor">章节: {{item.chapter || '未设置'}} / {{item.sub_chapter || '未设置'}}</view>
+    <view class="minor">审核: {{item.review_status || 'pending'}} · 质量分: {{item.quality_score || 0}}</view>
+    <view class="minor">摘要: {{item.summary || '无'}}</view>
+
+    <view class="action-row">
+      <button class="ghost-btn mini-btn" data-item="{{item}}" bindtap="openEdit">编辑</button>
+      <button class="secondary-btn mini-btn" data-id="{{item.id}}" data-featured="{{item.is_featured}}" bindtap="toggleFeatured">{{item.is_featured ? '取消精选' : '设为精选'}}</button>
+      <button class="secondary-btn mini-btn" data-id="{{item.id}}" data-status="{{item.status}}" bindtap="toggleStatus">{{item.status==='published' ? '下架' : '上架'}}</button>
+      <button class="danger-btn mini-btn" data-id="{{item.id}}" bindtap="removeItem">删除</button>
+    </view>
+  </view>
+
+  <view wx:if="{{showForm}}" class="mask">
+    <view class="card form-card">
+      <view class="section-title">{{editingId ? '编辑内容' : '新建内容'}}</view>
+      <input class="field" placeholder="标题" value="{{form.title}}" data-key="title" bindinput="onFormInput" />
+      <input class="field" placeholder="封面URL（可选）" value="{{form.cover_url}}" data-key="cover_url" bindinput="onFormInput" />
+      <input class="field" placeholder="内容类型，如 article/video" value="{{form.content_type}}" data-key="content_type" bindinput="onFormInput" />
+      <input class="field" placeholder="一级章节（可选）" value="{{form.chapter}}" data-key="chapter" bindinput="onFormInput" />
+      <input class="field" placeholder="二级章节（可选）" value="{{form.sub_chapter}}" data-key="sub_chapter" bindinput="onFormInput" />
+      <input class="field" placeholder="质量分，推荐建议 0.8 以上" value="{{form.quality_score}}" data-key="quality_score" bindinput="onFormInput" />
+      <input class="field" placeholder="审核状态 pending/approved/rejected" value="{{form.review_status}}" data-key="review_status" bindinput="onFormInput" />
+      <view class="toggle-row">
+        <text class="toggle-label">推荐精选</text>
+        <switch checked="{{form.is_featured}}" data-key="is_featured" bindchange="onSwitchChange" color="#4db3ff" />
+      </view>
+      <textarea class="field area" placeholder="摘要" value="{{form.summary}}" data-key="summary" bindinput="onFormInput" />
+      <textarea class="field area tall" placeholder="正文" value="{{form.body}}" data-key="body" bindinput="onFormInput" />
+
+      <view class="action-row">
+        <button class="ghost-btn mini-btn" bindtap="closeForm">取消</button>
+        <button class="primary-btn mini-btn" loading="{{saving}}" bindtap="saveForm">保存</button>
+      </view>
+    </view>
+  </view>
+</view>

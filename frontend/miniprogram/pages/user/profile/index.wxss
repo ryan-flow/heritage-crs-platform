@@ -1,0 +1,581 @@
+.profile-page {
+  padding-bottom: 40rpx;
+}
+
+/* ═══ L0 Hero ═══ */
+.profile-hero {
+  background: linear-gradient(135deg, #2a1611 0%, #6d2a20 54%, #bf7948 100%);
+  margin-bottom: 20rpx;
+}
+
+.profile-head {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.avatar {
+  width: 84rpx;
+  height: 84rpx;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.avatar-chibi {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(180deg, #ede1ff, #cfb6ff 58%, #b38af0 100%);
+  box-shadow: inset 0 0 0 2rpx rgba(255,255,255,.28);
+}
+
+.mini-hair {
+  position: absolute;
+  top: 8rpx;
+  left: 10rpx;
+  right: 10rpx;
+  height: 34rpx;
+  border-radius: 20rpx 20rpx 12rpx 12rpx;
+  background: #2d2344;
+}
+
+.mini-face {
+  position: absolute;
+  left: 18rpx;
+  top: 26rpx;
+  width: 48rpx;
+  height: 44rpx;
+  border-radius: 22rpx;
+  background: #fff3f7;
+}
+
+.mini-eye {
+  position: absolute;
+  top: 14rpx;
+  width: 8rpx;
+  height: 10rpx;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #9f71ff, #5a3ab5);
+}
+
+.mini-eye:first-child { left: 12rpx; }
+.mini-eye:nth-child(2) { right: 12rpx; }
+
+.mini-mouth {
+  position: absolute;
+  left: 20rpx;
+  top: 28rpx;
+  width: 8rpx;
+  height: 4rpx;
+  border-radius: 999rpx;
+  background: #8f6b86;
+}
+
+.profile-info {
+  flex: 1;
+}
+
+.nickname-row {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  margin-bottom: 4rpx;
+}
+
+.nickname {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #fff8ef;
+}
+
+.edit-name-btn {
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.edit-name-icon {
+  font-size: 24rpx;
+  color: #fff8ef;
+}
+
+/* 系统理解概览条 */
+.understand-bar {
+  margin-top: 20rpx;
+  padding-top: 16rpx;
+  border-top: 1rpx solid rgba(255, 255, 255, 0.15);
+}
+
+.understand-label {
+  font-size: 23rpx;
+  color: rgba(255, 248, 239, 0.85);
+  margin-bottom: 10rpx;
+}
+
+.understand-row {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.understand-progress {
+  flex: 1;
+  height: 16rpx;
+  border-radius: 8rpx;
+  background: rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+}
+
+.understand-fill {
+  height: 100%;
+  border-radius: 8rpx;
+  transition: width 0.6s ease;
+}
+
+.understand-pct {
+  font-size: 26rpx;
+  font-weight: 800;
+  color: #fff8ef;
+  min-width: 64rpx;
+  text-align: right;
+}
+
+.understand-hint {
+  margin-top: 10rpx;
+  font-size: 22rpx;
+  color: rgba(255, 248, 239, 0.7);
+  line-height: 1.5;
+}
+
+/* CRS模式badge + fill色 */
+.crs-profile-badge {
+  padding: 6rpx 16rpx;
+  border-radius: 999rpx;
+  font-size: 22rpx;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.crs-profile-badge.crs-mode-cold_start { background: linear-gradient(135deg, #a08868, #c4a882); }
+.crs-profile-badge.crs-mode-mixed { background: linear-gradient(135deg, #8c6a42, #b8926a); }
+.crs-profile-badge.crs-mode-precision { background: linear-gradient(135deg, #9f2d22, #bf563f); }
+
+.understand-fill.crs-fill-cold_start { background: linear-gradient(90deg, #c4a882, #dcc8a8); }
+.understand-fill.crs-fill-mixed { background: linear-gradient(90deg, #8c6a42, #b8926a); }
+.understand-fill.crs-fill-precision { background: linear-gradient(90deg, #9f2d22, #bf563f); }
+
+/* ═══ 层级标签 ═══ */
+.layer-label {
+  font-size: 22rpx;
+  font-weight: 700;
+  color: #8c6a42;
+  text-transform: uppercase;
+  letter-spacing: 4rpx;
+  margin: 24rpx 0 12rpx 8rpx;
+}
+
+.layer-separator {
+  height: 1rpx;
+  background: linear-gradient(90deg, transparent, #d4c4aa, transparent);
+  margin: 24rpx 0 8rpx;
+}
+
+/* ═══ L1 信号全景 ═══ */
+.signal-panorama {
+  background: linear-gradient(180deg, rgba(255, 250, 244, 0.98), rgba(246, 235, 220, 0.98));
+}
+
+.section-title-sm {
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #4a3322;
+  margin-bottom: 14rpx;
+}
+
+/* 置信度三维度条 */
+.confidence-section {
+  margin-bottom: 24rpx;
+}
+
+.confidence-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 14rpx;
+}
+
+.conf-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.conf-bar-label {
+  font-size: 23rpx;
+  color: #6b5237;
+  min-width: 120rpx;
+  flex-shrink: 0;
+}
+
+.conf-bar-track {
+  flex: 1;
+  height: 18rpx;
+  border-radius: 9rpx;
+  background: rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+}
+
+.conf-bar-fill {
+  height: 100%;
+  border-radius: 9rpx;
+  transition: width 0.6s ease;
+  min-width: 4rpx;
+}
+
+.conf-bar-fill.fill-explicit { background: linear-gradient(90deg, #9f2d22, #bf563f); }
+.conf-bar-fill.fill-implicit { background: linear-gradient(90deg, #8c6a42, #b8926a); }
+.conf-bar-fill.fill-dialogue { background: linear-gradient(90deg, #a0522d, #c77d50); }
+
+.conf-bar-pct {
+  font-size: 23rpx;
+  font-weight: 700;
+  color: #37474f;
+  min-width: 60rpx;
+  text-align: right;
+}
+
+/* 雷达图 */
+.radar-section {
+  padding-top: 20rpx 0 0;
+  border-top: 1rpx dashed rgba(139, 106, 66, 0.2);
+  margin-top: 10rpx;
+}
+
+.radar-wrapper {
+  display: flex;
+  justify-content: center;
+  margin: 20rpx 0 10rpx;
+}
+
+.radar-canvas {
+  width: 480rpx;
+  height: 480rpx;
+}
+
+.radar-labels {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12rpx 20rpx;
+  margin-top: 10rpx;
+}
+
+.radar-label-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10rpx 16rpx;
+  border-radius: 12rpx;
+  background: rgba(255, 255, 255, 0.65);
+}
+
+.radar-label-name {
+  font-size: 24rpx;
+  color: #6b5237;
+  font-weight: 600;
+}
+
+.radar-label-value {
+  font-size: 24rpx;
+  color: #9f2d22;
+  font-weight: 800;
+}
+
+.radar-keywords {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  margin-top: 14rpx;
+  flex-wrap: wrap;
+}
+
+.radar-kw-label {
+  font-size: 22rpx;
+  color: #9a744f;
+  flex-shrink: 0;
+}
+
+.radar-kw-chips {
+  display: flex;
+  gap: 8rpx;
+  flex-wrap: wrap;
+}
+
+.radar-kw-chip {
+  padding: 6rpx 14rpx;
+  border-radius: 999rpx;
+  background: rgba(159, 45, 34, 0.08);
+  color: #87592d;
+  font-size: 21rpx;
+}
+
+.radar-empty-hint {
+  text-align: center;
+  font-size: 22rpx;
+  color: #b0a090;
+  padding: 10rpx 0;
+  line-height: 1.6;
+}
+
+/* ═══ L2 信号详情卡片 ═══ */
+.signal-card {
+  margin-bottom: 12rpx;
+  padding: 22rpx 24rpx;
+  background: #fff;
+  border-radius: 20rpx;
+  border: 1rpx solid rgba(140, 106, 66, 0.1);
+}
+
+.signal-header {
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+}
+
+.signal-icon {
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 14rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24rpx;
+  font-weight: 800;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.signal-icon.sig-pref { background: linear-gradient(135deg, #9f2d22, #bf563f); }
+.signal-icon.sig-browse { background: linear-gradient(135deg, #8c6a42, #b8926a); }
+.signal-icon.sig-ai { background: linear-gradient(135deg, #a0522d, #c77d50); }
+.signal-icon.sig-event { background: linear-gradient(135deg, #6d4c2a, #9b7348); }
+.signal-icon.sig-social { background: linear-gradient(135deg, #7b5b3a, #a8845e); }
+.signal-icon.sig-portrait { background: linear-gradient(135deg, #5c3d2e, #8c6a42); }
+
+.signal-title-group {
+  flex: 1;
+  min-width: 0;
+}
+
+.signal-name {
+  font-size: 27rpx;
+  font-weight: 700;
+  color: #322419;
+  line-height: 1.3;
+}
+
+.signal-desc {
+  font-size: 21rpx;
+  color: #a08868;
+  margin-top: 3rpx;
+}
+
+.signal-arrow {
+  font-size: 32rpx;
+  color: #c4a882;
+  flex-shrink: 0;
+}
+
+.signal-body {
+  margin-top: 14rpx;
+  padding-top: 12rpx;
+  border-top: 1rpx solid rgba(140, 106, 66, 0.08);
+}
+
+.signal-text {
+  font-size: 24rpx;
+  color: #5a4433;
+  line-height: 1.6;
+}
+
+.signal-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8rpx;
+}
+
+.signal-chip {
+  padding: 6rpx 14rpx;
+  border-radius: 999rpx;
+  background: rgba(140, 106, 66, 0.08);
+  color: #7b5b3a;
+  font-size: 22rpx;
+}
+
+.signal-empty {
+  margin-top: 14rpx;
+  font-size: 22rpx;
+  color: #c0aa94;
+}
+
+/* 综合画像卡片 */
+.signal-summary-card {
+  border: 1rpx solid rgba(140, 106, 66, 0.15);
+}
+
+.portrait-summary {
+  padding: 14rpx 16rpx;
+  border-radius: 12rpx;
+  background: rgba(140, 106, 66, 0.06);
+  color: #5a4433;
+  font-size: 23rpx;
+  line-height: 1.7;
+  margin-bottom: 12rpx;
+}
+
+.portrait-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10rpx;
+}
+
+.portrait-item {
+  padding: 14rpx 16rpx;
+  border-radius: 12rpx;
+  background: rgba(140, 106, 66, 0.04);
+}
+
+.portrait-label {
+  font-size: 21rpx;
+  color: #a08868;
+  margin-bottom: 4rpx;
+}
+
+.portrait-value {
+  font-size: 25rpx;
+  color: #322419;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.portrait-source-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8rpx;
+  margin-top: 12rpx;
+  align-items: center;
+}
+
+.portrait-source-label {
+  font-size: 21rpx;
+  color: #a08868;
+}
+
+.portrait-source-chip {
+  padding: 4rpx 12rpx;
+  border-radius: 999rpx;
+  background: rgba(140, 106, 66, 0.08);
+  color: #7b5b3a;
+  font-size: 21rpx;
+}
+
+/* ═══ L3 我的记录 ═══ */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12rpx;
+  margin-bottom: 18rpx;
+}
+
+.stat-card {
+  text-align: center;
+  background: linear-gradient(180deg, rgba(255, 251, 245, 0.98), rgba(251, 242, 230, 0.96));
+}
+
+.stat-card.warm {
+  background: linear-gradient(180deg, rgba(255, 247, 236, 0.98), rgba(247, 232, 209, 0.98));
+}
+
+.stat-value {
+  font-size: 34rpx;
+  font-weight: 800;
+  color: #7b2a1d;
+  margin-bottom: 6rpx;
+}
+
+.stat-card.warm .stat-value {
+  color: #a04e1c;
+}
+
+.stat-label {
+  font-size: 22rpx;
+  color: #85684c;
+}
+
+.record-title {
+  font-size: 29rpx;
+  font-weight: 700;
+  margin-bottom: 6rpx;
+  color: #322419;
+}
+
+.minor {
+  color: #7f6448;
+  font-size: 25rpx;
+  line-height: 1.7;
+}
+
+.logout {
+  background: linear-gradient(135deg, #9f2d22, #bf563f);
+  color: #fff;
+  border-radius: 999rpx;
+  margin-top: 10rpx;
+}
+
+/* 保留偏好设置页样式 */
+.pref-card {
+  background: linear-gradient(180deg, rgba(255, 251, 245, 0.98), rgba(251, 242, 230, 0.96));
+}
+
+.pref-group {
+  margin-bottom: 16rpx;
+}
+
+.pref-label {
+  font-size: 25rpx;
+  color: #6b5237;
+  margin-bottom: 10rpx;
+}
+
+.pref-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10rpx;
+}
+
+.pref-chip {
+  padding: 10rpx 16rpx;
+  border-radius: 999rpx;
+  background: #f7e8d8;
+  color: #87592d;
+  font-size: 23rpx;
+}
+
+.pref-chip-hover {
+  transform: scale(0.98);
+}
+
+.pref-chip.active {
+  background: linear-gradient(135deg, #9f2d22, #bf563f);
+  color: #fff;
+}
+
+.preference-summary {
+  margin-top: 8rpx;
+  font-size: 22rpx;
+  line-height: 1.7;
+  color: #9a744f;
+}

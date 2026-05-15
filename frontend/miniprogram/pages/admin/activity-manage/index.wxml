@@ -1,0 +1,81 @@
+<view class="container admin-page">
+  <view class="card admin-header">
+    <view class="page-title">活动管理</view>
+    <view class="page-subtitle">创建活动 / 改状态 / 报名记录管理 / 签到 / 完成</view>
+  </view>
+
+  <view class="card filter-card">
+    <view class="search-row">
+      <input class="field" placeholder="按标题/地点搜索" value="{{keyword}}" bindinput="onKeywordInput" confirm-type="search" bindconfirm="fetchList" />
+      <button class="ghost-btn mini-btn" bindtap="fetchList">搜索</button>
+      <button class="secondary-btn mini-btn" bindtap="openCreate">新建活动</button>
+    </view>
+    <view class="status-row">
+      <view class="status-chip {{status==='all'?'active':''}}" data-status="all" bindtap="onStatusChange">全部</view>
+      <view class="status-chip {{status==='open'?'active':''}}" data-status="open" bindtap="onStatusChange">开放</view>
+      <view class="status-chip {{status==='closed'?'active':''}}" data-status="closed" bindtap="onStatusChange">关闭</view>
+    </view>
+  </view>
+
+  <view wx:if="{{loading}}" class="empty">加载中...</view>
+  <view wx:elif="{{!list.length}}" class="empty">暂无活动数据</view>
+
+  <view wx:for="{{list}}" wx:key="id" class="card item-card">
+    <view class="item-top">
+      <view class="item-title">{{item.title}}</view>
+      <view class="card-tags">
+        <view class="chip feature-chip {{item.is_featured ? 'on' : ''}}">{{item.is_featured ? '精选' : '普通'}}</view>
+        <view class="chip">{{item.status}}</view>
+      </view>
+    </view>
+    <view class="minor">ID: {{item.id}} · 地点: {{item.location || '待定'}}</view>
+    <view class="minor">时间: {{item.start_time}} ~ {{item.end_time}}</view>
+    <view class="minor">上限: {{item.max_participants}} 人</view>
+
+    <view class="action-row">
+      <button class="ghost-btn mini-btn" data-item="{{item}}" bindtap="openEdit">编辑</button>
+      <button class="secondary-btn mini-btn" data-id="{{item.id}}" data-featured="{{item.is_featured}}" bindtap="toggleFeatured">{{item.is_featured ? '取消精选' : '设为精选'}}</button>
+      <button class="secondary-btn mini-btn" data-id="{{item.id}}" data-status="{{item.status}}" bindtap="toggleActivityStatus">{{item.status==='open'?'关闭':'开放'}}</button>
+      <button class="ghost-btn mini-btn" data-id="{{item.id}}" bindtap="toggleRegs">报名记录</button>
+      <button class="danger-btn mini-btn" data-id="{{item.id}}" bindtap="deleteActivity">删除</button>
+    </view>
+
+    <view wx:if="{{regVisibleMap[item.id]}}" class="reg-box">
+      <view wx:if="{{!registrationMap[item.id] || !registrationMap[item.id].length}}" class="minor">暂无报名记录</view>
+      <view wx:for="{{registrationMap[item.id]}}" wx:key="registration_id" class="reg-item">
+        <view class="minor">#{{item.registration_id}} 用户{{item.user_id}}({{item.nickname||'匿名'}}) · {{item.status}}</view>
+        <view class="minor">备注：{{item.remark || '无'}}</view>
+        <view class="action-row">
+          <button class="ghost-btn mini-btn" data-registration-id="{{item.registration_id}}" data-activity-id="{{item.activity_id}}" data-status="checked_in" bindtap="setRegistrationStatus">签到</button>
+          <button class="secondary-btn mini-btn" data-registration-id="{{item.registration_id}}" data-activity-id="{{item.activity_id}}" data-status="completed" bindtap="setRegistrationStatus">完成</button>
+          <button class="danger-btn mini-btn" data-registration-id="{{item.registration_id}}" data-activity-id="{{item.activity_id}}" data-status="cancelled" bindtap="setRegistrationStatus">取消</button>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{showForm}}" class="mask">
+    <view class="card form-card">
+      <view class="section-title">{{editingId ? '编辑活动' : '新建活动'}}</view>
+      <input class="field" placeholder="活动标题" value="{{form.title}}" data-key="title" bindinput="onFormInput" />
+      <input class="field" placeholder="封面URL（可选）" value="{{form.cover_url}}" data-key="cover_url" bindinput="onFormInput" />
+      <input class="field" placeholder="地点" value="{{form.location}}" data-key="location" bindinput="onFormInput" />
+      <input class="field" placeholder="主办方" value="{{form.organizer}}" data-key="organizer" bindinput="onFormInput" />
+      <input class="field" placeholder="开始时间 2026-05-01T10:00:00" value="{{form.start_time}}" data-key="start_time" bindinput="onFormInput" />
+      <input class="field" placeholder="结束时间 2026-05-01T12:00:00" value="{{form.end_time}}" data-key="end_time" bindinput="onFormInput" />
+      <input class="field" placeholder="人数上限" value="{{form.max_participants}}" data-key="max_participants" bindinput="onFormInput" />
+      <view class="toggle-row">
+        <text class="toggle-label">推荐精选</text>
+        <switch checked="{{form.is_featured}}" data-key="is_featured" bindchange="onSwitchChange" color="#4db3ff" />
+      </view>
+      <textarea class="field area" placeholder="活动描述" value="{{form.description}}" data-key="description" bindinput="onFormInput" />
+      <textarea class="field area" placeholder="活动须知" value="{{form.notes}}" data-key="notes" bindinput="onFormInput" />
+      <textarea class="field area" placeholder="活动须知" value="{{form.notes}}" data-key="notes" bindinput="onFormInput" />
+
+      <view class="action-row">
+        <button class="ghost-btn mini-btn" bindtap="closeForm">取消</button>
+        <button class="primary-btn mini-btn" loading="{{saving}}" bindtap="saveForm">保存</button>
+      </view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,44 @@
+<view class="container discussion-detail-page">
+  <view wx:if="{{loading}}" class="empty">话题加载中...</view>
+  <view wx:elif="{{!topic}}" class="empty">暂未找到该话题</view>
+  <view wx:else>
+    <view class="card detail-card">
+      <view wx:if="{{topic.cover_full_url}}" class="topic-cover-wrap">
+        <image class="topic-cover" src="{{topic.cover_full_url}}" mode="aspectFill"></image>
+      </view>
+      <view class="detail-title">{{topic.title}}</view>
+      <view class="detail-meta">{{topic.nickname}} · {{topic.created_at}}</view>
+      <view class="detail-meta-row">
+        <view wx:if="{{topic.displayBlocks.tone}}" class="tone-chip">{{topic.displayBlocks.tone}}</view>
+        <view class="tone-chip subtle">评论 {{topic.comment_count}}</view>
+      </view>
+      <view wx:if="{{topic.displayBlocks.highlights.length}}" class="topic-insight-box">
+        <view class="section-title">讨论焦点</view>
+        <view wx:for="{{topic.displayBlocks.highlights}}" wx:key="*this" class="topic-insight-item">{{index + 1}}. {{item}}</view>
+      </view>
+      <view class="detail-body">{{topic.content}}</view>
+      <view wx:if="{{topic.displayBlocks.guide_questions.length}}" class="topic-guide-box">
+        <view class="section-title">延伸讨论</view>
+        <view wx:for="{{topic.displayBlocks.guide_questions}}" wx:key="*this" class="topic-guide-item">{{item}}</view>
+      </view>
+      <view class="detail-actions">
+        <view class="action-pill" bindtap="toggleLike">{{topic.liked ? "取消点赞" : "点赞"}} {{topic.like_count}}</view>
+        <view class="action-pill" bindtap="toggleFavorite">{{topic.favorited ? "取消收藏" : "收藏"}} {{topic.favorite_count}}</view>
+        <view class="action-pill muted">评论 {{topic.comment_count}}</view>
+      </view>
+    </view>
+
+    <view class="card comment-composer">
+      <view class="section-title">发布回应</view>
+      <textarea class="composer-textarea" placeholder="写下你的看法..." value="{{commentText}}" bindinput="onCommentInput"></textarea>
+      <button class="primary-btn" bindtap="submitComment">提交评论</button>
+    </view>
+
+    <view class="section-title">全部回应</view>
+    <view wx:if="{{!comments.length}}" class="empty">暂无评论</view>
+    <view wx:for="{{comments}}" wx:key="id" class="card comment-card">
+      <view class="comment-meta">{{item.nickname}} · {{item.created_at}}</view>
+      <view class="comment-body">{{item.content}}</view>
+    </view>
+  </view>
+</view>

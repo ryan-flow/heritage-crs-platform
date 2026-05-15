@@ -1,0 +1,236 @@
+<view class="container heritage-detail-page">
+  <!-- 加载状态 -->
+  <view wx:if="{{loading}}" class="loading-shell">
+    <view class="loading-spinner"></view>
+    <view class="loading-text">正在加载非遗详情...</view>
+  </view>
+
+  <!-- 空状态 -->
+  <view wx:elif="{{!detail}}" class="empty-shell">
+    <view class="empty-icon">📜</view>
+    <view class="empty-text">暂未找到该非遗项目</view>
+    <view class="empty-hint">请返回重试或浏览其他内容</view>
+  </view>
+
+  <!-- 主内容 -->
+  <view wx:else class="detail-content">
+
+    <!-- 封面区 -->
+    <view class="cover-section">
+      <!-- 有封面图 -->
+      <image wx:if="{{detail.cover_url}}" class="cover-image" src="{{detail.cover_url}}" mode="aspectFill" bindtap="onImagePreview" data-src="{{detail.cover_url}}"></image>
+      <!-- 无封面图：渐变色占位 -->
+      <view wx:else class="cover-placeholder" style="background: {{coverGradient}}">
+        <view class="cover-pattern"></view>
+        <view class="cover-watermark">非遗</view>
+      </view>
+      <!-- 封面遮罩 -->
+      <view class="cover-mask"></view>
+      <!-- 返回按钮 -->
+      <view class="cover-back" bindtap="goBack">
+        <view class="back-icon">‹</view>
+      </view>
+      <!-- 封面文字 -->
+      <view class="cover-info">
+        <view class="cover-chip">{{categoryLabel}}</view>
+        <view class="cover-title">{{detail.title}}</view>
+        <view class="cover-subtitle">{{detail.sub_chapter || detail.chapter || '国家级非物质文化遗产'}}</view>
+      </view>
+    </view>
+
+    <!-- 操作栏 -->
+    <view class="action-bar">
+      <view class="action-item" bindtap="onFavoriteTap">
+        <view class="action-icon {{isFavorited ? 'favorited' : ''}}">
+          <view wx:if="{{favoriteLoading}}" class="fav-loading"></view>
+          <view wx:elif="{{isFavorited}}" class="fav-heart favorited-heart">❤️</view>
+          <view wx:else class="fav-heart">🤍</view>
+        </view>
+        <view class="action-label {{isFavorited ? 'favorited-label' : ''}}">{{isFavorited ? '已收藏' : '收藏'}}</view>
+      </view>
+      <view class="action-item">
+        <button class="share-btn" open-type="share">
+          <view class="action-icon">🔗</view>
+          <view class="action-label">分享</view>
+        </button>
+      </view>
+      <view wx:if="{{detail.source_url}}" class="action-item" bindtap="onCopySource">
+        <view class="action-icon">📎</view>
+        <view class="action-label">来源链接</view>
+      </view>
+    </view>
+
+    <!-- 基本信息栏 -->
+    <view class="info-section card">
+      <view class="section-header">
+        <view class="section-icon">📋</view>
+        <view class="section-title">基本信息</view>
+      </view>
+      <view class="info-grid">
+        <view class="info-item">
+          <view class="info-label">类别</view>
+          <view class="info-value">{{categoryLabel}}</view>
+        </view>
+        <view class="info-item" wx:if="{{detail.chapter}}">
+          <view class="info-label">分类</view>
+          <view class="info-value">{{detail.chapter}}</view>
+        </view>
+        <view class="info-item" wx:if="{{detail.sub_chapter}}">
+          <view class="info-label">子类</view>
+          <view class="info-value">{{detail.sub_chapter}}</view>
+        </view>
+        <view class="info-item" wx:if="{{detail.source_site}}">
+          <view class="info-label">来源</view>
+          <view class="info-value">{{detail.source_site}}</view>
+        </view>
+        <view class="info-item" wx:if="{{detail.published_at}}">
+          <view class="info-label">发布时间</view>
+          <view class="info-value">{{detail.published_at}}</view>
+        </view>
+        <view class="info-item" wx:if="{{detail.quality_score}}">
+          <view class="info-label">质量评分</view>
+          <view class="info-value">
+            <view class="score-bar">
+              <view class="score-fill" style="width: {{detail.quality_score * 100}}%"></view>
+            </view>
+            <view class="score-text">{{qualityScoreText}}</view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 图片画廊 -->
+    <view class="gallery-section card" wx:if="{{imageList.length > 1}}">
+      <view class="section-header">
+        <view class="section-icon">🖼️</view>
+        <view class="section-title">图片浏览</view>
+      </view>
+      <scroll-view class="gallery-scroll" scroll-x enhanced show-scrollbar="{{false}}">
+        <view class="gallery-list">
+          <view
+            wx:for="{{imageList}}"
+            wx:key="url"
+            class="gallery-item"
+            data-src="{{item.url}}"
+            bindtap="onImagePreview"
+          >
+            <image class="gallery-img" src="{{item.url}}" mode="aspectFill"></image>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+
+    <!-- 导览摘要 -->
+    <view class="intro-section card" wx:if="{{displayBlocks.intro || detail.summary}}">
+      <view class="section-header">
+        <view class="section-icon">📖</view>
+        <view class="section-title">导览摘要</view>
+      </view>
+      <view class="intro-text">{{displayBlocks.intro || detail.summary}}</view>
+    </view>
+
+    <!-- 核心看点 -->
+    <view class="highlights-section card" wx:if="{{displayBlocks.highlights.length}}">
+      <view class="section-header">
+        <view class="section-icon">✨</view>
+        <view class="section-title">核心看点</view>
+      </view>
+      <view class="highlight-list">
+        <view wx:for="{{displayBlocks.highlights}}" wx:key="*this" class="highlight-item">
+          <view class="highlight-dot"></view>
+          <view class="highlight-text">{{item}}</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 详细介绍 -->
+    <view class="body-section card" wx:if="{{bodyParagraphs.length}}">
+      <view class="section-header">
+        <view class="section-icon">📜</view>
+        <view class="section-title">详细介绍</view>
+      </view>
+      <view class="body-content">
+        <view wx:for="{{bodyParagraphs}}" wx:key="index" class="body-paragraph">{{item}}</view>
+      </view>
+      <!-- 展开/收起（正文较长时） -->
+      <view wx:if="{{bodyParagraphs.length > 5}}" class="body-toggle" bindtap="toggleBody">
+        <view class="toggle-text">{{bodyExpanded ? '收起正文' : '展开全文'}}</view>
+        <view class="toggle-arrow {{bodyExpanded ? 'expanded' : ''}}">▼</view>
+      </view>
+    </view>
+
+    <!-- 阅读建议 -->
+    <view class="tips-section card" wx:if="{{displayBlocks.reading_tips.length}}">
+      <view class="section-header">
+        <view class="section-icon">💡</view>
+        <view class="section-title">阅读建议</view>
+      </view>
+      <view class="tip-list">
+        <view wx:for="{{displayBlocks.reading_tips}}" wx:key="*this" class="tip-item">
+          <view class="tip-bullet">▸</view>
+          <view class="tip-text">{{item}}</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 来源信息 -->
+    <view class="source-section card" wx:if="{{detail.source_url || detail.source_site}}">
+      <view class="section-header">
+        <view class="section-icon">🏛️</view>
+        <view class="section-title">来源信息</view>
+      </view>
+      <view class="source-content">
+        <view wx:if="{{detail.source_site}}" class="source-item">
+          <view class="source-label">来源站点</view>
+          <view class="source-value">{{detail.source_site}}</view>
+        </view>
+        <view wx:if="{{detail.source_url}}" class="source-link" bindtap="onCopySource">
+          <view class="source-link-icon">📎</view>
+          <view class="source-link-text">点击复制原文链接</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 相关推荐 -->
+    <view class="related-section" wx:if="{{relatedList.length}}">
+      <view class="section-header">
+        <view class="section-icon">🎯</view>
+        <view class="section-title">相关推荐</view>
+      </view>
+      <view class="related-grid">
+        <view
+          wx:for="{{relatedList}}"
+          wx:key="id"
+          class="related-card"
+          data-id="{{item.id}}"
+          bindtap="onRelatedTap"
+        >
+          <view class="related-cover" wx:if="{{item.cover_url}}">
+            <image class="related-cover-img" src="{{item.cover_url}}" mode="aspectFill"></image>
+          </view>
+          <view class="related-cover related-cover-placeholder" wx:else>
+            <view class="related-cover-text">{{item.title[0] || '非'}}</view>
+          </view>
+          <view class="related-info">
+            <view class="related-title">{{item.title}}</view>
+            <view class="related-meta">{{item.chapter || item.content_type || '非遗文化'}}</view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 讨论入口 -->
+    <view class="discuss-entry card" bindtap="goDiscuss">
+      <view class="discuss-icon">💬</view>
+      <view class="discuss-content">
+        <view class="discuss-title">参与讨论</view>
+        <view class="discuss-desc">分享你对{{detail.title}}的了解与感悟</view>
+      </view>
+      <view class="discuss-arrow">›</view>
+    </view>
+
+    <!-- 底部安全区 -->
+    <view class="bottom-safe"></view>
+
+  </view>
+</view>

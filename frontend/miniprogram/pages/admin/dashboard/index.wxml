@@ -1,0 +1,45 @@
+<view class="container admin-panel">
+  <view class="admin-hero card">
+    <view class="admin-kicker">运营总览</view>
+    <view class="admin-title">管理控制台</view>
+    <view class="admin-sub">统一查看 AI 质量、推荐效果与活动转化，支持快速运营决策。</view>
+  </view>
+
+  <view wx:if="{{loading}}" class="empty">加载中...</view>
+
+  <view class="card action-card">
+    <view class="section-title">运营动作</view>
+    <view class="action-row">
+      <button class="primary-btn mini-btn" loading="{{actionLoading}}" bindtap="quickRefresh">刷新看板</button>
+      <button class="secondary-btn mini-btn" bindtap="goContentManage">管理内容</button>
+      <button class="secondary-btn mini-btn" bindtap="goActivityManage">管理活动</button>
+      <button class="secondary-btn mini-btn" bindtap="goTopicManage">管理帖子</button>
+      <button class="secondary-btn mini-btn" bindtap="goUserManage">管理用户</button>
+    </view>
+  </view>
+
+  <view wx:if="{{dashboard}}" class="card admin-metric-card">
+    <view class="section-title">AI问答质量</view>
+    <view class="metric-row"><text>今日提问</text><text>{{dashboard.ai.today_questions}}</text></view>
+    <view class="metric-row"><text>近7日提问</text><text>{{dashboard.ai.week_questions}}</text></view>
+    <view class="metric-row"><text>本地命中率</text><text>{{dashboard.ai.local_hit_rate}}%</text></view>
+    <view class="metric-row"><text>联网补充占比</text><text>{{dashboard.ai.web_rate}}%</text></view>
+    <view class="metric-row"><text>平均置信度</text><text>{{dashboard.ai.avg_confidence}}</text></view>
+  </view>
+
+  <view wx:if="{{dashboard}}" class="card admin-metric-card">
+    <view class="section-title">推荐效果</view>
+    <view class="metric-row"><text>推荐曝光</text><text>{{dashboard.recommend.expose}}</text></view>
+    <view class="metric-row"><text>推荐点击</text><text>{{dashboard.recommend.click}}</text></view>
+    <view class="metric-row"><text>CTR</text><text>{{dashboard.recommend.ctr}}%</text></view>
+    <view class="metric-row"><text>活动点击</text><text>{{dashboard.recommend.event_click}}</text></view>
+    <view class="metric-row"><text>活动报名数</text><text>{{dashboard.recommend.event_registration}}</text></view>
+    <view class="metric-row"><text>活动转化率</text><text>{{dashboard.recommend.event_conversion}}%</text></view>
+  </view>
+
+  <view wx:if="{{dashboard}}" class="card admin-metric-card">
+    <view class="section-title">活动运营</view>
+    <view class="metric-row"><text>总报名记录</text><text>{{dashboard.activity.registration_total}}</text></view>
+    <view class="metric-row"><text>活跃报名记录</text><text>{{dashboard.activity.registration_active}}</text></view>
+  </view>
+</view>

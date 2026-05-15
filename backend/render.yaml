@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: heritage-crs-api
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.8
+      - key: ADMIN_TOKEN
+        generateValue: true
+      - key: DOUBAO_API_KEY
+        value: ""
+      - key: DOUBAO_TTS_APPID
+        value: ""
+      - key: DOUBAO_TTS_ACCESS_TOKEN
+        value: ""

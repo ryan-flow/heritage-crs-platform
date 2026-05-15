@@ -1,0 +1,202 @@
+<view class="container profile-page">
+
+  <!-- ═══ L0 Hero：用户 + 系统理解概览 ═══ -->
+  <view wx:if="{{user}}" class="card profile-hero">
+    <view class="profile-head">
+      <view class="avatar avatar-chibi">
+        <view class="mini-hair"></view>
+        <view class="mini-face">
+          <view class="mini-eye"></view>
+          <view class="mini-eye"></view>
+          <view class="mini-mouth"></view>
+        </view>
+      </view>
+      <view class="profile-info">
+        <view class="nickname-row">
+          <view class="nickname">{{user.nickname || "未设置昵称"}}</view>
+          <view class="edit-name-btn" bindtap="changeNickname">
+            <text class="edit-name-icon">&#9998;</text>
+          </view>
+        </view>
+      </view>
+    </view>
+    <!-- 系统理解概览条 -->
+    <view class="understand-bar">
+      <view class="understand-label">黑塔对你的理解</view>
+      <view class="understand-row">
+        <view class="crs-profile-badge crs-mode-{{crsSummary.mode}}">{{crsSummary.modeDisplay || '刚开始了解'}}</view>
+        <view class="understand-progress"><view class="understand-fill crs-fill-{{crsSummary.mode}}" style="width: {{crsSummary.confidence}}%"></view></view>
+        <view class="understand-pct">{{crsSummary.confidence}}%</view>
+      </view>
+      <view class="understand-hint" wx:if="{{crsSummary.mode === 'cold_start'}}">还不了解你，和黑塔聊两句能让推荐更精准</view>
+      <view class="understand-hint" wx:if="{{crsSummary.mode === 'mixed'}}">正在了解你的偏好，推荐会越来越准</view>
+      <view class="understand-hint" wx:if="{{crsSummary.mode === 'precision'}}">已经比较了解你，推荐内容已精准匹配</view>
+    </view>
+  </view>
+
+  <!-- ═══ L1 信号全景：6维信号 + 置信度分解 ═══ -->
+  <view class="layer-label">信号全景</view>
+  <view class="card signal-panorama">
+    <!-- 置信度三维度 -->
+    <view class="confidence-section">
+      <view class="section-title-sm">黑塔怎么了解你</view>
+      <view class="confidence-bars">
+        <view class="conf-bar-row">
+          <view class="conf-bar-label">主动选择</view>
+          <view class="conf-bar-track"><view class="conf-bar-fill fill-explicit" style="width: {{crsSummary.dimensions.explicitPct || 0}}%"></view></view>
+          <view class="conf-bar-pct">{{crsSummary.dimensions.explicitPct || 0}}%</view>
+        </view>
+        <view class="conf-bar-row">
+          <view class="conf-bar-label">浏览行为</view>
+          <view class="conf-bar-track"><view class="conf-bar-fill fill-implicit" style="width: {{crsSummary.dimensions.implicitPct || 0}}%"></view></view>
+          <view class="conf-bar-pct">{{crsSummary.dimensions.implicitPct || 0}}%</view>
+        </view>
+        <view class="conf-bar-row">
+          <view class="conf-bar-label">对话偏好</view>
+          <view class="conf-bar-track"><view class="conf-bar-fill fill-dialogue" style="width: {{crsSummary.dimensions.dialoguePct || 0}}%"></view></view>
+          <view class="conf-bar-pct">{{crsSummary.dimensions.dialoguePct || 0}}%</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- ═══ L3 我的记录 ═══ -->
+  <view class="layer-separator"></view>
+  <view class="layer-label">我的记录</view>
+
+  <view class="stats-row" wx:if="{{statCards.length}}">
+    <view wx:for="{{statCards}}" wx:key="label" class="card stat-card">
+      <view class="stat-value">{{item.value}}</view>
+      <view class="stat-label">{{item.label}}</view>
+    </view>
+  </view>
+
+  <view class="stats-row" wx:if="{{feedbackCards.length}}">
+    <view wx:for="{{feedbackCards}}" wx:key="label" class="card stat-card warm">
+      <view class="stat-value">{{item.value}}</view>
+      <view class="stat-label">{{item.label}}</view>
+    </view>
+  </view>
+
+  <view class="section-title">我的发帖</view>
+  <view wx:if="{{!myTopics.length}}" class="empty">暂无发帖记录</view>
+  <view wx:for="{{myTopics}}" wx:key="id" class="card record-card" data-id="{{item.id}}" bindtap="toTopicDetail">
+    <view class="record-title">{{item.title}}</view>
+    <view class="minor">{{item.created_date}} · {{item.heat_level_text}}</view>
+  </view>
+
+  <view class="section-title">我的活动记录</view>
+  <view wx:if="{{!registrations.length}}" class="empty">暂无报名记录</view>
+  <view wx:for="{{registrations}}" wx:key="registration_id" class="card record-card">
+    <view class="record-title">{{item.activity_title}}</view>
+    <view class="minor">状态：{{item.status}}</view>
+    <view class="minor">备注：{{item.remark || "无"}}</view>
+  </view>
+
+  <!-- ═══ L2 信号详情：6维信号源 ═══ -->
+  <view class="layer-label">信号详情</view>
+
+  <!-- 信号1：偏好画像 -->
+  <view class="card signal-card" bindtap="toPreferences">
+    <view class="signal-header">
+      <view class="signal-icon sig-pref">趣</view>
+      <view class="signal-title-group">
+        <view class="signal-name">兴趣偏好</view>
+        <view class="signal-desc">你主动设置的非遗偏好</view>
+      </view>
+      <view class="signal-arrow">›</view>
+    </view>
+    <view class="signal-body" wx:if="{{preferenceSummary}}">
+      <view class="signal-chips">
+        <view wx:for="{{prefChips}}" wx:key="*this" class="signal-chip">{{item}}</view>
+      </view>
+    </view>
+    <view class="signal-empty" wx:else>未设置，点击前往设置</view>
+  </view>
+
+  <!-- 信号2：浏览记录 -->
+  <view class="card signal-card">
+    <view class="signal-header">
+      <view class="signal-icon sig-browse">览</view>
+      <view class="signal-title-group">
+        <view class="signal-name">浏览记录</view>
+        <view class="signal-desc">你看过哪些内容，系统从中提取兴趣</view>
+      </view>
+    </view>
+    <view class="signal-body" wx:if="{{browseSummary}}">
+      <view class="signal-text">{{browseSummary}}</view>
+    </view>
+    <view class="signal-empty" wx:else>暂无浏览记录</view>
+  </view>
+
+  <!-- 信号3：AI提问 -->
+  <view class="card signal-card">
+    <view class="signal-header">
+      <view class="signal-icon sig-ai">问</view>
+      <view class="signal-title-group">
+        <view class="signal-name">AI对话</view>
+        <view class="signal-desc">你向黑塔提出的问题也会影响推荐</view>
+      </view>
+    </view>
+    <view class="signal-body" wx:if="{{qaSummary}}">
+      <view class="signal-text">{{qaSummary}}</view>
+    </view>
+    <view class="signal-empty" wx:else>暂无AI对话记录</view>
+  </view>
+
+  <!-- 信号4：活动报名 -->
+  <view class="card signal-card">
+    <view class="signal-header">
+      <view class="signal-icon sig-event">报</view>
+      <view class="signal-title-group">
+        <view class="signal-name">活动报名</view>
+        <view class="signal-desc">报名的活动反映你的深度兴趣</view>
+      </view>
+    </view>
+    <view class="signal-body" wx:if="{{eventSummary}}">
+      <view class="signal-text">{{eventSummary}}</view>
+    </view>
+    <view class="signal-empty" wx:else>暂无报名记录</view>
+  </view>
+
+  <!-- 信号5：社区互动 -->
+  <view class="card signal-card">
+    <view class="signal-header">
+      <view class="signal-icon sig-social">社</view>
+      <view class="signal-title-group">
+        <view class="signal-name">社区互动</view>
+        <view class="signal-desc">点赞、收藏、评论的讨论话题</view>
+      </view>
+    </view>
+    <view class="signal-body" wx:if="{{socialSummary}}">
+      <view class="signal-text">{{socialSummary}}</view>
+    </view>
+    <view class="signal-empty" wx:else>暂无社区互动</view>
+  </view>
+
+  <!-- 信号6：画像关键词汇总 -->
+  <view class="card signal-card signal-summary-card" wx:if="{{portrait}}">
+    <view class="signal-header">
+      <view class="signal-icon sig-portrait">兴</view>
+      <view class="signal-title-group">
+        <view class="signal-name">综合兴趣</view>
+        <view class="signal-desc">所有信号汇总后的关键词</view>
+      </view>
+    </view>
+    <view class="signal-body">
+      <view class="portrait-summary" wx:if="{{strategySummary}}">{{strategySummary}}</view>
+      <view class="portrait-grid" wx:if="{{portraitCards.length}}">
+        <view wx:for="{{portraitCards}}" wx:key="label" class="portrait-item">
+          <view class="portrait-label">{{item.label}}</view>
+          <view class="portrait-value">{{item.value}}</view>
+        </view>
+      </view>
+      <view class="portrait-source-row" wx:if="{{portrait.sources && portrait.sources.length}}">
+        <view class="portrait-source-label">数据来源</view>
+        <view class="portrait-source-chip" wx:for="{{portrait.sources}}" wx:key="*this">{{item}}</view>
+      </view>
+    </view>
+  </view>
+
+  <button class="logout" bindtap="logout">退出登录</button>
+</view>

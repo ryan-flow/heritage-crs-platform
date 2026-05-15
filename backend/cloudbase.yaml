@@ -1,0 +1,44 @@
+# CloudBase 云托管部署配置
+# 使用步骤：
+# 1. cloudbase login
+# 2. cloudbase cloudrun deploy -s heritage-crs
+envId: heita-d1g1k7f8be00932c6
+region: ap-shanghai
+
+services:
+  - name: heritage-crs
+    type: cloudrun
+    spec:
+      container:
+        dockerfile: ./Dockerfile
+        port: 8000
+        env:
+          - name: APP_ENV
+            value: production
+          - name: APP_DEBUG
+            value: "false"
+          - name: SQLITE_DB_FILE
+            value: data/heritage_platform.db
+          - name: ADMIN_TOKEN
+            value: REPLACED_ADMIN_TOKEN
+          - name: ADMIN_USERNAME
+            value: admin
+          - name: ADMIN_PASSWORD
+            value: admin123
+          - name: DOUBAO_API_URL
+            value: https://ark.cn-beijing.volces.com/api/v3/chat/completions
+          - name: DOUBAO_API_KEY
+            value: REPLACED_API_KEY
+          - name: DOUBAO_MODEL
+            value: doubao-seed-2-0-pro-260215
+      resource:
+        cpu: 0.25
+        mem: 0.5Gi
+      scaling:
+        min: 0
+        max: 1
+      # 持久化存储 - SQLite 数据卷
+      mounts:
+        - mountPath: /app/data
+          name: heritage-data
+          type: CFS
