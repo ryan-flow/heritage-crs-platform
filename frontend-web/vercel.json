@@ -3,6 +3,9 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "rewrites": [
+    { "source": "/api/v1/(.*)", "destination": "https://heritage-crs-258303-7-1421044328.sh.run.tcloudbase.com/api/v1/$1" },
+    { "source": "/storage/(.*)", "destination": "https://heritage-crs-258303-7-1421044328.sh.run.tcloudbase.com/storage/$1" },
+    { "source": "/static/(.*)", "destination": "https://heritage-crs-258303-7-1421044328.sh.run.tcloudbase.com/static/$1" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
