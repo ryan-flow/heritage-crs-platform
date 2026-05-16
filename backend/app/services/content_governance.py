@@ -1,14 +1,18 @@
 from __future__ import annotations
 
 from app.models.content import Content
-from crawler.quality import QualityScorer
 
 MIN_QUALITY = 0.8
 MIN_BODY_LEN = 280
 FEATURE_LIMIT = 12
 WHITELIST_BATCH = "whitelist_curated_v1"
 
-quality = QualityScorer()
+try:
+    from crawler.quality import QualityScorer
+    quality = QualityScorer()
+except ImportError:
+    QualityScorer = None  # type: ignore
+    quality = None  # type: ignore
 
 
 def _norm_text(value: str | None) -> str:
@@ -19,9 +23,9 @@ def title_ok(title: str | None) -> bool:
     text = (title or "").strip()
     if len(text) < 6:
         return False
-    if quality.has_bad_title(text):
+    if quality and quality.has_bad_title(text):
         return False
-    if quality.looks_garbled(text):
+    if quality and quality.looks_garbled(text):
         return False
     return True
 
@@ -33,7 +37,7 @@ def build_whitelist(items: list[Content]) -> list[Content]:
         and item.review_status == "approved"
         and len((item.body or "").strip()) >= MIN_BODY_LEN
         and title_ok(item.title)
-        and not quality.looks_garbled(item.body or "")
+        and not (quality and quality.looks_garbled(item.body or ""))
     ]
 
     deduped: dict[str, Content] = {}
