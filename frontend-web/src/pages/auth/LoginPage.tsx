@@ -87,8 +87,8 @@ export default function LoginPage() {
             style={{ background: 'linear-gradient(135deg, #b22222, #cd3333)' }}>
             非遗
           </div>
-          <h1 className="text-[42px] font-extrabold tracking-[5px] mt-0 mb-2 font-[var(--font-serif)]"
-            style={{ textShadow: '0 2px 4px rgba(0,0,0,0.3), 0 0 30px rgba(212,175,86,0.15)' }}>
+          <h1 className="text-[42px] font-extrabold tracking-[5px] mt-0 mb-2"
+            style={{ textShadow: '0 2px 4px rgba(0,0,0,0.3), 0 0 30px rgba(212,175,86,0.15)', fontFamily: 'var(--font-serif)' }}>
             〖 中国非物质文化遗产 〗
           </h1>
           <p className="text-base text-amber-200/70 tracking-[3px]">黑塔伴你 · 探寻千年文化瑰宝</p>
@@ -102,7 +102,7 @@ export default function LoginPage() {
             { num: '叁', title: '非遗社区', desc: '分享传承之美', color: '#f59e0b' },
           ].map((f, i) => (
             <div key={i} className="flex-1 rounded-xl p-3.5 bg-black/20 border-l-[4px]" style={{ borderLeftColor: f.color }}>
-              <div className="text-lg font-[var(--font-serif)] mb-1" style={{ color: f.color }}>{f.num}</div>
+              <div className="text-lg mb-1" style={{ color: f.color, fontFamily: 'var(--font-serif)' }}>{f.num}</div>
               <div className="text-[13px] font-bold text-amber-100/90">{f.title}</div>
               <div className="text-[11px] text-amber-100/40 mt-0.5">{f.desc}</div>
             </div>
@@ -129,8 +129,8 @@ export default function LoginPage() {
           <button type="submit" disabled={loading}
             className="w-full h-[50px] rounded-full font-bold text-[17px] tracking-[4px] text-white border-none cursor-pointer mt-2"
             style={{
-              background: 'linear-gradient(135deg, #a52a2a 0%, #b22222 30%, #c93c3c 60%, #d4af37 100%)',
-              boxShadow: '0 4px 20px rgba(180,60,30,0.3), 0 0 30px rgba(212,175,86,0.12)',
+              background: 'linear-gradient(135deg, #b22222, #c0392b)',
+              boxShadow: '0 4px 20px rgba(180,60,30,0.4), 0 0 40px rgba(212,175,55,0.08)',
             }}>
             {loading ? '处理中...' : isRegister ? '注 册' : '登 录'}
           </button>
@@ -155,7 +155,7 @@ export default function LoginPage() {
         </div>
 
         {/* Footer */}
-        <p className="mt-10 text-base text-amber-200/30 font-[var(--font-serif)] tracking-[2px]">
+        <p className="mt-10 text-base text-amber-200/30 tracking-[2px]" style={{ fontFamily: 'var(--font-serif)' }}>
           「一问即达 · 懂非遗也懂你」
         </p>
       </div>
