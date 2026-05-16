@@ -1,3 +1,4 @@
+import { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { ArrowRight, MapPin, Clock, MessageSquare, BookOpen, Sparkles, ChevronRight, Calendar } from 'lucide-react';
@@ -20,6 +21,7 @@ const QUICK_ENTRIES = [
 export default function HomePage() {
   const navigate = useNavigate();
   const { session } = useAuthStore();
+  const [greeting, setGreeting] = useState('');
   const { data, isLoading } = useQuery({
     queryKey: ['recommend', 'home'],
     queryFn: () => apiRequest<{ code: number; data: RecommendData }>(`/recommend/?user_id=${session?.userId}&scene=home`),
@@ -36,13 +38,20 @@ export default function HomePage() {
     try { await apiRequest('/recommend/track', { method: 'POST', data: { user_id: session?.userId, action: 'click', target_type: type, target_id: id, source_scene: scene } }); } catch {}
   };
 
+  const handleDigitalHumanGreeting = useCallback(() => {
+    const greetings = ['来跟我聊聊吧！', '想知道非遗的秘密吗？', '点我探索非遗世界~', '今天想了解什么呢？'];
+    const msg = greetings[Math.floor(Math.random() * greetings.length)];
+    setGreeting(msg);
+    setTimeout(() => setGreeting(''), 2800);
+  }, []);
+
   return (
     <div className="home-page px-4 sm:px-6 pb-10 space-y-5 max-w-2xl mx-auto">
 
       {/* ═══════════════════════════════════════
          Hero 区 — 黑塔数字人导览
          ═══════════════════════════════════════ */}
-      <section className="home-hero relative rounded-[36px] p-5 pb-0 min-h-[220px] flex items-end overflow-hidden
+      <section className="home-hero relative rounded-[36px] p-5 pb-0 min-h-[260px] flex items-end overflow-hidden
         before:absolute before:inset-0 before:pointer-events-none before:opacity-40
         before:bg-[radial-gradient(ellipse_at_20%_10%,rgba(255,215,170,0.12)_0%,transparent_50%),radial-gradient(ellipse_at_80%_70%,rgba(200,160,100,0.10)_0%,transparent_50%)]
         after:absolute after:inset-0 after:pointer-events-none
@@ -56,12 +65,12 @@ export default function HomePage() {
         <div className="absolute -bottom-8 -left-8 w-32 h-32 rounded-full bg-amber-400/[0.06] blur-2xl" />
         <div className="absolute top-1/4 right-1/3 w-2 h-2 rounded-full bg-white/30 ping-slow" />
 
-        <div className="flex-[0_0_56%] pb-5 relative z-10 animate-fade-in-up">
+        <div className="flex-[0_0_52%] pb-5 relative z-10 animate-fade-in-up">
           <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-semibold tracking-[0.6px] text-[#ffd8a8] bg-white/[0.16] backdrop-blur-sm mb-3">
             <span className="w-1.5 h-1.5 rounded-full bg-[#ffd8a8] animate-pulse" />
             数字导览中枢
           </span>
-          <h2 className="text-[clamp(22px,5vw,28px)] font-extrabold text-[#fff8f1] leading-tight mb-2"
+          <h2 className="text-[clamp(22px,5vw,32px)] font-extrabold text-[#fff8f1] leading-tight mb-2"
             style={{ textShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
             和黑塔聊聊非遗
           </h2>
@@ -73,12 +82,21 @@ export default function HomePage() {
               : '让我来了解你喜欢什么'}
           </p>
           <InkButton variant="primary" size="md" onClick={() => navigate('/ai')}
-            className="shadow-lg shadow-amber-900/20 hover:shadow-amber-900/30">
+            className="shadow-lg shadow-amber-900/20 hover:shadow-amber-900/30 whitespace-nowrap">
             <Sparkles size={14} /> 开始对话 <ArrowRight size={14} />
           </InkButton>
         </div>
-        <div className="flex-[0_0_44%] relative z-10 self-end translate-y-4">
-          <DigitalHumanModel variant="hero" mood={mood} size={180} />
+        <div className="flex-[0_0_48%] relative z-10 self-end translate-y-2">
+          <DigitalHumanModel variant="hero" mood={mood} size={240} onSpeak={handleDigitalHumanGreeting} />
+          {/* Greeting bubble */}
+          {greeting && (
+            <div className="absolute -top-2 right-0 bg-white/95 backdrop-blur-md text-[#5a3520] text-sm font-semibold px-4 py-2.5 rounded-[20px] rounded-br-md shadow-lg animate-fade-in-up"
+              style={{ border: '1px solid rgba(200,155,100,0.3)', maxWidth: 180 }}>
+              {greeting}
+              <div className="absolute -bottom-1.5 right-5 w-3 h-3 bg-white/95 rotate-45"
+                style={{ borderRight: '1px solid rgba(200,155,100,0.3)', borderBottom: '1px solid rgba(200,155,100,0.3)' }} />
+            </div>
+          )}
         </div>
       </section>
 

@@ -69,14 +69,14 @@ export default function ContentListPage() {
               style={{ margin: 0, display: 'flex', gap: 12, alignItems: 'center', textAlign: 'left', border: 'none', cursor: 'pointer', width: '100%',
                 animationDelay: `${0.1 + idx * 0.05}s` }}>
               <div style={{
-                width: 72, height: 72, borderRadius: 14, flexShrink: 0,
+                width: 80, height: 80, borderRadius: 16, flexShrink: 0,
                 background: 'linear-gradient(135deg, #f5e8d5, #eadcc8)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 fontSize: 28, color: '#c08a3e', overflow: 'hidden',
               }}>
                 {item.cover_url
-                  ? <img src={buildImageUrl(item.cover_url)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  : '📖'}
+                  ? <img src={buildImageUrl(item.cover_url)} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  : <span>📖</span>}
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
                 {item.category && <span className="chip" style={{ fontSize: 11, marginBottom: 6, display: 'inline-block' }}>{item.category}</span>}
