@@ -1,8 +1,10 @@
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { Heart, MessageCircle, Bookmark, Plus } from 'lucide-react';
+import { Heart, MessageCircle, Bookmark, Plus, MessageSquareText } from 'lucide-react';
 import { apiRequest } from '../../lib/api';
 import { DiscussionTopic } from '../../types';
+import { GlassCard } from '../../components/ui/GlassCard';
+import { SkeletonLoader } from '../../components/ui/SkeletonLoader';
 
 export default function DiscussionListPage() {
   const navigate = useNavigate();
@@ -13,87 +15,133 @@ export default function DiscussionListPage() {
   const topics = (data?.data || []) as DiscussionTopic[];
 
   return (
-    <div style={{ padding: '0 24px 36px' }}>
-      {/* Hero */}
-      <div className="rise-in" style={{
-        background: 'linear-gradient(135deg, #6B3A2A, #9B4F3C)',
-        borderRadius: '36px', padding: '20px 24px', marginBottom: 20, marginTop: 16,
-        boxShadow: '0 22px 46px rgba(60,20,10,0.2)',
-      }}>
-        <span style={{ display: 'inline-block', padding: '4px 14px', borderRadius: 999, background: 'rgba(255,245,230,0.14)', color: '#ffe1bc', fontSize: 12, fontWeight: 600, marginBottom: 10 }}>
+    <div className="px-5 pb-28 pt-1">
+      {/* ── Hero Banner ── */}
+      <div
+        className="rise-in relative overflow-hidden mb-5 mt-3 p-5 rounded-[36px]"
+        style={{
+          background: 'linear-gradient(135deg, #6B3A2A 0%, #9B4F3C 50%, #b85d47 100%)',
+          boxShadow: '0 22px 46px rgba(60, 20, 10, 0.22)',
+        }}
+      >
+        {/* Decorative blobs */}
+        <div className="absolute -top-10 -right-8 w-36 h-36 rounded-full bg-white/6" />
+        <div className="absolute -bottom-6 left-10 w-20 h-20 rounded-full bg-white/4" />
+
+        <span className="relative inline-block px-3.5 py-1 rounded-full text-xs font-semibold tracking-wide bg-white/12 text-[#ffe1bc] mb-2.5">
           非遗社区交流
         </span>
-        <h1 style={{ fontSize: 26, fontWeight: 800, color: '#fff8f1', margin: '0 0 4px' }}>社区讨论</h1>
-        <p style={{ fontSize: 14, color: 'rgba(255,244,232,0.86)', margin: 0 }}>分享和探讨非遗文化的方方面面</p>
+        <h1 className="relative font-serif text-[26px] font-extrabold text-[#fff8f1] leading-tight mb-1">
+          社区讨论
+        </h1>
+        <p className="relative text-sm text-white/85 font-sans">
+          分享和探讨非遗文化的方方面面
+        </p>
       </div>
 
+      {/* ── Loading State ── */}
       {isLoading ? (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-          {[1, 2, 3].map(i => <div key={i} className="skeleton" style={{ height: 100 }} />)}
+        <div className="flex flex-col gap-3.5">
+          {[1, 2, 3].map((i) => (
+            <SkeletonLoader key={i} variant="card" className="!h-28" />
+          ))}
         </div>
       ) : topics.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '60px 0', color: '#a08868', fontSize: 14 }}>
-          <MessageCircle size={32} style={{ display: 'block', margin: '0 auto 12px', opacity: 0.4 }} />
-          <p>暂无讨论</p>
+        /* ── Empty State ── */
+        <div className="flex flex-col items-center justify-center py-20 text-center">
+          <div className="w-16 h-16 rounded-full bg-parchment-dark flex items-center justify-center mb-4">
+            <MessageSquareText size={28} className="text-ink-muted opacity-40" />
+          </div>
+          <p className="text-ink-muted text-sm font-sans">暂无讨论话题</p>
+          <p className="text-ink-muted text-xs mt-1 opacity-55 font-sans">
+            成为第一个发起讨论的人吧
+          </p>
         </div>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+        /* ── Topic List ── */
+        <div className="rise-in-stagger flex flex-col gap-3">
           {topics.map((item, idx) => (
-            <button key={item.id} onClick={() => navigate(`/discussion/${item.id}`)}
-              className="card rise-in"
-              style={{
-                margin: 0, textAlign: 'left', border: 'none', cursor: 'pointer', width: '100%',
-                animationDelay: `${0.1 + idx * 0.05}s`,
-              }}>
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
-                <div style={{
-                  width: 40, height: 40, borderRadius: '50%', flexShrink: 0,
-                  background: 'linear-gradient(135deg, #9f2d22, #bf563f)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  color: '#fff7ef', fontSize: 16, fontWeight: 700,
-                }}>
-                  {(item.nickname || '匿')[0]}
-                </div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <h3 style={{ fontSize: 15, fontWeight: 700, color: '#322418', margin: '0 0 6px' }}>{item.title}</h3>
-                  <p style={{ fontSize: 13, color: '#674d36', margin: '0 0 8px', lineHeight: 1.6, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-                    {item.content?.replace(/<[^>]*>/g, '').slice(0, 200)}
-                  </p>
-                  <div style={{ display: 'flex', gap: 14, fontSize: 11, color: '#8b6a4b' }}>
-                    {item.nickname && <span>{item.nickname}</span>}
-                    <span>👍 {item.like_count || 0}</span>
-                    <span>💬 {item.comment_count || 0}</span>
-                    <span>🔖 {item.favorite_count || 0}</span>
-                    <span style={{ marginLeft: 'auto', color: '#a08868' }}>{item.created_at?.slice(0, 10)}</span>
+            <button
+              key={item.id}
+              type="button"
+              onClick={() => navigate(`/discussion/${item.id}`)}
+              className="card-interactive w-full text-left"
+              style={{ animationDelay: `${0.08 + idx * 0.06}s` }}
+            >
+              <GlassCard hover className="p-4">
+                <div className="flex items-start gap-3">
+                  {/* Avatar initial */}
+                  <div
+                    className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold text-[#fff7ef] select-none"
+                    style={{
+                      background: `linear-gradient(135deg, #9f2d22, #c08a3e)`,
+                    }}
+                  >
+                    {(item.nickname || '匿')[0]}
                   </div>
-                  {item.tags && item.tags.length > 0 && (
-                    <div style={{ display: 'flex', gap: 6, marginTop: 8, flexWrap: 'wrap' }}>
-                      {item.tags.slice(0, 3).map((t, i) => (
-                        <span key={i} className="chip" style={{ fontSize: 11 }}>#{t}</span>
-                      ))}
+
+                  {/* Content */}
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-serif text-[15px] font-bold text-ink mb-1.5 leading-snug line-clamp-2">
+                      {item.title}
+                    </h3>
+                    <p className="text-[13px] text-ink-secondary mb-2.5 leading-relaxed line-clamp-2 font-sans">
+                      {item.content?.replace(/<[^>]*>/g, '').slice(0, 200)}
+                    </p>
+
+                    {/* Stats row */}
+                    <div className="flex items-center gap-3.5 text-[11px] text-ink-muted font-sans">
+                      {item.nickname && (
+                        <span className="text-ink-secondary font-medium truncate max-w-[100px]">
+                          {item.nickname}
+                        </span>
+                      )}
+                      <span className="flex items-center gap-1">
+                        <Heart size={11} /> {item.like_count || 0}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <MessageCircle size={11} /> {item.comment_count || 0}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <Bookmark size={11} /> {item.favorite_count || 0}
+                      </span>
+                      <span className="ml-auto opacity-55 whitespace-nowrap">
+                        {item.created_at?.slice(0, 10)}
+                      </span>
                     </div>
-                  )}
+
+                    {/* Tags */}
+                    {item.tags && item.tags.length > 0 && (
+                      <div className="flex gap-1.5 mt-2.5 flex-wrap">
+                        {item.tags.slice(0, 3).map((t, i) => (
+                          <span key={i} className="chip !text-[11px] !min-h-0 !py-0.5 !px-2.5">
+                            #{t}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
+              </GlassCard>
             </button>
           ))}
         </div>
       )}
 
-      {/* Composer FAB */}
-      <button onClick={() => navigate('/discussion')}
+      {/* ── Composer FAB ── */}
+      <button
+        type="button"
+        onClick={() => navigate('/discussion')}
+        className="fixed right-5 bottom-28 z-50 w-14 h-14 rounded-full flex flex-col items-center justify-center border-none cursor-pointer guofeng-press"
         style={{
-          position: 'fixed', right: 20, bottom: 100, zIndex: 90,
-          width: 56, height: 56, borderRadius: '50%',
           background: 'linear-gradient(135deg, #7a2f25, #b74f3b)',
-          boxShadow: '0 14px 30px rgba(126,45,35,0.28)',
-          border: 'none', cursor: 'pointer',
-          display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-          color: '#fff',
-        }}>
-      <Plus size={24} />
-      <span style={{ fontSize: 9, fontWeight: 700, marginTop: -2 }}>发帖</span>
-    </button>
+          boxShadow: '0 14px 30px rgba(126, 45, 35, 0.28)',
+        }}
+        aria-label="发帖"
+      >
+        <Plus size={24} className="text-white" />
+        <span className="text-[9px] font-bold text-white -mt-0.5 tracking-wide">发帖</span>
+      </button>
     </div>
   );
 }

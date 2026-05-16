@@ -5,6 +5,8 @@ import { Search } from 'lucide-react';
 import { apiRequest } from '../../lib/api';
 import { ContentItem } from '../../types';
 import CoverImage from '../../components/ui/CoverImage';
+import { GlassCard } from '../../components/ui/GlassCard';
+import { SkeletonLoader } from '../../components/ui/SkeletonLoader';
 
 const categories = ['全部', '传统工艺', '戏曲音乐', '民俗节俗', '饮食医药', '民间文学', '传统美术'];
 
@@ -19,72 +21,86 @@ export default function ContentListPage() {
   const contents = (data?.data || []) as ContentItem[];
 
   return (
-    <div style={{ padding: '0 24px 36px' }}>
+    <div className="px-6 pb-9">
       {/* Hero Banner */}
-      <div className="rise-in" style={{
-        background: 'linear-gradient(135deg, #5C3317, #8B5A3C)',
-        borderRadius: '36px', padding: '20px 24px', marginBottom: 20, marginTop: 16,
-        boxShadow: '0 22px 46px rgba(50,20,10,0.2)',
-      }}>
-        <span style={{ display: 'inline-block', padding: '4px 14px', borderRadius: 999, background: 'rgba(255,245,230,0.14)', color: '#ffe1bc', fontSize: 12, fontWeight: 600, marginBottom: 10 }}>
+      <div className="cinnabar-gradient rounded-[36px] p-5 mb-5 mt-4 shadow-[0_22px_46px_rgba(50,20,10,0.2)] rise-in">
+        <span className="inline-block px-3.5 py-1 rounded-full bg-white/[0.14] text-amber-100 text-xs font-semibold mb-2.5 tracking-wide">
           非遗数字期刊
         </span>
-        <h1 className="page-title" style={{ color: '#fff8f1', margin: '0 0 4px', fontSize: 26, fontWeight: 800 }}>非遗文化</h1>
-        <p style={{ fontSize: 14, color: 'rgba(255,244,232,0.86)', margin: 0 }}>探索传统文化的精髓与传承</p>
+        <h1 className="text-[26px] font-extrabold text-[#fff8f1] mt-0 mb-1 font-serif">非遗文化</h1>
+        <p className="text-sm text-white/85 m-0">探索传统文化的精髓与传承</p>
       </div>
 
       {/* Search */}
-      <div style={{ position: 'relative', marginBottom: 14 }}>
-        <Search size={16} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#a08868' }} />
-        <input type="text" value={search} onChange={e => setSearch(e.target.value)}
+      <div className="relative mb-3.5">
+        <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-muted" />
+        <input
+          type="text"
+          value={search}
+          onChange={e => setSearch(e.target.value)}
           placeholder="搜索非遗内容..."
-          style={{
-            width: '100%', height: 40, borderRadius: 999, padding: '0 18px 0 38px',
-            background: '#fffdf8', border: '1px solid #ead7c0', fontSize: 14,
-            color: '#2f2419', outline: 'none', boxSizing: 'border-box',
-          }} />
+          className="w-full h-10 rounded-full pl-[38px] pr-[18px] bg-parchment border border-[#ead7c0] text-sm text-ink outline-none box-border focus:border-cinnabar-200/60 focus:ring-2 focus:ring-cinnabar-800/10 transition-colors"
+        />
       </div>
 
-      {/* Category chips */}
-      <div style={{ display: 'flex', gap: 8, overflow: 'auto', paddingBottom: 8, marginBottom: 14, whiteSpace: 'nowrap' }}>
+      {/* Category Chips */}
+      <div className="flex gap-2 overflow-auto pb-2 mb-3.5 whitespace-nowrap">
         {categories.map(cat => (
-          <button key={cat} onClick={() => setCategory(cat)}
-            className={`chip ${category === cat ? 'chip-active' : ''}`}
-            style={{ flexShrink: 0 }}>
+          <button
+            key={cat}
+            onClick={() => setCategory(cat)}
+            className={`chip shrink-0 ${category === cat ? 'chip-active' : ''}`}
+          >
             {cat}
           </button>
         ))}
       </div>
 
+      {/* Loading State */}
       {isLoading ? (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-          {[1, 2, 3, 4].map(i => <div key={i} className="skeleton" style={{ height: 90 }} />)}
+        <div className="flex flex-col gap-3.5">
+          {[1, 2, 3, 4].map(i => (
+            <SkeletonLoader key={i} variant="card" className="!h-[90px]" />
+          ))}
         </div>
       ) : contents.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '60px 0', color: '#a08868', fontSize: 14 }}>暂无内容</div>
+        /* Empty State */
+        <div className="text-center py-16 text-ink-muted text-sm">
+          <span className="text-4xl opacity-20 block mb-3">📖</span>
+          <p>暂无内容</p>
+        </div>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+        /* Content List */
+        <div className="flex flex-col gap-3">
           {contents.map((item, idx) => (
-            <button key={item.id} onClick={() => navigate(`/content/${item.id}`)}
-              className="card rise-in"
-              style={{ margin: 0, display: 'flex', gap: 12, alignItems: 'center', textAlign: 'left', border: 'none', cursor: 'pointer', width: '100%',
-                animationDelay: `${0.1 + idx * 0.05}s` }}>
-              <div style={{
-                width: 88, height: 88, borderRadius: 16, flexShrink: 0,
-                background: '#f0e6d8',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 28, color: '#c08a3e', overflow: 'hidden',
-              }}>
-                {item.cover_url
-                  ? <CoverImage coverUrl={item.cover_url} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  : <span className="opacity-30">📖</span>}
+            <GlassCard
+              key={item.id}
+              as="button"
+              hover
+              className="card-interactive p-3 flex gap-3 items-center text-left"
+              onClick={() => navigate(`/content/${item.id}`)}
+              style={{ animation: 'riseIn 0.44s ease-out both', animationDelay: `${0.1 + idx * 0.05}s` }}
+            >
+              {/* Thumbnail */}
+              <div className="w-[88px] h-[88px] rounded-2xl shrink-0 bg-parchment-dark flex items-center justify-center overflow-hidden">
+                {item.cover_url ? (
+                  <CoverImage coverUrl={item.cover_url} alt="" loading="lazy" className="w-full h-full object-cover" />
+                ) : (
+                  <span className="text-2xl opacity-30">📖</span>
+                )}
               </div>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                {item.category && <span className="chip" style={{ fontSize: 10, marginBottom: 5, display: 'inline-block', padding: '2px 10px', minHeight: 0 }}>{item.category}</span>}
-                <h3 style={{ fontSize: 15, fontWeight: 700, color: '#332418', margin: '3px 0', lineHeight: 1.3, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{item.title}</h3>
-                {item.summary && <p style={{ fontSize: 12, color: '#7c5f44', margin: 0, lineHeight: 1.4, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{item.summary}</p>}
+
+              {/* Text Content */}
+              <div className="flex-1 min-w-0">
+                {item.category && (
+                  <span className="chip text-[10px] mb-1.5 inline-block !py-0.5 !px-2.5 !min-h-0">{item.category}</span>
+                )}
+                <h3 className="text-[15px] font-bold text-ink my-1 leading-snug line-clamp-2">{item.title}</h3>
+                {item.summary && (
+                  <p className="text-xs text-ink-secondary m-0 leading-relaxed line-clamp-2">{item.summary}</p>
+                )}
               </div>
-            </button>
+            </GlassCard>
           ))}
         </div>
       )}

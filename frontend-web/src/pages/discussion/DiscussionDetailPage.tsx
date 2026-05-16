@@ -6,6 +6,9 @@ import { apiRequest } from '../../lib/api';
 import { DiscussionTopic } from '../../types';
 import { useAuthStore } from '../../stores/auth-store';
 import { GlassCard } from '../../components/ui/GlassCard';
+import { InkButton } from '../../components/ui/InkButton';
+import { SealBadge } from '../../components/ui/SealBadge';
+import CoverImage from '../../components/ui/CoverImage';
 import { SkeletonLoader } from '../../components/ui/SkeletonLoader';
 
 export default function DiscussionDetailPage() {
@@ -56,93 +59,176 @@ export default function DiscussionDetailPage() {
     } catch {}
   };
 
+  /* ── Loading State ── */
   if (isLoading) {
-    return <div className="px-4 py-4"><SkeletonLoader variant="image" className="!h-40" /></div>;
+    return (
+      <div className="px-5 py-5 space-y-4">
+        <SkeletonLoader variant="text" className="!w-20 !h-4" />
+        <SkeletonLoader variant="image" className="!h-48 !rounded-[28px]" />
+        <SkeletonLoader variant="text" className="!w-3/4 !h-6" />
+        <SkeletonLoader variant="text" className="!w-1/2 !h-4" />
+        <SkeletonLoader variant="text" className="!h-20" />
+        <SkeletonLoader variant="card" className="!h-28" />
+        <SkeletonLoader variant="card" className="!h-20" />
+      </div>
+    );
   }
 
+  /* ── Error / Not Found State ── */
   if (!item) {
     return (
-      <div className="px-4 py-20 text-center">
-        <p className="text-ink-muted">帖子不存在</p>
-        <button onClick={() => navigate(-1)} className="text-cinnabar-600 text-sm mt-2 hover:underline">返回</button>
+      <div className="px-5 py-20 flex flex-col items-center justify-center text-center">
+        <GlassCard elevated className="p-8 w-full max-w-sm flex flex-col items-center gap-4">
+          <div className="w-14 h-14 rounded-full bg-cinnabar-50 flex items-center justify-center">
+            <MessageCircle size={24} className="text-cinnabar-500/50" />
+          </div>
+          <p className="text-ink font-serif font-bold text-lg">帖子不存在</p>
+          <p className="text-ink-muted text-sm font-sans">该讨论可能已被删除或链接无效</p>
+          <InkButton variant="outline" size="sm" onClick={() => navigate(-1)}>
+            返回上一页
+          </InkButton>
+        </GlassCard>
       </div>
     );
   }
 
   return (
-    <div className="pb-8 px-4">
-      <button onClick={() => navigate(-1)} className="flex items-center gap-1 text-sm text-ink-secondary mt-4 mb-3 hover:text-ink transition-colors">
-        <ArrowLeft size={16} /> 返回
-      </button>
-
-      <h1 className="text-lg font-serif font-bold text-ink">{item.title}</h1>
-
-      <div className="flex items-center gap-3 mt-2 text-xs text-ink-muted">
-        {item.nickname && <span className="text-ink-secondary">{item.nickname}</span>}
-        <span>{item.created_at?.slice(0, 10)}</span>
-        {item.category && <span className="bg-parchment-dark text-ink-muted px-1.5 py-0.5 rounded-full">{item.category}</span>}
+    <div className="pb-28 px-5">
+      {/* ── Back Button ── */}
+      <div className="mt-3 mb-3">
+        <InkButton variant="ghost" size="sm" onClick={() => navigate(-1)}>
+          <ArrowLeft size={15} /> 返回
+        </InkButton>
       </div>
 
-      <div className="mt-4 text-sm text-ink leading-relaxed whitespace-pre-wrap font-sans">
-        {item.content?.replace(/<[^>]*>/g, '')}
+      {/* ── Cover Image ── */}
+      {item.cover_url && (
+        <div className="mb-4">
+          <CoverImage
+            coverUrl={item.cover_url}
+            alt={item.title}
+            className="w-full h-48 object-cover rounded-[28px]"
+          />
+        </div>
+      )}
+
+      {/* ── Title & Meta ── */}
+      <h1 className="font-serif text-xl font-bold text-ink leading-snug mb-2.5">
+        {item.title}
+      </h1>
+
+      <div className="flex items-center gap-2.5 mb-4 flex-wrap">
+        {item.nickname && (
+          <div className="flex items-center gap-1.5">
+            <div
+              className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-bold text-[#fff7ef] flex-shrink-0"
+              style={{ background: 'linear-gradient(135deg, #9f2d22, #c08a3e)' }}
+            >
+              {item.nickname[0]}
+            </div>
+            <span className="text-xs text-ink-secondary font-medium">{item.nickname}</span>
+          </div>
+        )}
+        <span className="text-xs text-ink-muted">{item.created_at?.slice(0, 10)}</span>
+        {item.category && (
+          <SealBadge variant="cinnabar">{item.category}</SealBadge>
+        )}
       </div>
 
-      {item.tags && item.tags.length > 0 && (
-        <div className="flex flex-wrap gap-1.5 mt-3">
-          {item.tags.map((t, i) => (
-            <span key={i} className="text-xs bg-parchment-dark text-ink-muted px-2 py-0.5 rounded-full">#{t}</span>
+      {/* ── Content ── */}
+      <GlassCard className="p-5 mb-4">
+        <p className="text-sm text-ink leading-relaxed whitespace-pre-wrap font-sans">
+          {item.content?.replace(/<[^>]*>/g, '')}
+        </p>
+
+        {/* Tags */}
+        {item.tags && item.tags.length > 0 && (
+          <div className="flex flex-wrap gap-1.5 mt-4 pt-3.5 border-t border-parchment-dark/40">
+            {item.tags.map((t, i) => (
+              <span key={i} className="chip !text-[11px] !min-h-0 !py-1 !px-3">
+                #{t}
+              </span>
+            ))}
+          </div>
+        )}
+      </GlassCard>
+
+      {/* ── Action Bar ── */}
+      <div className="flex items-center gap-1 mb-6 px-1">
+        <InkButton
+          variant="ghost"
+          size="sm"
+          onClick={handleLike}
+          className={liked ? '!text-cinnabar-600' : ''}
+        >
+          <Heart size={17} className={liked ? 'fill-cinnabar-600 text-cinnabar-600' : ''} />
+          {likeCount > 0 && likeCount}
+        </InkButton>
+        <InkButton variant="ghost" size="sm" onClick={handleFavorite}>
+          <Bookmark size={17} /> 收藏
+        </InkButton>
+        <span className="flex items-center gap-1.5 text-sm text-ink-muted px-2.5 py-1.5 font-sans">
+          <MessageCircle size={17} />
+          {item.comment_count || 0}
+        </span>
+      </div>
+
+      {/* ── Split line ── */}
+      <div className="split-line mb-5" />
+
+      {/* ── Comments Section ── */}
+      <h3 className="font-serif text-sm font-bold text-ink mb-3.5">
+        评论 ({comments.length + (item.comment_count || 0)})
+      </h3>
+
+      {comments.length === 0 ? (
+        <p className="text-xs text-ink-muted text-center py-8 font-sans">
+          暂无评论，来写第一条吧
+        </p>
+      ) : (
+        <div className="space-y-2.5 mb-4">
+          {comments.map((c, i) => (
+            <GlassCard key={c.id || i} className="p-3.5">
+              <div className="flex items-center gap-2 mb-1.5">
+                <div
+                  className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold text-[#fff7ef] flex-shrink-0"
+                  style={{ background: 'linear-gradient(135deg, #9f2d22, #c08a3e)' }}
+                >
+                  {(c.nickname || '匿')[0]}
+                </div>
+                <span className="text-xs text-ink-secondary font-medium">{c.nickname}</span>
+                <span className="text-[10px] text-ink-muted opacity-55 ml-auto">{c.created_at?.slice(0, 10)}</span>
+              </div>
+              <p className="text-sm text-ink leading-relaxed font-sans">{c.content}</p>
+            </GlassCard>
           ))}
         </div>
       )}
 
-      <div className="flex items-center gap-4 mt-5 py-3 border-y border-ink-border/30">
-        <button onClick={handleLike} className={`flex items-center gap-1 text-sm transition-colors ${liked ? 'text-cinnabar-600' : 'text-ink-muted hover:text-cinnabar-600'}`}>
-          <Heart size={18} className={liked ? 'fill-cinnabar-600' : ''} /> {likeCount}
-        </button>
-        <button onClick={handleFavorite} className="flex items-center gap-1 text-sm text-ink-muted hover:text-cinnabar-600 transition-colors">
-          <Bookmark size={18} /> 收藏
-        </button>
-        <span className="flex items-center gap-1 text-sm text-ink-muted">
-          <MessageCircle size={18} /> {item.comment_count || 0}
-        </span>
-      </div>
-
-      <div className="mt-5">
-        <h3 className="text-sm font-serif font-bold text-ink mb-3">评论 ({comments.length + (item.comment_count || 0)})</h3>
-
-        <div className="flex gap-2 mb-4">
-          <input
-            type="text"
-            value={comment}
-            onChange={e => setComment(e.target.value)}
-            onKeyDown={e => e.key === 'Enter' && handleComment()}
-            placeholder="写评论..."
-            className="flex-1 px-3 py-2 glass-card rounded-xl text-sm text-ink placeholder:text-ink-muted focus:outline-none focus:ring-2 focus:ring-cinnabar-800/15"
-          />
-          <button
+      {/* ── Comment Input (sticky bottom) ── */}
+      <div className="fixed bottom-0 left-0 right-0 z-40 px-4 py-3"
+        style={{ background: 'linear-gradient(180deg, transparent 0%, #fdf8f0 20%, #f7efe0 100%)' }}>
+        <div className="max-w-[800px] mx-auto flex gap-2 items-center">
+          <div className="flex-1 glass-card rounded-2xl px-4 py-2.5 flex items-center backdrop-blur-sm">
+            <input
+              type="text"
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleComment()}
+              placeholder="写评论..."
+              className="flex-1 bg-transparent text-sm text-ink placeholder:text-ink-muted/60 font-sans outline-none border-none"
+            />
+          </div>
+          <InkButton
+            variant="primary"
+            size="sm"
             onClick={handleComment}
             disabled={!comment.trim()}
-            className="p-2.5 cinnabar-gradient text-white rounded-xl hover:shadow-md transition-all disabled:opacity-40 disabled:shadow-none"
+            className="!p-2.5 !rounded-2xl disabled:!opacity-40"
           >
             <Send size={15} />
-          </button>
+          </InkButton>
         </div>
-
-        {comments.length === 0 ? (
-          <p className="text-xs text-ink-muted text-center py-4">暂无评论，来写第一条吧</p>
-        ) : (
-          <div className="space-y-2.5">
-            {comments.map((c, i) => (
-              <GlassCard key={c.id || i} className="p-3">
-                <div className="flex items-center justify-between text-xs text-ink-muted mb-1">
-                  <span className="font-medium text-ink-secondary">{c.nickname}</span>
-                  <span>{c.created_at?.slice(0, 10)}</span>
-                </div>
-                <p className="text-sm text-ink">{c.content}</p>
-              </GlassCard>
-            ))}
-          </div>
-        )}
       </div>
     </div>
   );
