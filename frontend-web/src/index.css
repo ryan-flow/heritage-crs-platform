@@ -462,3 +462,76 @@ body {
 .text-brand { color: var(--color-brand); }
 .bg-parchment { background-color: var(--color-parchment); }
 .bg-parchment-dark { background-color: var(--color-parchment-dark); }
+
+/* ═══════════════════════════════════════════
+   Home 微交互 & 响应式工具
+   ═══════════════════════════════════════════ */
+
+/* 国风按压反馈 */
+.guofeng-press {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.guofeng-press:active {
+  transform: scale(0.97);
+  box-shadow: 0 4px 12px rgba(121, 58, 31, 0.12) !important;
+}
+
+/* 可交互卡片 hover 悬浮 */
+.card-interactive {
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  border: none;
+  background: none;
+  padding: 0;
+  text-align: inherit;
+  font: inherit;
+  color: inherit;
+  width: 100%;
+  cursor: pointer;
+}
+.card-interactive:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 38px rgba(121, 58, 31, 0.12);
+}
+.card-interactive:active {
+  transform: translateY(-1px) scale(0.985);
+}
+.card-interactive:focus-visible {
+  outline: 2px solid rgba(159, 45, 34, 0.45);
+  outline-offset: 2px;
+  border-radius: 14px;
+}
+
+/* 快捷入口按钮微交互 */
+.quick-entry-btn {
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
+  cursor: pointer;
+}
+.quick-entry-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 36px rgba(121, 58, 31, 0.12);
+}
+.quick-entry-btn:active {
+  transform: scale(0.97);
+}
+.quick-entry-btn:focus-visible {
+  outline: 2px solid rgba(159, 45, 34, 0.45);
+  outline-offset: 2px;
+  border-radius: 28px;
+}
+
+/* Hero CTA 呼吸光环 */
+@keyframes breatheRing {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 183, 101, 0.3); }
+  50%      { box-shadow: 0 0 0 6px rgba(255, 183, 101, 0); }
+}
+.hero-cta-breathe {
+  animation: breatheRing 3s ease-in-out infinite;
+}
+
+/* 慢速 ping — 用于装饰性点缀 */
+.ping-slow {
+  animation: ping 3s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+@keyframes ping {
+  75%, 100% { transform: scale(2); opacity: 0; }
+}
