@@ -50,31 +50,43 @@ export default function HomePage() {
 
       {/* ═══════════════════════════════════════
          Hero 区 — 黑塔数字人导览
+         布局：上方数字人 + 下方文字，垂直居中
          ═══════════════════════════════════════ */}
-      <section className="home-hero relative rounded-[36px] p-5 pb-0 min-h-[260px] flex items-end overflow-hidden
-        before:absolute before:inset-0 before:pointer-events-none before:opacity-40
-        before:bg-[radial-gradient(ellipse_at_20%_10%,rgba(255,215,170,0.12)_0%,transparent_50%),radial-gradient(ellipse_at_80%_70%,rgba(200,160,100,0.10)_0%,transparent_50%)]
-        after:absolute after:inset-0 after:pointer-events-none
-        after:bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMzAgMnYyNk0yIDI4aDU2IiBzdHJva2U9InJnYmEoMjU1LDI1NSwyNTUsMC4wNCkiIHN0cm9rZS13aWR0aD0iMC41IiBmaWxsPSJub25lIi8+PC9zdmc+')] after:bg-[length:60px_60px] after:opacity-30"
+      <section className="home-hero relative rounded-[36px] px-5 pt-6 pb-5 flex flex-col items-center text-center overflow-hidden"
         style={{
-          background: 'linear-gradient(135deg, #7f1d1d 0%, #b34130 40%, #8b4513 100%)',
+          background: 'linear-gradient(160deg, #5c1a1a 0%, #9f2d22 30%, #b34130 55%, #8b4513 100%)',
           boxShadow: '0 22px 46px rgba(127,29,29,0.30)',
         }}>
         {/* 装饰光晕 */}
-        <div className="absolute -top-12 -right-12 w-40 h-40 rounded-full bg-white/[0.04] blur-3xl" />
-        <div className="absolute -bottom-8 -left-8 w-32 h-32 rounded-full bg-amber-400/[0.06] blur-2xl" />
-        <div className="absolute top-1/4 right-1/3 w-2 h-2 rounded-full bg-white/30 ping-slow" />
+        <div className="absolute -top-16 -right-16 w-52 h-52 rounded-full bg-white/[0.03] blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-10 -left-10 w-40 h-40 rounded-full bg-amber-400/[0.04] blur-2xl pointer-events-none" />
+        <div className="absolute top-1/4 right-1/4 w-2 h-2 rounded-full bg-white/25 ping-slow pointer-events-none" />
+        <div className="absolute bottom-1/3 left-1/4 w-1.5 h-1.5 rounded-full bg-amber-200/20 ping-slow pointer-events-none" style={{ animationDelay: '1.5s' }} />
 
-        <div className="flex-[0_0_52%] pb-5 relative z-10 animate-fade-in-up">
-          <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-semibold tracking-[0.6px] text-[#ffd8a8] bg-white/[0.16] backdrop-blur-sm mb-3">
+        {/* 上行：数字人 + 问候气泡 */}
+        <div className="relative z-10 mb-1">
+          <DigitalHumanModel variant="hero" mood={mood} size={200} onSpeak={handleDigitalHumanGreeting} />
+          {greeting && (
+            <div className="absolute -top-1 -right-4 bg-white/95 backdrop-blur-md text-[#5a3520] text-sm font-semibold px-4 py-2.5 rounded-[20px] rounded-br-md shadow-lg animate-fade-in-up z-20"
+              style={{ border: '1px solid rgba(200,155,100,0.3)', maxWidth: 180 }}>
+              {greeting}
+              <div className="absolute -bottom-1.5 right-5 w-3 h-3 bg-white/95 rotate-45"
+                style={{ borderRight: '1px solid rgba(200,155,100,0.3)', borderBottom: '1px solid rgba(200,155,100,0.3)' }} />
+            </div>
+          )}
+        </div>
+
+        {/* 下行：文字 + CTA */}
+        <div className="relative z-10 animate-fade-in-up max-w-[280px]">
+          <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-semibold tracking-[0.6px] text-[#ffd8a8] bg-white/[0.14] backdrop-blur-sm mb-3">
             <span className="w-1.5 h-1.5 rounded-full bg-[#ffd8a8] animate-pulse" />
             数字导览中枢
           </span>
-          <h2 className="text-[clamp(22px,5vw,32px)] font-extrabold text-[#fff8f1] leading-tight mb-2"
+          <h2 className="text-[26px] font-extrabold text-[#fff8f1] leading-tight mb-2"
             style={{ textShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
             和黑塔聊聊非遗
           </h2>
-          <p className="text-sm text-white/90 mb-4 leading-relaxed">
+          <p className="text-sm text-white/85 mb-4 leading-relaxed">
             {crsMode === 'precision'
               ? '已为你准备好个性化推荐'
               : crsMode === 'mixed'
@@ -85,18 +97,6 @@ export default function HomePage() {
             className="shadow-lg shadow-amber-900/20 hover:shadow-amber-900/30 whitespace-nowrap">
             <Sparkles size={14} /> 开始对话 <ArrowRight size={14} />
           </InkButton>
-        </div>
-        <div className="flex-[0_0_48%] relative z-10 self-end translate-y-2">
-          <DigitalHumanModel variant="hero" mood={mood} size={240} onSpeak={handleDigitalHumanGreeting} />
-          {/* Greeting bubble */}
-          {greeting && (
-            <div className="absolute -top-2 right-0 bg-white/95 backdrop-blur-md text-[#5a3520] text-sm font-semibold px-4 py-2.5 rounded-[20px] rounded-br-md shadow-lg animate-fade-in-up"
-              style={{ border: '1px solid rgba(200,155,100,0.3)', maxWidth: 180 }}>
-              {greeting}
-              <div className="absolute -bottom-1.5 right-5 w-3 h-3 bg-white/95 rotate-45"
-                style={{ borderRight: '1px solid rgba(200,155,100,0.3)', borderBottom: '1px solid rgba(200,155,100,0.3)' }} />
-            </div>
-          )}
         </div>
       </section>
 
@@ -110,26 +110,26 @@ export default function HomePage() {
       )}
 
       {/* ═══════════════════════════════════════
-         快捷入口 Grid
+         快捷入口 Grid - 统一高度防换行
          ═══════════════════════════════════════ */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5 animate-fade-in-up" style={{ animationDelay: '0.15s' }}>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 animate-fade-in-up" style={{ animationDelay: '0.15s' }}>
         {QUICK_ENTRIES.map((item, i) => {
           const Icon = item.icon;
           return (
             <button key={item.path} onClick={() => navigate(item.path)}
-              className="quick-entry-card relative rounded-[28px] p-[18px] border-none cursor-pointer text-left flex flex-col gap-1.5
-                transition-all duration-300 ease-out
+              className="quick-entry-card relative rounded-[24px] p-4 border-none cursor-pointer text-left flex flex-col gap-1
+                transition-all duration-300 ease-out min-h-[96px]
                 hover:-translate-y-1 hover:shadow-lg active:scale-[0.98]"
               style={{
                 background: item.bg,
                 boxShadow: '0 14px 34px rgba(121,58,31,0.08)',
                 animationDelay: `${0.2 + i * 0.08}s`,
               }}>
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-1 bg-white/60 backdrop-blur-sm text-brand">
-                <Icon size={20} />
+              <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-white/60 backdrop-blur-sm text-brand">
+                <Icon size={18} />
               </div>
-              <span className="text-base font-bold text-ink">{item.label}</span>
-              <span className="text-[13px] text-ink-muted">{item.note}</span>
+              <span className="text-[15px] font-bold text-ink leading-tight">{item.label}</span>
+              <span className="text-[12px] text-ink-muted leading-tight">{item.note}</span>
             </button>
           );
         })}
@@ -190,21 +190,20 @@ export default function HomePage() {
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                 {recommend.contents.slice(1, 5).map((item: ContentItem, i: number) => (
                   <button key={item.id} onClick={() => { trackClick('content', item.id); navigate(`/content/${item.id}`); }}
-                    className="content-card rounded-[18px] overflow-hidden border-none cursor-pointer text-left p-0
+                    className="content-card rounded-[18px] overflow-hidden border-none cursor-pointer text-left p-0 flex flex-col
                       transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-lg active:scale-[0.98]"
                     style={{
                       background: 'linear-gradient(180deg, rgba(255,252,247,0.98), rgba(249,239,225,0.98))',
                       boxShadow: '0 14px 34px rgba(121,58,31,0.08)',
                     }}>
-                    <div className="h-[100px] flex items-center justify-center overflow-hidden"
-                      style={{ background: 'linear-gradient(135deg, #f5e8d5, #eadcc8)' }}>
+                    <div className="h-[110px] flex items-center justify-center overflow-hidden bg-[#f0e6d8]">
                       {item.cover_url
                         ? <img src={buildImageUrl(item.cover_url)} alt="" className="w-full h-full object-cover transition-transform duration-500 hover:scale-110" loading="lazy" />
-                        : <span className="text-4xl">📖</span>}
+                        : <span className="text-4xl opacity-40">📖</span>}
                     </div>
-                    <div className="p-3.5">
-                      <h4 className="text-sm font-bold text-ink mb-1 line-clamp-2 leading-snug">{item.title}</h4>
-                      <p className="text-[11px] text-ink-muted line-clamp-2 leading-relaxed">{shortenReason(item.reason, '')}</p>
+                    <div className="p-3 flex-1 flex flex-col">
+                      <h4 className="text-[13px] font-bold text-ink mb-1 line-clamp-2 leading-snug flex-1">{item.title}</h4>
+                      <p className="text-[11px] text-ink-muted line-clamp-1 leading-relaxed">{shortenReason(item.reason, '')}</p>
                     </div>
                   </button>
                 ))}
@@ -227,12 +226,11 @@ export default function HomePage() {
                       background: 'linear-gradient(180deg, rgba(255,252,247,0.98), rgba(249,239,225,0.98))',
                       boxShadow: '0 14px 34px rgba(121,58,31,0.06)',
                     }}>
-                    <div className="w-[72px] h-14 rounded-xl shrink-0 flex items-center justify-center text-2xl text-brand overflow-hidden
-                      transition-transform duration-300 group-hover:scale-105"
-                      style={{ background: 'linear-gradient(135deg, #f0e6d8, #e0d0b8)' }}>
+                    <div className="w-[72px] h-[72px] rounded-xl shrink-0 overflow-hidden"
+                      style={{ background: '#f0e6d8' }}>
                       {item.cover_url
-                        ? <img src={buildImageUrl(item.cover_url)} alt="" className="w-full h-full object-cover rounded-xl" loading="lazy" />
-                        : <Calendar size={22} className="text-cinnabar-500/60" />}
+                        ? <img src={buildImageUrl(item.cover_url)} alt="" className="w-full h-full object-cover" loading="lazy" />
+                        : <Calendar size={22} className="text-cinnabar-500/40 m-auto mt-[25px]" />}
                     </div>
                     <div className="flex-1 min-w-0">
                       <h4 className="text-[15px] font-bold text-ink mb-1">{item.title}</h4>

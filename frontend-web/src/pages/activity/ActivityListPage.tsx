@@ -62,23 +62,24 @@ export default function ActivityListPage() {
                 animationDelay: `${0.1 + idx * 0.05}s`,
               }}>
               <div style={{
-                height: 160, background: 'linear-gradient(135deg, #f0e6d8, #e0d0b8)',
+                height: 180, background: '#f0e6d8',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 position: 'relative',
               }}>
                 {item.cover_url
-                  ? <img src={buildImageUrl(item.cover_url)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  : <Calendar size={48} style={{ color: '#c08a3e', opacity: 0.4 }} />}
+                  ? <img src={buildImageUrl(item.cover_url)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} loading="lazy" />
+                  : <Calendar size={48} style={{ color: '#c08a3e', opacity: 0.3 }} />}
                 <span style={{
                   position: 'absolute', top: 12, left: 12,
-                  padding: '5px 12px', borderRadius: 999, fontSize: 11, fontWeight: 600,
-                  background: 'rgba(50,28,20,0.66)', color: '#ffe1bc',
+                  padding: '5px 14px', borderRadius: 999, fontSize: 11, fontWeight: 700,
+                  background: 'rgba(44,24,8,0.66)', color: '#ffe1bc',
+                  backdropFilter: 'blur(4px)',
                 }}>
                   {statusLabels[item.status] || item.status}
                 </span>
               </div>
               <div style={{ padding: '16px 18px' }}>
-                <h3 style={{ fontSize: 16, fontWeight: 800, color: '#342114', margin: '0 0 8px' }}>{item.title}</h3>
+                <h3 style={{ fontSize: 16, fontWeight: 800, color: '#342114', margin: '0 0 8px', lineHeight: 1.3 }}>{item.title}</h3>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px 14px', fontSize: 11, color: '#8b6a4b' }}>
                   <span><MapPin size={10} style={{ verticalAlign: 'middle', marginRight: 3 }} />{item.location}</span>
                   <span><Calendar size={10} style={{ verticalAlign: 'middle', marginRight: 3 }} />{item.start_time?.slice(0, 10)}</span>

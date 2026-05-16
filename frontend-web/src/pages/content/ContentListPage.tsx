@@ -69,18 +69,18 @@ export default function ContentListPage() {
               style={{ margin: 0, display: 'flex', gap: 12, alignItems: 'center', textAlign: 'left', border: 'none', cursor: 'pointer', width: '100%',
                 animationDelay: `${0.1 + idx * 0.05}s` }}>
               <div style={{
-                width: 80, height: 80, borderRadius: 16, flexShrink: 0,
-                background: 'linear-gradient(135deg, #f5e8d5, #eadcc8)',
+                width: 88, height: 88, borderRadius: 16, flexShrink: 0,
+                background: '#f0e6d8',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 fontSize: 28, color: '#c08a3e', overflow: 'hidden',
               }}>
                 {item.cover_url
                   ? <img src={buildImageUrl(item.cover_url)} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  : <span>📖</span>}
+                  : <span className="opacity-30">📖</span>}
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
-                {item.category && <span className="chip" style={{ fontSize: 11, marginBottom: 6, display: 'inline-block' }}>{item.category}</span>}
-                <h3 style={{ fontSize: 15, fontWeight: 700, color: '#332418', margin: '4px 0', lineHeight: 1.3 }}>{item.title}</h3>
+                {item.category && <span className="chip" style={{ fontSize: 10, marginBottom: 5, display: 'inline-block', padding: '2px 10px', minHeight: 0 }}>{item.category}</span>}
+                <h3 style={{ fontSize: 15, fontWeight: 700, color: '#332418', margin: '3px 0', lineHeight: 1.3, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{item.title}</h3>
                 {item.summary && <p style={{ fontSize: 12, color: '#7c5f44', margin: 0, lineHeight: 1.4, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{item.summary}</p>}
               </div>
             </button>
