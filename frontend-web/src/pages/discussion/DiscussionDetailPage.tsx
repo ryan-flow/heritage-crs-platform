@@ -103,11 +103,11 @@ export default function DiscussionDetailPage() {
 
       {/* ── Cover Image ── */}
       {item.cover_url && (
-        <div className="mb-4">
+        <div className="mb-4 rounded-[28px] overflow-hidden bg-parchment-dark">
           <CoverImage
             coverUrl={item.cover_url}
             alt={item.title}
-            className="w-full h-48 object-cover rounded-[28px]"
+            className="w-full h-48 object-cover"
           />
         </div>
       )}
@@ -121,7 +121,7 @@ export default function DiscussionDetailPage() {
         {item.nickname && (
           <div className="flex items-center gap-1.5">
             <div
-              className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-bold text-[#fff7ef] flex-shrink-0"
+              className="w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold text-[#fff7ef] flex-shrink-0"
               style={{ background: 'linear-gradient(135deg, #9f2d22, #c08a3e)' }}
             >
               {item.nickname[0]}

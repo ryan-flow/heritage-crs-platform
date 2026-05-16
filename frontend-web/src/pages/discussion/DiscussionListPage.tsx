@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Heart, MessageCircle, Bookmark, Plus, MessageSquareText } from 'lucide-react';
 import { apiRequest } from '../../lib/api';
 import { DiscussionTopic } from '../../types';
+import CoverImage from '../../components/ui/CoverImage';
 import { GlassCard } from '../../components/ui/GlassCard';
 import { SkeletonLoader } from '../../components/ui/SkeletonLoader';
 
@@ -70,15 +71,26 @@ export default function DiscussionListPage() {
             >
               <GlassCard hover className="p-4">
                 <div className="flex items-start gap-3">
-                  {/* Avatar initial */}
-                  <div
-                    className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold text-[#fff7ef] select-none"
-                    style={{
-                      background: `linear-gradient(135deg, #9f2d22, #c08a3e)`,
-                    }}
-                  >
-                    {(item.nickname || '匿')[0]}
-                  </div>
+                  {/* Avatar / Cover Thumbnail */}
+                  {item.cover_url ? (
+                    <div className="w-14 h-14 shrink-0 rounded-2xl overflow-hidden bg-parchment-dark">
+                      <CoverImage
+                        coverUrl={item.cover_url}
+                        alt={item.title}
+                        className="w-full h-full object-cover"
+                        loading="lazy"
+                      />
+                    </div>
+                  ) : (
+                    <div
+                      className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold text-[#fff7ef] select-none"
+                      style={{
+                        background: `linear-gradient(135deg, #9f2d22, #c08a3e)`,
+                      }}
+                    >
+                      {(item.nickname || '匿')[0]}
+                    </div>
+                  )}
 
                   {/* Content */}
                   <div className="flex-1 min-w-0">

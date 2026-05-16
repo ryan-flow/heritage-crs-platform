@@ -111,11 +111,9 @@ export default function CulturePage() {
                 onClick={() => navigate(`/culture/${item.id}`)}
                 className="w-full glass-card p-3 card-interactive text-left flex items-center gap-3 guofeng-press"
               >
-                {item.cover_url && (
-                  <div className="w-14 h-14 shrink-0 rounded-lg overflow-hidden bg-parchment-dark">
-                    <CoverImage coverUrl={item.cover_url} alt="" className="w-full h-full object-cover" loading="lazy" />
-                  </div>
-                )}
+                <div className="w-14 h-14 shrink-0 rounded-2xl overflow-hidden bg-parchment-dark">
+                  <CoverImage coverUrl={item.cover_url} alt="" className="w-full h-full object-cover" loading="lazy" />
+                </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="text-sm font-medium text-ink line-clamp-2 font-sans">{item.title}</h3>
                   <p className="text-xs text-ink-muted mt-0.5 line-clamp-1 font-sans">{item.summary}</p>

@@ -62,7 +62,7 @@ export default function HeritageDetailPage() {
 
       {/* Cover Image Area */}
       {item.cover_url ? (
-        <div className="relative h-48 bg-parchment-dark overflow-hidden">
+        <div className="relative h-48 bg-parchment-dark overflow-hidden rounded-2xl mx-4 mt-4">
           <CoverImage coverUrl={item.cover_url} alt={item.title} className="w-full h-full object-cover" />
           {/* Gradient overlay for back button visibility */}
           <div className="absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-black/40 to-transparent pointer-events-none" />

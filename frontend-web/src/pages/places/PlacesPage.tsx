@@ -42,9 +42,29 @@ export default function PlacesPage() {
           {PLACES.map((place, i) => (
             <GlassCard key={i} className="!p-4 card-lift">
               <div className="flex items-start gap-3">
-                <div className="w-10 h-10 shrink-0 rounded-xl bg-cinnabar-50 flex items-center justify-center">
-                  <MapPin size={20} className="text-cinnabar-600" />
-                </div>
+                {(() => {
+                  const isMuseum = place.category === '博物馆';
+                  const isGallery = place.category === '美术馆';
+                  const bg = isMuseum
+                    ? 'bg-cinnabar-50'
+                    : isGallery
+                    ? 'bg-jade-50'
+                    : 'bg-gold-50';
+                  const iconColor = isMuseum
+                    ? 'text-cinnabar-600'
+                    : isGallery
+                    ? 'text-jade-600'
+                    : 'text-gold-600';
+                  return (
+                    <div className={`w-12 h-12 shrink-0 rounded-2xl ${bg} flex items-center justify-center`}>
+                      {isGallery ? (
+                        <Building2 size={22} className={iconColor} />
+                      ) : (
+                        <MapPin size={22} className={iconColor} />
+                      )}
+                    </div>
+                  );
+                })()}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
                     <h3 className="text-sm font-medium text-ink font-sans">{place.name}</h3>
