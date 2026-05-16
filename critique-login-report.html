@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Critique · 黑塔非遗平台登录页</title>
+<style>
+  :root {
+    --bg: #fbf8f2;
+    --card: #fff;
+    --text: #2c2416;
+    --muted: #8b6a4b;
+    --accent: #c0392b;
+    --gold: #c08a3e;
+    --border: #e5ddd0;
+    --shadow: 0 2px 16px rgba(0,0,0,.04);
+    --radius: 16px;
+    --font: "Noto Serif SC","PingFang SC","Microsoft YaHei",sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.7;padding:40px 20px}
+  .container{max-width:840px;margin:0 auto}
+  header{text-align:center;margin-bottom:48px}
+  header h1{font-size:2.2rem;font-weight:900;letter-spacing:2px}
+  header .sub{color:var(--muted);font-size:.95rem;margin-top:8px}
+  header .verdict{display:inline-block;margin-top:16px;padding:8px 24px;border-radius:99px;background:var(--accent);color:#fff;font-weight:700;font-size:.9rem;letter-spacing:1px}
+
+  .radar-wrap{display:flex;justify-content:center;margin-bottom:48px}
+  .radar-wrap svg{max-width:400px;width:100%}
+
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:40px}
+  @media(max-width:640px){.grid{grid-template-columns:1fr}}
+  .dim-card{background:var(--card);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);border:1px solid var(--border)}
+  .dim-card .head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+  .dim-card .head h3{font-size:1.05rem;font-weight:800}
+  .dim-card .score{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.3rem;color:#fff}
+  .score-lo{background:#e74c3c}
+  .score-mid{background:#f39c12}
+  .score-hi{background:#27ae60}
+  .dim-card .band{font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+  .dim-card .evidence{font-size:.9rem;color:var(--text);line-height:1.8;margin-bottom:12px}
+  .dim-card .bullet{font-size:.85rem;padding:6px 0;border-top:1px solid var(--border)}
+  .dim-card .bullet span{font-weight:700;margin-right:6px}
+
+  .actions{margin-top:48px}
+  .actions h2{font-size:1.4rem;font-weight:800;margin-bottom:20px;letter-spacing:1px}
+  .action-group{margin-bottom:32px}
+  .action-group h3{font-size:1.05rem;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+  .tag{display:inline-block;padding:2px 10px;border-radius:6px;font-size:.75rem;font-weight:700;letter-spacing:.5px}
+  .tag-keep{background:#d4edda;color:#155724}
+  .tag-fix{background:#f8d7da;color:#721c24}
+  .tag-win{background:#fff3cd;color:#856404}
+  .action-group ul{list-style:none;padding:0}
+  .action-group li{padding:10px 0;border-bottom:1px solid var(--border);font-size:.9rem;display:flex;align-items:flex-start;gap:10px}
+  .action-group li input[type=checkbox]{margin-top:4px;accent-color:var(--accent)}
+  footer{text-align:center;color:var(--muted);font-size:.8rem;margin-top:48px;padding-top:24px;border-top:1px solid var(--border)}
+</style></head>
+<body>
+<div class="container">
+
+<header>
+  <h1>登录页设计评审</h1>
+  <p class="sub">黑塔 · 中国非物质文化遗产平台 — 2026-05-16 — OD · Critique skill</p>
+  <div class="verdict">综合评级 · 中等偏上 (6.0 / 10)</div>
+</header>
+
+<div class="radar-wrap">
+<svg viewBox="0 0 340 340">
+  <defs><radialGradient id="fill"><stop offset="0%" stop-color="rgba(192,57,43,0.15)"/><stop offset="100%" stop-color="rgba(192,57,43,0.02)"/></radialGradient></defs>
+  <!-- grid -->
+  <g stroke="#e8e0d0" stroke-width="0.5" fill="none">
+    <polygon points="170,30 303,127 252,290 88,290 37,127" />
+    <polygon points="170,72 270,130 231,246 109,246 70,130" />
+    <polygon points="170,114 236,155 209,202 131,202 104,155" />
+    <polygon points="170,156 204,178 188,200 152,200 136,178" />
+  </g>
+  <!-- axes -->
+  <g stroke="#c08a3e" stroke-width="1" opacity="0.4">
+    <line x1="170" y1="30" x2="170" y2="290"/>
+    <line x1="303" y1="127" x2="88" y2="127"/>
+    <line x1="252" y1="290" x2="37" y2="127"/>
+    <line x1="88" y1="290" x2="252" y2="290"/>
+    <line x1="37" y1="127" x2="303" y2="127"/>
+  </g>
+  <!-- data: Philosophy 7, Hierarchy 5, Detail 6, Function 7, Innovation 7 -->
+  <polygon points="170,62 269,136 228,240 112,240 71,136" fill="url(#fill)" stroke="#c0392b" stroke-width="2.5"/>
+  <circle cx="170" cy="62" r="5" fill="#c0392b"/>
+  <circle cx="269" cy="136" r="5" fill="#c0392b"/>
+  <circle cx="228" cy="240" r="5" fill="#c0392b"/>
+  <circle cx="112" cy="240" r="5" fill="#c0392b"/>
+  <circle cx="71" cy="136" r="5" fill="#c0392b"/>
+  <!-- labels -->
+  <text x="170" y="16" text-anchor="middle" font-size="11" fill="#2c2416" font-weight="700">哲学一致性</text>
+  <text x="318" y="124" text-anchor="start" font-size="11" fill="#2c2416" font-weight="700">视觉层级</text>
+  <text x="258" y="304" text-anchor="middle" font-size="11" fill="#2c2416" font-weight="700">细节执行</text>
+  <text x="82" y="304" text-anchor="middle" font-size="11" fill="#2c2416" font-weight="700">功能性</text>
+  <text x="6" y="124" text-anchor="end" font-size="11" fill="#2c2416" font-weight="700">创新性</text>
+  <!-- scores -->
+  <text x="170" y="76" text-anchor="middle" font-size="14" fill="#c0392b" font-weight="900">7</text>
+  <text x="255" y="140" text-anchor="middle" font-size="14" fill="#c0392b" font-weight="900">5</text>
+  <text x="220" y="234" text-anchor="middle" font-size="14" fill="#c0392b" font-weight="900">6</text>
+  <text x="120" y="234" text-anchor="middle" font-size="14" fill="#c0392b" font-weight="900">7</text>
+  <text x="84" y="140" text-anchor="middle" font-size="14" fill="#c0392b" font-weight="900">7</text>
+</svg>
+</div>
+
+<div class="grid">
+
+<!-- Philosophy -->
+<div class="dim-card">
+  <div class="head"><h3>哲学一致性</h3><div class="score score-hi">7</div></div>
+  <div class="band">Strong · 统一方向明确</div>
+  <p class="evidence">暗色水墨渐变背景(175deg, #1a0f07→#9c4e15)贯穿全页，配合回纹边框、旋转光环、印章徽标三个装饰体系，共同营造"推开非遗博物馆大门"的氛围感。三个特性卡片(壹/贰/叁)使用统一的左色条+暗底布局，字体选择一致收敛到衬线标题+无衬线正文。唯一的偏离：登录按钮渐变从 135deg 红渐变变成纯红+金光晕，与背景 175deg 的斜向不一致(差了 40deg)，这是一个微小的方向漂移。</p>
+  <div class="bullet"><span>✓ Keep</span>暗色水墨背景+回纹+光环三件套装饰体系</div>
+  <div class="bullet"><span>⚡ Quick-win</span>统一背景和按钮渐变角度到 135deg</div>
+</div>
+
+<!-- Hierarchy -->
+<div class="dim-card">
+  <div class="head"><h3>视觉层级</h3><div class="score score-mid">5</div></div>
+  <div class="band">Functional · 核心流程可用但信息排序混乱</div>
+  <p class="evidence">第一眼看到的是旋转光环+数字人(纯视觉装饰，无信息)，其次是品牌标题(42px)，再到三个特性卡片，最后才到表单输入框。用户要做的事(登录)在视觉层级上排第四位。特性卡片虽然精美但并非用户首要目标——它抢占了"输入用户名"之前的位置。在手机屏幕上(390×844)，表单输入框需要滚动才能看到，对于注册/登录这样的核心CT A来说层级过低。标题42px与输入框15px的对比度也过大(2.8:1)，造成"头重脚轻"。</p>
+  <div class="bullet"><span>⚠ Fix</span>将登录表单上移到品牌标题正下方，特性卡片移到表单之后</div>
+  <div class="bullet"><span>⚡ Quick-win</span>减小标题字号至32px、增大输入框字号至16px，缩小头脚差距</div>
+</div>
+
+<!-- Detail -->
+<div class="dim-card">
+  <div class="head"><h3>细节执行</h3><div class="score score-mid">6</div></div>
+  <div class="band">Functional · 大部分细节到位，2-3处粗糙</div>
+  <p class="evidence">输入框的 rounded-full + 半透明背景 + 金色微边框组合精致(line 57)。回纹边框使用 repeating-linear-gradient 模拟回纹效果准确。但三个特性卡片的背景 bg-black/20 导致了"悬浮无根"的漂浮感——卡片没有阴影，像是浮在背景上而非嵌入页面。游客体验按钮的 bg-white/[0.07] 与输入框背景相同，但语义不同(一个可点击一个可输入)，视觉上不应相同。底部"注册/登录"切换文字颜色 text-amber-200/60 在深色背景上对比度不足(约 3.2:1，低于 WCAG AA 标准)。</p>
+  <div class="bullet"><span>✓ Keep</span>输入框样式——半透明+金色边框，精致且与背景统一</div>
+  <div class="bullet"><span>⚠ Fix</span>特性卡片添加微阴影(box-shadow)，增强嵌入感而非漂浮感</div>
+</div>
+
+<!-- Function -->
+<div class="dim-card">
+  <div class="head"><h3>功能性</h3><div class="score score-hi">7</div></div>
+  <div class="band">Strong · 核心流程完善</div>
+  <p class="evidence">游客一键登录(调用 /auth/guest)、注册/登录切换、测试账号一键填入、表单校验、加载态禁用、错误提示——所有核心认证流程都到位。输入框使用原生 required 属性做基础校验。装饰元素全部设置 pointer-events-none(line 64,66,70,72)避免了遮挡点击的常见陷阱。加载中按钮显示"处理中..."并提供视觉反馈。缺少：密码可见性切换(👁)、回车键提交的明确提示、网络断开时的优雅降级提示。</p>
+  <div class="bullet"><span>✓ Keep</span>pointer-events-none 装饰元素 + 测试账号一键填入</div>
+  <div class="bullet"><span>⚡ Quick-win</span>添加密码可见性切换按钮(15分钟)</div>
+</div>
+
+<!-- Innovation -->
+<div class="dim-card">
+  <div class="head"><h3>创新性</h3><div class="score score-hi">7</div></div>
+  <div class="band">Strong · 有多个值得借鉴的设计手法</div>
+  <p class="evidence">三个创新点值得注意：(1) CSS纯代码绘制数字人(黑塔)直接嵌入登录页，而非通用的插图占位——这是独特的品牌资产；(2) 旋转光环+四角星芒装饰——用 CSS animation 而非静态图实现动态装饰，且性能开销极小；(3) 回纹边框——用 repeating-linear-gradient 模拟中国传统回纹，是文化元素的数字化转译。这三个手法都服务于"非遗"主题，属于 earned innovation。登录按钮的红→金渐变过度设计(之前四级过渡)，现已简化为纯红+金光晕，更好。</p>
+  <div class="bullet"><span>✓ Keep</span>CSS数字人+旋转光环+回纹边框：三大品牌创新资产</div>
+  <div class="bullet"><span>⚡ Quick-win</span>给光环添加两个小型轨道粒子(◆✦)，增强动态感</div>
+</div>
+
+</div><!-- /grid -->
+
+<div class="actions">
+  <h2>行动清单</h2>
+
+  <div class="action-group">
+    <h3><span class="tag tag-keep">KEEP</span> 保持 —— 这些不要动</h3>
+    <ul>
+      <li><input type="checkbox" checked> 暗色水墨背景 (175deg, #1a0f07→#9c4e15) — 氛围基调正确</li>
+      <li><input type="checkbox" checked> 回纹边框 + 旋转光环 + CSS数字人 — 三大装饰资产</li>
+      <li><input type="checkbox" checked> 输入框样式 (半透明+金色微边框+圆形) — 精致且可用</li>
+      <li><input type="checkbox" checked> 所有装饰元素 pointer-events-none — 避免遮挡点击</li>
+      <li><input type="checkbox" checked> 游客体验 + 测试账号填入 — 便捷的测试入口</li>
+    </ul>
+  </div>
+
+  <div class="action-group">
+    <h3><span class="tag tag-fix">FIX</span> 修复 —— P0/P1 视觉代价高</h3>
+    <ul>
+      <li><input type="checkbox"> <b>P0</b> 将登录表单上移到品牌标题下方（当前表单在特性卡片之后，用户需滚动）</li>
+      <li><input type="checkbox"> <b>P1</b> 特性卡片添加微阴影 (box-shadow: 0 4px 16px rgba(0,0,0,0.15))</li>
+      <li><input type="checkbox"> <b>P1</b> 游客按钮改用独立视觉样式（不要和输入框一样）</li>
+      <li><input type="checkbox"> <b>P1</b> 底部切换链接文字对比度提升到至少 4.5:1</li>
+    </ul>
+  </div>
+
+  <div class="action-group">
+    <h3><span class="tag tag-win">QUICK WINS</span> 快速见效 —— 每个 5-15 分钟</h3>
+    <ul>
+      <li><input type="checkbox"> 统一背景和按钮渐变角度到 135deg（当前 175deg vs 135deg）</li>
+      <li><input type="checkbox"> 标题字号从 42px 降至 32px，输入框从 15px 升至 16px，缩小层级差</li>
+      <li><input type="checkbox"> 将特性卡片从 bg-black/20 升级为 bg-white/[0.06] + backdrop-blur</li>
+      <li><input type="checkbox"> 给旋转光环添加 2 个小型轨道粒子 (◆✦)，增强动态精致感</li>
+      <li><input type="checkbox"> 添加密码可见性切换按钮 (👁 icon)</li>
+    </ul>
+  </div>
+</div>
+
+<footer>OD · Critique skill · 5-Dimension Expert Review · 2026-05-16</footer>
+
+</div></body></html>

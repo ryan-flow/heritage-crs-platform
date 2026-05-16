@@ -1,0 +1,42 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - generic [ref=e5]:
+      - button "非 黑塔 · 非遗" [ref=e6] [cursor=pointer]:
+        - generic [ref=e7]: 非
+        - generic [ref=e8]: 黑塔 · 非遗
+      - button [ref=e10] [cursor=pointer]:
+        - img [ref=e11]
+  - main [ref=e12]:
+    - generic [ref=e14]:
+      - generic [ref=e19]:
+        - generic [ref=e20]: 数字导览中枢
+        - heading "和黑塔聊聊非遗" [level=2] [ref=e22]
+        - paragraph [ref=e23]: 让我来了解你喜欢什么
+        - button "开始对话" [ref=e24] [cursor=pointer]:
+          - img [ref=e25]
+          - text: 开始对话
+          - img [ref=e28]
+      - generic [ref=e71]:
+        - button "非遗文化 策展精选" [ref=e72] [cursor=pointer]:
+          - img [ref=e74]
+          - generic [ref=e76]: 非遗文化
+          - generic [ref=e77]: 策展精选
+        - button "非遗场馆 线下体验" [ref=e78] [cursor=pointer]:
+          - img [ref=e80]
+          - generic [ref=e83]: 非遗场馆
+          - generic [ref=e84]: 线下体验
+        - button "浏览历史 足迹回顾" [ref=e85] [cursor=pointer]:
+          - img [ref=e87]
+          - generic [ref=e90]: 浏览历史
+          - generic [ref=e91]: 足迹回顾
+        - button "AI 对话 黑塔导览" [ref=e92] [cursor=pointer]:
+          - img [ref=e94]
+          - generic [ref=e96]: AI 对话
+          - generic [ref=e97]: 黑塔导览
+  - navigation [ref=e102]:
+    - generic [ref=e103]:
+      - button "首页" [ref=e104] [cursor=pointer]: 首页
+      - button [ref=e109] [cursor=pointer]
+      - button [ref=e113] [cursor=pointer]
+      - button [ref=e117] [cursor=pointer]
+      - button [ref=e122] [cursor=pointer]

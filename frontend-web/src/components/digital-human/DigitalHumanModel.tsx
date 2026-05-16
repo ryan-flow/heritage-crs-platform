@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef, useCallback, useState } from 'react';
 import { Volume2, VolumeX } from 'lucide-react';
 
 interface Props {
@@ -25,6 +25,13 @@ export function DigitalHumanModel({
   onSpeak,
 }: Props) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [clicked, setClicked] = useState(false);
+
+  const handleClick = useCallback(() => {
+    setClicked(true);
+    setTimeout(() => setClicked(false), 600);
+    onSpeak?.();
+  }, [onSpeak]);
 
   const speak = useCallback(async (text: string) => {
     try {
@@ -61,8 +68,9 @@ export function DigitalHumanModel({
 
   return (
     <div
-      className={`dhm-stage variant-${variant} ${stateClass} ${moodClass}`}
+      className={`dhm-stage variant-${variant} ${stateClass} ${moodClass} ${clicked ? 'clicked' : ''} guofeng-press`}
       style={{ width: size, height: size * 1.43 }}
+      onClick={handleClick}
     >
       {/* Mood tag */}
       {variant === 'ai' && (

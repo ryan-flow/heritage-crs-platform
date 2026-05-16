@@ -1,0 +1,26 @@
+- generic [ref=e4]:
+  - generic [ref=e48]:
+    - generic [ref=e49]: 非遗
+    - heading "〖 中国非物质文化遗产 〗" [level=1] [ref=e50]
+    - paragraph [ref=e51]: 黑塔伴你 · 探寻千年文化瑰宝
+  - generic [ref=e52]:
+    - generic [ref=e53]:
+      - generic [ref=e54]: 壹
+      - generic [ref=e55]: 智能推荐
+      - generic [ref=e56]: CRS精准匹配
+    - generic [ref=e57]:
+      - generic [ref=e58]: 贰
+      - generic [ref=e59]: AI数字人
+      - generic [ref=e60]: 黑塔导览互动
+    - generic [ref=e61]:
+      - generic [ref=e62]: 叁
+      - generic [ref=e63]: 非遗社区
+      - generic [ref=e64]: 分享传承之美
+  - generic [ref=e65]:
+    - textbox "用户名" [ref=e66]
+    - textbox "密码" [ref=e67]
+    - button "登 录" [ref=e68] [cursor=pointer]
+  - generic [ref=e69]:
+    - button "游客体验" [ref=e70] [cursor=pointer]
+    - button "没有账号？去注册" [ref=e71] [cursor=pointer]
+  - paragraph [ref=e72]: 「一问即达 · 懂非遗也懂你」

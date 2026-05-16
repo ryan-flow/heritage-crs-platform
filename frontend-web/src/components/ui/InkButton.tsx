@@ -2,19 +2,26 @@ import { type ButtonHTMLAttributes } from 'react';
 
 interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
   loading?: boolean;
 }
 
-export function InkButton({ variant = 'primary', loading, className = '', children, disabled, ...rest }: Props) {
+export function InkButton({ variant = 'primary', size = 'md', loading, className = '', children, disabled, ...rest }: Props) {
   const variantClass = {
     primary: 'ink-btn-primary',
     outline: 'ink-btn-outline',
     ghost: 'ink-btn-ghost',
   }[variant];
 
+  const sizeClass = {
+    sm: '!py-1.5 !px-3 !text-xs',
+    md: '',
+    lg: '!py-3.5 !px-8 !text-base',
+  }[size];
+
   return (
     <button
-      className={`ink-btn ${variantClass} ${className}`}
+      className={`ink-btn ${variantClass} ${sizeClass} ${className}`}
       disabled={disabled || loading}
       {...rest}
     >

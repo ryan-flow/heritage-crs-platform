@@ -747,6 +747,58 @@
   75% { transform: rotate(-1deg); }
 }
 
+/* ══════════════════════════════════════
+   点击反馈链路 (AGENTS.md 第2节)
+   ══════════════════════════════════════ */
+
+/* 1. 缩反馈 */
+.dhm-stage.clicked .dhm-avatar {
+  animation: dhmPress 0.15s ease-out forwards, dhmFloat 3s 0.15s ease-in-out infinite !important;
+}
+@keyframes dhmPress {
+  to { transform: scale(0.97); }
+}
+
+/* 2. 心情标签闪烁 */
+.dhm-stage.clicked .mood-tag {
+  animation: tagBlink 0.3s ease-out !important;
+}
+@keyframes tagBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* 3. 轨道光环转速翻倍 */
+.dhm-stage.clicked .dhm-orbit {
+  animation-duration: 1s !important;
+}
+
+/* 4. 粒子 burst 扩散 */
+.dhm-stage.clicked .dhm-spark {
+  animation: sparkBurst 0.6s ease-out forwards !important;
+}
+@keyframes sparkBurst {
+  0% { transform: scale(0.8); opacity: 1; }
+  50% { transform: scale(1.6); opacity: 0.5; }
+  100% { transform: scale(0.8); opacity: 1; }
+}
+
+/* 5. 底座亮度脉冲 */
+.dhm-stage.clicked .dhm-pedestal {
+  filter: brightness(1.3) !important;
+  transition: filter 0.4s ease-out;
+}
+
+/* 6. 帽尖加亮 */
+.dhm-stage.clicked .dhm-hat-tip-glow {
+  animation: tipGlowBoost 0.6s ease-out forwards !important;
+}
+@keyframes tipGlowBoost {
+  0% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 1.2; transform: scale(1.3); }
+  100% { opacity: 0.5; transform: scale(1); }
+}
+
 .mood-confident .dhm-face {
   animation: confidentChin 4s ease-in-out infinite;
 }

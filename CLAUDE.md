@@ -26,7 +26,7 @@
 - 凭据位置：`backend/.env`（详见凭据索引 memory）
 
 ## 常用命令
-- 启动后端：`cd backend && python -m app` 或 `docker-compose up`
+- 启动后端：`cd backend && python -m uvicorn app.main:app --host 0.0.0.0 --port 8000`
 - 启动 Web 前端：`cd frontend-web && npm run dev`
 - 微信小程序：用微信开发者工具打开 `frontend/` 目录
 

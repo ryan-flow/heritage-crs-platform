@@ -6,7 +6,7 @@
     },
     "playwright": {
       "command": "npx",
-      "args": ["-y", "@playwright/mcp@0.0.70"]
+      "args": ["-y", "@playwright/mcp@0.0.70", "--headless"]
     },
     "glance": {
       "command": "npx",
