@@ -16,7 +16,7 @@ from app.models.discussion_like import DiscussionLike
 from app.models.discussion_topic import DiscussionTopic
 from app.models.recommend_log import RecommendLog
 from app.models.user import User
-from app.services.recommendation_service import build_strategy_summary, build_user_profile
+from app.services.recommendation_service import build_strategy_summary, build_user_profile, calc_confidence
 
 
 router = APIRouter()
@@ -270,9 +270,70 @@ def get_my_registrations(user_id: int, db: Session = Depends(get_db)):
 
 @router.get("/{user_id}")
 def fe_get_user(user_id: int, db: Session = Depends(get_db)):
-    """Frontend compatible: GET /users/{id}"""
-    from app.api.v1.endpoints.user import get_me
-    return get_me(user_id, db)
+    """Frontend compatible: GET /users/{id}
+
+    返回完整的用户信息 + CRS 总结，包含：
+    - 基本信息（昵称、角色、偏好等）
+    - crs_summary：置信度分数、模式、维度分解、信号明细
+    """
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="用户不存在")
+
+    # 基本信息
+    base_info = _user_to_dict(user)
+
+    # CRS 总结：置信度 + 画像 + 维度
+    profile = build_user_profile(db, user_id)
+    strategy_summary = build_strategy_summary(profile)
+
+    try:
+        confidence = calc_confidence(db, user_id, use_cache=False)
+    except Exception:
+        confidence = {
+            "confidence_score": user.confidence_score or 0.0,
+            "score_explicit": user.score_explicit or 0.0,
+            "score_implicit": user.score_implicit or 0.0,
+            "score_dialogue": user.score_dialogue or 0.0,
+            "mode": "cold_start",
+            "detail": {},
+        }
+
+    crs_summary = {
+        "confidence_score": confidence.get("confidence_score", 0.0),
+        "score_explicit": confidence.get("score_explicit", 0.0),
+        "score_implicit": confidence.get("score_implicit", 0.0),
+        "score_dialogue": confidence.get("score_dialogue", 0.0),
+        "mode": confidence.get("mode", "cold_start"),
+        "stage_progress_percent": confidence.get("stage_progress_percent", 0),
+        "dimensions": {
+            "explicit": {
+                "label": "显式偏好",
+                "score": confidence.get("score_explicit", 0.0),
+                "weight": 0.40,
+                "description": "基于你主动设置的偏好",
+            },
+            "implicit": {
+                "label": "隐式行为",
+                "score": confidence.get("score_implicit", 0.0),
+                "weight": 0.35,
+                "description": "基于你的浏览、报名、互动行为",
+            },
+            "dialogue": {
+                "label": "对话语义",
+                "score": confidence.get("score_dialogue", 0.0),
+                "weight": 0.25,
+                "description": "基于你的AI提问和CRS回答",
+            },
+        },
+        "signal_details": confidence.get("detail", {}),
+        "strategy_summary": strategy_summary,
+        "heritage_terms": strategy_summary.get("heritage_terms", []),
+        "scene_terms": strategy_summary.get("scene_terms", []),
+        "region_terms": strategy_summary.get("region_terms", []),
+    }
+
+    return success({**base_info, "crs_summary": crs_summary})
 
 
 @router.get("/{user_id}/history")

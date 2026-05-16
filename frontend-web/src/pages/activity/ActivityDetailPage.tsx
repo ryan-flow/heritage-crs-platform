@@ -8,6 +8,7 @@ import { GlassCard } from '../../components/ui/GlassCard';
 import { SealBadge } from '../../components/ui/SealBadge';
 import { InkButton } from '../../components/ui/InkButton';
 import { SkeletonLoader } from '../../components/ui/SkeletonLoader';
+import FloatingAiButton from '../../components/ui/FloatingAiButton';
 
 const statusLabels: Record<string, string> = { open: '报名中', closed: '已结束', full: '已满' };
 const statusSealVariant: Record<string, 'jade' | 'cinnabar' | undefined> = {
@@ -124,6 +125,7 @@ export default function ActivityDetailPage() {
           </InkButton>
         )}
       </div>
+      <FloatingAiButton context={item?.title} />
     </div>
   );
 }

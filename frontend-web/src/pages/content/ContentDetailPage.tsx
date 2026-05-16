@@ -9,6 +9,7 @@ import { useAuthStore } from '../../stores/auth-store';
 import { GlassCard } from '../../components/ui/GlassCard';
 import { SealBadge } from '../../components/ui/SealBadge';
 import { SkeletonLoader } from '../../components/ui/SkeletonLoader';
+import FloatingAiButton from '../../components/ui/FloatingAiButton';
 
 export default function ContentDetailPage() {
   const { id } = useParams();
@@ -128,6 +129,7 @@ export default function ContentDetailPage() {
           </p>
         )}
       </div>
+      <FloatingAiButton context={item?.title} />
     </div>
   );
 }

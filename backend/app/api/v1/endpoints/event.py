@@ -117,6 +117,47 @@ def list_events(
     return success(result)
 
 
+@router.get("/registrations")
+def get_my_event_registrations(
+    user_id: int | None = None,
+    status: str | None = None,
+    db: Session = Depends(get_db),
+):
+    """Get current user's activity registrations.
+
+    Filters by user_id query parameter (required).
+    Returns list of {id, activity_id, activity_title, status, created_at}.
+    """
+    if not user_id:
+        return success({"items": [], "total": 0}, "请提供 user_id 参数")
+
+    rows = (
+        db.query(ActivityRegistration, Activity)
+        .join(Activity, Activity.id == ActivityRegistration.activity_id)
+        .filter(ActivityRegistration.user_id == user_id)
+        .order_by(ActivityRegistration.id.desc())
+        .all()
+    )
+
+    items = []
+    for registration, activity in rows:
+        if status and registration.status != status:
+            continue
+        items.append({
+            "id": registration.id,
+            "activity_id": activity.id,
+            "activity_title": activity.title,
+            "cover_url": activity.cover_url or "",
+            "location": activity.location or "",
+            "start_time": activity.start_time.isoformat() if activity.start_time else "",
+            "status": registration.status,
+            "remark": registration.remark or "",
+            "created_at": str(registration.created_at or ""),
+        })
+
+    return success({"items": items, "total": len(items)})
+
+
 @router.get("/{event_id}")
 def get_event(event_id: int, request: Request, user_id: int | None = None, db: Session = Depends(get_db)):
     item = db.query(Activity).filter(Activity.id == event_id).first()

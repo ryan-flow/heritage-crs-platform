@@ -1,9 +1,19 @@
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, MapPin, Building2 } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { ArrowLeft, MapPin, Building2, SearchX } from 'lucide-react';
+import { apiRequest } from '../../lib/api';
 import { GlassCard } from '../../components/ui/GlassCard';
 import { SealBadge } from '../../components/ui/SealBadge';
+import { SkeletonLoader } from '../../components/ui/SkeletonLoader';
 
-const PLACES = [
+interface Place {
+  name: string;
+  address: string;
+  desc: string;
+  category: string;
+}
+
+const PLACES: Place[] = [
   { name: '中国非物质文化遗产馆', address: '北京市朝阳区湖景东路16号', desc: '国家级非遗专题博物馆', category: '博物馆' },
   { name: '中国工艺美术馆', address: '北京市朝阳区湖景东路16号', desc: '展示传统工艺美术珍品', category: '美术馆' },
   { name: '北京故宫博物院', address: '北京市东城区景山前街4号', desc: '明清宫廷建筑与非遗文化', category: '博物馆' },
@@ -16,6 +26,55 @@ const PLACES = [
 
 export default function PlacesPage() {
   const navigate = useNavigate();
+
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ['places'],
+    queryFn: () => apiRequest<{ code: number; data: Place[] }>('/places/'),
+    staleTime: 10 * 60 * 1000,
+  });
+
+  const apiPlaces: Place[] = data?.data || [];
+  const places: Place[] = apiPlaces.length > 0 ? apiPlaces : PLACES;
+  const isApiEmpty = !isLoading && !isError && apiPlaces.length === 0;
+
+  const renderPlaceCard = (place: Place, i: number) => {
+    const isMuseum = place.category === '博物馆';
+    const isGallery = place.category === '美术馆';
+    const bg = isMuseum
+      ? 'bg-cinnabar-50'
+      : isGallery
+      ? 'bg-jade-50'
+      : 'bg-gold-50';
+    const iconColor = isMuseum
+      ? 'text-cinnabar-600'
+      : isGallery
+      ? 'text-jade-600'
+      : 'text-gold-600';
+    const badgeVariants = ['jade', 'gold', 'cinnabar'] as const;
+    return (
+      <GlassCard key={i} className="!p-4 card-lift">
+        <div className="flex items-start gap-3">
+          <div className={`w-12 h-12 shrink-0 rounded-2xl ${bg} flex items-center justify-center`}>
+            {isGallery ? (
+              <Building2 size={22} className={iconColor} />
+            ) : (
+              <MapPin size={22} className={iconColor} />
+            )}
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <h3 className="text-sm font-medium text-ink font-sans">{place.name}</h3>
+              <SealBadge variant={badgeVariants[i % 3]}>
+                {place.category}
+              </SealBadge>
+            </div>
+            <p className="text-xs text-ink-secondary mt-1.5 font-sans leading-relaxed">{place.desc}</p>
+            <p className="text-xs text-ink-muted mt-1 font-sans">{place.address}</p>
+          </div>
+        </div>
+      </GlassCard>
+    );
+  };
 
   return (
     <div className="pb-8 space-y-5">
@@ -38,46 +97,24 @@ export default function PlacesPage() {
 
       {/* Places List */}
       <div className="px-4">
+        {isLoading ? (
+          <div className="space-y-2.5">
+            {[1, 2, 3, 4, 5].map(i => (
+              <SkeletonLoader key={i} variant="card" className="!h-[72px]" />
+            ))}
+          </div>
+        ) : isApiEmpty ? (
+          <div className="text-center py-16 animate-fade-in-up">
+            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-parchment-dark flex items-center justify-center">
+              <SearchX size={28} className="text-ink-muted/40" />
+            </div>
+            <p className="text-ink-muted text-sm font-sans">暂无场馆数据</p>
+            <p className="text-ink-muted/60 text-xs mt-1 font-sans">正在使用本地场馆信息</p>
+          </div>
+        ) : null}
+
         <div className="space-y-2.5 rise-in-stagger">
-          {PLACES.map((place, i) => (
-            <GlassCard key={i} className="!p-4 card-lift">
-              <div className="flex items-start gap-3">
-                {(() => {
-                  const isMuseum = place.category === '博物馆';
-                  const isGallery = place.category === '美术馆';
-                  const bg = isMuseum
-                    ? 'bg-cinnabar-50'
-                    : isGallery
-                    ? 'bg-jade-50'
-                    : 'bg-gold-50';
-                  const iconColor = isMuseum
-                    ? 'text-cinnabar-600'
-                    : isGallery
-                    ? 'text-jade-600'
-                    : 'text-gold-600';
-                  return (
-                    <div className={`w-12 h-12 shrink-0 rounded-2xl ${bg} flex items-center justify-center`}>
-                      {isGallery ? (
-                        <Building2 size={22} className={iconColor} />
-                      ) : (
-                        <MapPin size={22} className={iconColor} />
-                      )}
-                    </div>
-                  );
-                })()}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <h3 className="text-sm font-medium text-ink font-sans">{place.name}</h3>
-                    <SealBadge variant={i % 3 === 0 ? 'jade' : i % 3 === 1 ? 'gold' : 'cinnabar'}>
-                      {place.category}
-                    </SealBadge>
-                  </div>
-                  <p className="text-xs text-ink-secondary mt-1.5 font-sans leading-relaxed">{place.desc}</p>
-                  <p className="text-xs text-ink-muted mt-1 font-sans">{place.address}</p>
-                </div>
-              </div>
-            </GlassCard>
-          ))}
+          {!isLoading ? places.map((place, i) => renderPlaceCard(place, i)) : null}
         </div>
 
         {/* Footer note */}

@@ -1,12 +1,31 @@
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { ArrowLeft, Eye, Clock } from 'lucide-react';
+import { ArrowLeft, Eye, Clock, ExternalLink } from 'lucide-react';
 import { apiRequest } from '../../lib/api';
 import CoverImage from '../../components/ui/CoverImage';
 import { ContentItem } from '../../types';
 import { useAuthStore } from '../../stores/auth-store';
 import { GlassCard } from '../../components/ui/GlassCard';
+import { InkButton } from '../../components/ui/InkButton';
 import { SkeletonLoader } from '../../components/ui/SkeletonLoader';
+
+interface HistoryItem extends ContentItem {
+  target_id?: number;
+  target_type?: 'content' | 'event' | 'topic';
+}
+
+function getTargetPath(targetType: string, targetId: number): string {
+  switch (targetType) {
+    case 'content':
+      return `/content/${targetId}`;
+    case 'event':
+      return `/activity/${targetId}`;
+    case 'topic':
+      return `/discussion/${targetId}`;
+    default:
+      return `/content/${targetId}`;
+  }
+}
 
 export default function HistoryPage() {
   const navigate = useNavigate();
@@ -18,7 +37,7 @@ export default function HistoryPage() {
     enabled: !!session?.userId,
   });
 
-  const history = (data?.data?.contents || []) as ContentItem[];
+  const history = (data?.data?.contents || []) as HistoryItem[];
 
   return (
     <div className="pb-8 space-y-5">

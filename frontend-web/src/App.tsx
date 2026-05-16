@@ -12,6 +12,7 @@ import ActivityDetailPage from './pages/activity/ActivityDetailPage'
 import ActivityRegisterPage from './pages/activity/ActivityRegisterPage'
 import DiscussionListPage from './pages/discussion/DiscussionListPage'
 import DiscussionDetailPage from './pages/discussion/DiscussionDetailPage'
+import DiscussionCreatePage from './pages/discussion/DiscussionCreatePage'
 import ProfilePage from './pages/profile/ProfilePage'
 import PreferencesPage from './pages/preferences/PreferencesPage'
 import PlacesPage from './pages/places/PlacesPage'
@@ -57,6 +58,7 @@ export default function App() {
         <Route path="activity/:id/register" element={<ActivityRegisterPage />} />
         <Route path="discussion" element={<DiscussionListPage />} />
         <Route path="discussion/:id" element={<DiscussionDetailPage />} />
+        <Route path="discussion/create" element={<DiscussionCreatePage />} />
         <Route path="profile" element={<ProfilePage />} />
         <Route path="preferences" element={<PreferencesPage />} />
         <Route path="places" element={<PlacesPage />} />

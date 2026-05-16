@@ -9,6 +9,7 @@ import { useAuthStore } from '../../stores/auth-store';
 import { GlassCard } from '../../components/ui/GlassCard';
 import { SealBadge } from '../../components/ui/SealBadge';
 import { SkeletonLoader } from '../../components/ui/SkeletonLoader';
+import FloatingAiButton from '../../components/ui/FloatingAiButton';
 
 export default function HeritageDetailPage() {
   const { id } = useParams();
@@ -147,6 +148,7 @@ export default function HeritageDetailPage() {
           </div>
         )}
       </div>
+      <FloatingAiButton context={item?.title} />
     </div>
   );
 }

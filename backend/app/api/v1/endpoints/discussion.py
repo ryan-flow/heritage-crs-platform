@@ -349,6 +349,150 @@ class CommentIn(BaseModel):
     content: str = Field(..., min_length=1)
 
 
+# ── 推荐 / 热门 / 模板 ──────────────────────────────────
+
+TEMPLATES = [
+    {
+        "name": "体验分享",
+        "title_template": "我在{地点}体验了{项目}",
+        "content_template": "分享我的非遗体验...",
+    },
+    {
+        "name": "求科普",
+        "title_template": "请问{项目}有什么讲究？",
+        "content_template": "想了解关于...",
+    },
+    {
+        "name": "活动反馈",
+        "title_template": "参加了{活动}后的感受",
+        "content_template": "这次活动让我...",
+    },
+    {
+        "name": "讨论交流",
+        "title_template": "关于{话题}，大家怎么看？",
+        "content_template": "我认为...",
+    },
+]
+
+
+@router.get("/recommend/")
+def get_recommend_topics(
+    request: Request,
+    user_id: int | None = None,
+    limit: int = 5,
+    db: Session = Depends(get_db),
+):
+    """获取推荐话题
+
+    基于用户偏好（如有 user_id）或按点赞数排序返回推荐话题。
+    有 user_id 时使用推荐引擎的个人化推荐；
+    无 user_id 时按 like_count 降序返回热门话题。
+    """
+    if user_id:
+        # 有用户ID时使用推荐引擎
+        user = db.query(User).filter(User.id == user_id).first()
+        if not user:
+            raise HTTPException(status_code=404, detail="用户不存在")
+        from app.services.recommendation_service import build_user_profile, recommend_topics
+        profile = build_user_profile(db, user_id)
+        items = recommend_topics(db, profile, limit=limit, scene="discussion")
+        topic_ids = [t["id"] for t in items]
+        topics = (
+            db.query(DiscussionTopic)
+            .filter(DiscussionTopic.id.in_(topic_ids))
+            .all()
+        ) if topic_ids else []
+        topic_map = {t.id: t for t in topics}
+        liked_ids: set[int] = set()
+        favorited_ids: set[int] = set()
+        if user_id:
+            liked_ids = {
+                r.topic_id
+                for r in db.query(DiscussionLike).filter(DiscussionLike.user_id == user_id).all()
+                if r.topic_id in topic_ids
+            }
+            favorited_ids = {
+                r.topic_id
+                for r in db.query(DiscussionFavorite).filter(DiscussionFavorite.user_id == user_id).all()
+                if r.topic_id in topic_ids
+            }
+        tag_map = _get_tags(db, topic_ids)
+        result = []
+        for rec in items:
+            topic = topic_map.get(rec["id"])
+            if not topic:
+                continue
+            item = _topic_to_dict(
+                topic,
+                liked=rec["id"] in liked_ids,
+                favorited=rec["id"] in favorited_ids,
+                tags=tag_map.get(rec["id"], []),
+                request=request,
+            )
+            item["reason"] = rec.get("reason", "")
+            result.append(item)
+        return success({"items": result, "total": len(result)})
+
+    # 无 user_id 时按点赞数降序
+    topics = (
+        db.query(DiscussionTopic)
+        .order_by(DiscussionTopic.like_count.desc(), DiscussionTopic.id.desc())
+        .limit(limit)
+        .all()
+    )
+    topic_ids = [t.id for t in topics]
+    tag_map = _get_tags(db, topic_ids)
+    items = [
+        _topic_to_dict(t, tags=tag_map.get(t.id, []), request=request)
+        for t in topics
+    ]
+    return success({"items": items, "total": len(items)})
+
+
+@router.get("/hot/")
+def get_hot_topics(
+    request: Request,
+    limit: int = 10,
+    db: Session = Depends(get_db),
+):
+    """获取热门话题
+
+    按热度公式排序：heat = like_count + comment_count * 2 + favorite_count * 1.5
+    返回前 limit 条。
+    """
+    topics = db.query(DiscussionTopic).all()
+    topic_ids = [t.id for t in topics]
+    tag_map = _get_tags(db, topic_ids)
+
+    # 计算综合热度并排序
+    items_with_heat = []
+    for t in topics:
+        heat = t.like_count + t.comment_count * 2 + t.favorite_count * 1.5
+        items_with_heat.append((t, heat))
+
+    items_with_heat.sort(key=lambda x: (x[1], x[0].id), reverse=True)
+    top_topics = items_with_heat[:limit]
+
+    # 获取当前用户的点赞/收藏状态（如有 user_id 可扩展）
+    items = [
+        {
+            **_topic_to_dict(t, tags=tag_map.get(t.id, []), request=request),
+            "heat_score_raw": round(heat, 1),
+        }
+        for t, heat in top_topics
+    ]
+    return success({"items": items, "total": len(items)})
+
+
+@router.get("/templates/")
+def get_post_templates():
+    """获取发帖模板列表
+
+    返回预设的发帖模板，供前端在创建新话题时使用。
+    """
+    return success({"items": TEMPLATES, "total": len(TEMPLATES)})
+
+
 # ── Frontend-compatible routes ──────────────────────────────
 
 

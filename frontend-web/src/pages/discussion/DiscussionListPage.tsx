@@ -1,17 +1,30 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { Heart, MessageCircle, Bookmark, Plus, MessageSquareText } from 'lucide-react';
+import { Heart, MessageCircle, Bookmark, Plus, MessageSquareText, Search } from 'lucide-react';
 import { apiRequest } from '../../lib/api';
 import { DiscussionTopic } from '../../types';
 import CoverImage from '../../components/ui/CoverImage';
 import { GlassCard } from '../../components/ui/GlassCard';
 import { SkeletonLoader } from '../../components/ui/SkeletonLoader';
 
+const TAG_FILTERS = ['戏曲', '工艺', '节俗', '求科普', '传统音乐', '传统美术', '传统技艺', '民俗'];
+
 export default function DiscussionListPage() {
   const navigate = useNavigate();
+  const [sort, setSort] = useState<'new' | 'hot'>('new');
+  const [search, setSearch] = useState('');
+  const [activeTag, setActiveTag] = useState('');
+
   const { data, isLoading } = useQuery({
-    queryKey: ['discussions'],
-    queryFn: () => apiRequest<{ code: number; data: DiscussionTopic[] }>('/discussion/'),
+    queryKey: ['discussions', sort, search, activeTag],
+    queryFn: () => {
+      const params = new URLSearchParams();
+      params.set('sort', sort);
+      if (search.trim()) params.set('keyword', search.trim());
+      if (activeTag) params.set('tag', activeTag);
+      return apiRequest<{ code: number; data: DiscussionTopic[] }>(`/discussion/?${params.toString()}`);
+    },
   });
   const topics = (data?.data || []) as DiscussionTopic[];
 
@@ -38,6 +51,60 @@ export default function DiscussionListPage() {
         <p className="relative text-sm text-white/85 font-sans">
           分享和探讨非遗文化的方方面面
         </p>
+      </div>
+
+      {/* ── Search Bar ── */}
+      <div className="relative mb-3.5">
+        <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-muted" />
+        <input
+          type="text"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="搜索讨论话题..."
+          className="w-full h-10 rounded-full pl-[38px] pr-[18px] bg-parchment border border-[#ead7c0] text-sm text-ink outline-none box-border focus:border-cinnabar-200/60 focus:ring-2 focus:ring-cinnabar-800/10 transition-colors font-sans"
+        />
+      </div>
+
+      {/* ── Sort Toggle ── */}
+      <div className="flex items-center gap-2 mb-3.5">
+        <button
+          type="button"
+          onClick={() => setSort('new')}
+          className={`text-xs font-semibold px-3.5 py-1.5 rounded-full transition-all font-sans ${
+            sort === 'new'
+              ? 'bg-cinnabar-100 text-cinnabar-600'
+              : 'bg-parchment text-ink-muted'
+          }`}
+        >
+          最新
+        </button>
+        <button
+          type="button"
+          onClick={() => setSort('hot')}
+          className={`text-xs font-semibold px-3.5 py-1.5 rounded-full transition-all font-sans ${
+            sort === 'hot'
+              ? 'bg-cinnabar-100 text-cinnabar-600'
+              : 'bg-parchment text-ink-muted'
+          }`}
+        >
+          最热
+        </button>
+      </div>
+
+      {/* ── Tag Filter Chips ── */}
+      <div className="flex gap-2 overflow-auto pb-2 mb-3.5 whitespace-nowrap">
+        {TAG_FILTERS.map((tag) => (
+          <button
+            key={tag}
+            type="button"
+            onClick={() => setActiveTag(activeTag === tag ? '' : tag)}
+            className={`chip !min-h-0 !py-1 !px-3 text-[11px] shrink-0 transition-all ${
+              activeTag === tag ? 'chip-active' : ''
+            }`}
+          >
+            {tag}
+          </button>
+        ))}
       </div>
 
       {/* ── Loading State ── */}
@@ -143,7 +210,7 @@ export default function DiscussionListPage() {
       {/* ── Composer FAB ── */}
       <button
         type="button"
-        onClick={() => navigate('/discussion')}
+        onClick={() => navigate('/discussion/create')}
         className="fixed right-5 bottom-28 z-50 w-14 h-14 rounded-full flex flex-col items-center justify-center border-none cursor-pointer guofeng-press"
         style={{
           background: 'linear-gradient(135deg, #7a2f25, #b74f3b)',
