@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback, useState } from 'react';
+import { useRef, useCallback, useState } from 'react';
 import { Volume2, VolumeX } from 'lucide-react';
 
 interface Props {
@@ -7,6 +7,7 @@ interface Props {
   speaking?: boolean;
   size?: number;
   onSpeak?: () => void;
+  greeting?: string;
 }
 
 const API_BASE = import.meta.env.VITE_API_BASE || '/api/v1';
@@ -17,23 +18,42 @@ export function DigitalHumanModel({
   speaking = false,
   size = 280,
   onSpeak,
+  greeting = '来跟我聊聊吧！',
 }: Props) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [clicked, setClicked] = useState(false);
+  const [ttsSpeaking, setTtsSpeaking] = useState(false);
 
   const handleClick = useCallback(() => {
     setClicked(true);
     setTimeout(() => setClicked(false), 600);
     onSpeak?.();
-  }, [onSpeak]);
+    if (greeting && !audioRef.current?.src) {
+      fetch(`${API_BASE}/ai/tts`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: greeting }),
+      }).then(r => r.json()).then(data => {
+        if (data.code === 0 && data.data?.audio_url) {
+          const url = data.data.audio_url.startsWith('http')
+            ? data.data.audio_url
+            : `${API_BASE.replace('/api/v1', '')}${data.data.audio_url}`;
+          if (!audioRef.current) audioRef.current = new Audio();
+          audioRef.current.src = url;
+          setTtsSpeaking(true);
+          audioRef.current.onended = () => setTtsSpeaking(false);
+          audioRef.current.play();
+        }
+      }).catch(() => {});
+    }
+  }, [onSpeak, greeting]);
 
   const toggleSpeak = useCallback(() => {
-    if (speaking && audioRef.current) { audioRef.current.pause(); }
-    onSpeak?.();
-  }, [speaking, onSpeak]);
+    if (ttsSpeaking && audioRef.current) { audioRef.current.pause(); setTtsSpeaking(false); }
+  }, [ttsSpeaking]);
 
   const scale = variant === 'hero' ? 1.04 : variant === 'fab' ? 0.72 : 1;
-  const stateClass = speaking ? 'state-speaking' : 'state-open';
+  const stateClass = (speaking || ttsSpeaking) ? 'state-speaking' : 'state-open';
   const moodClass = `mood-${mood}`;
 
   return (
@@ -42,10 +62,10 @@ export function DigitalHumanModel({
       style={{ width: size, height: size }}
       onClick={handleClick}
     >
-      {/* TTS button (top-right corner) */}
-      {onSpeak && (
+      {/* TTS indicator */}
+      {greeting && (
         <button onClick={toggleSpeak} className="dhm-tts-btn">
-          {speaking ? <VolumeX size={14} /> : <Volume2 size={14} />}
+          {ttsSpeaking ? <VolumeX size={14} /> : <Volume2 size={14} />}
         </button>
       )}
 

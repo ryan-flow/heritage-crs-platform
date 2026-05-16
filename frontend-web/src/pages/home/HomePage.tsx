@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { ArrowRight, MapPin, Clock, MessageSquare, BookOpen, Sparkles, ChevronRight, Calendar } from 'lucide-react';
@@ -22,7 +22,6 @@ const QUICK_ENTRIES = [
 export default function HomePage() {
   const navigate = useNavigate();
   const { session } = useAuthStore();
-  const [greeting, setGreeting] = useState('');
   const { data, isLoading } = useQuery({
     queryKey: ['recommend', 'home'],
     queryFn: () => apiRequest<{ code: number; data: RecommendData }>(`/recommend/?user_id=${session?.userId}&scene=home`),
@@ -38,13 +37,6 @@ export default function HomePage() {
   const trackClick = async (type: string, id: number, scene = 'home_page') => {
     try { await apiRequest('/recommend/track', { method: 'POST', data: { user_id: session?.userId, action: 'click', target_type: type, target_id: id, source_scene: scene } }); } catch {}
   };
-
-  const handleDigitalHumanGreeting = useCallback(() => {
-    const greetings = ['来跟我聊聊吧！', '想知道非遗的秘密吗？', '点我探索非遗世界~', '今天想了解什么呢？'];
-    const msg = greetings[Math.floor(Math.random() * greetings.length)];
-    setGreeting(msg);
-    setTimeout(() => setGreeting(''), 2800);
-  }, []);
 
   return (
     <div className="home-page px-4 sm:px-6 pb-10 space-y-5 max-w-2xl mx-auto">
@@ -64,17 +56,9 @@ export default function HomePage() {
         <div className="absolute top-1/4 right-1/4 w-2 h-2 rounded-full bg-white/25 ping-slow pointer-events-none" />
         <div className="absolute bottom-1/3 left-1/4 w-1.5 h-1.5 rounded-full bg-amber-200/20 ping-slow pointer-events-none" style={{ animationDelay: '1.5s' }} />
 
-        {/* 数字人 — 居中 220px，位于文字上方 */}
+        {/* 数字人 — 居中 220px */}
         <div className="relative z-10">
-          <DigitalHumanModel variant="hero" mood={mood} size={220} onSpeak={handleDigitalHumanGreeting} />
-          {greeting && (
-            <div className="absolute -top-12 left-1/2 -translate-x-1/2 bg-white/95 backdrop-blur-md text-ink-secondary text-sm font-semibold px-4 py-2.5 rounded-[20px] rounded-bl-md shadow-lg animate-fade-in-up z-20 whitespace-nowrap"
-              style={{ border: '1px solid rgba(200,155,100,0.3)' }}>
-              {greeting}
-              <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-white/95 rotate-45"
-                style={{ borderRight: '1px solid rgba(200,155,100,0.3)', borderBottom: '1px solid rgba(200,155,100,0.3)' }} />
-            </div>
-          )}
+          <DigitalHumanModel variant="hero" mood={mood} size={220} greeting="来跟我聊聊吧！" />
         </div>
 
         {/* 文字块 — 位于数字人下方 */}
