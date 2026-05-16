@@ -9,12 +9,6 @@ interface Props {
   onSpeak?: () => void;
 }
 
-const MOOD_LABELS: Record<string, string> = {
-  curious: '了解中',
-  thinking: '思考中',
-  confident: '已懂你',
-};
-
 const API_BASE = import.meta.env.VITE_API_BASE || '/api/v1';
 
 export function DigitalHumanModel({
@@ -33,32 +27,8 @@ export function DigitalHumanModel({
     onSpeak?.();
   }, [onSpeak]);
 
-  const speak = useCallback(async (text: string) => {
-    try {
-      const res = await fetch(`${API_BASE}/ai/tts`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text }),
-      });
-      const data = await res.json();
-      if (data.code === 0 && data.data?.audio_url) {
-        const audioUrl = data.data.audio_url.startsWith('http')
-          ? data.data.audio_url
-          : `${API_BASE.replace('/api/v1', '')}${data.data.audio_url}`;
-        if (audioRef.current) {
-          audioRef.current.src = audioUrl;
-          audioRef.current.play();
-        }
-      }
-    } catch (e) {
-      // TTS fallback silently
-    }
-  }, []);
-
   const toggleSpeak = useCallback(() => {
-    if (speaking && audioRef.current) {
-      audioRef.current.pause();
-    }
+    if (speaking && audioRef.current) { audioRef.current.pause(); }
     onSpeak?.();
   }, [speaking, onSpeak]);
 
@@ -69,23 +39,15 @@ export function DigitalHumanModel({
   return (
     <div
       className={`dhm-stage variant-${variant} ${stateClass} ${moodClass} ${clicked ? 'clicked' : ''} guofeng-press`}
-      style={{ width: size, height: size * 1.43 }}
+      style={{ width: size, height: size }}
       onClick={handleClick}
     >
-      {/* Mood tag */}
-      {variant === 'ai' && (
-        <div className={`mood-tag mood-tag-${mood}`}>
-          <span className="mood-tag-text">{MOOD_LABELS[mood] || '了解中'}</span>
-        </div>
+      {/* TTS button (top-right corner) */}
+      {onSpeak && (
+        <button onClick={toggleSpeak} className="dhm-tts-btn">
+          {speaking ? <VolumeX size={14} /> : <Volume2 size={14} />}
+        </button>
       )}
-
-      {/* Background effects */}
-      <div className="dhm-orbit orbit-1" />
-      <div className="dhm-orbit orbit-2" />
-      <div className="dhm-spark spark-1" />
-      <div className="dhm-spark spark-2" />
-      <div className="dhm-spark spark-3" />
-      <div className="dhm-pedestal" />
 
       {/* Avatar container */}
       <div className="dhm-avatar" style={{ transform: `scale(${scale})` }}>
@@ -138,18 +100,9 @@ export function DigitalHumanModel({
         </div>
       </div>
 
-      {/* TTS control */}
-      {onSpeak && (
-        <button onClick={toggleSpeak} className="dhm-tts-btn">
-          {speaking ? <VolumeX size={16} /> : <Volume2 size={16} />}
-        </button>
-      )}
-
       <audio ref={audioRef} onEnded={() => onSpeak?.()} />
     </div>
   );
 }
 
-// Export speak function for external use
-export { MOOD_LABELS };
 export type { Props as DigitalHumanModelProps };
