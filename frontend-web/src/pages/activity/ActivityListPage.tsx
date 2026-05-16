@@ -2,8 +2,9 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { MapPin, Calendar, Users } from 'lucide-react';
-import { apiRequest, buildImageUrl } from '../../lib/api';
+import { apiRequest } from '../../lib/api';
 import { Activity } from '../../types';
+import CoverImage from '../../components/ui/CoverImage';
 
 const statuses = ['全部', 'open', 'closed', 'full'] as const;
 const statusLabels: Record<string, string> = { open: '报名中', closed: '已结束', full: '已满' };
@@ -66,9 +67,9 @@ export default function ActivityListPage() {
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 position: 'relative',
               }}>
-                {item.cover_url
-                  ? <img src={buildImageUrl(item.cover_url)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} loading="lazy" />
-                  : <Calendar size={48} style={{ color: '#c08a3e', opacity: 0.3 }} />}
+                <CoverImage coverUrl={item.cover_url} alt="" loading="lazy"
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  fallback={<Calendar size={48} style={{ color: '#c08a3e', opacity: 0.3 }} />} />
                 <span style={{
                   position: 'absolute', top: 12, left: 12,
                   padding: '5px 14px', borderRadius: 999, fontSize: 11, fontWeight: 700,

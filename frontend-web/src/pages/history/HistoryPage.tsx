@@ -1,7 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { ArrowLeft, Eye, Clock } from 'lucide-react';
-import { apiRequest, buildImageUrl } from '../../lib/api';
+import { apiRequest } from '../../lib/api';
+import CoverImage from '../../components/ui/CoverImage';
 import { ContentItem } from '../../types';
 import { useAuthStore } from '../../stores/auth-store';
 import { GlassCard } from '../../components/ui/GlassCard';
@@ -46,7 +47,7 @@ export default function HistoryPage() {
             >
               {item.cover_url ? (
                 <div className="w-12 h-12 shrink-0 rounded-lg overflow-hidden bg-parchment-dark">
-                  <img src={buildImageUrl(item.cover_url)} alt="" className="w-full h-full object-cover" loading="lazy" />
+                  <CoverImage coverUrl={item.cover_url} alt="" className="w-full h-full object-cover" loading="lazy" />
                 </div>
               ) : null}
               <div className="flex-1 min-w-0">

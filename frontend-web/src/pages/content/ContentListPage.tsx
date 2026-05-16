@@ -2,8 +2,9 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Search } from 'lucide-react';
-import { apiRequest, buildImageUrl } from '../../lib/api';
+import { apiRequest } from '../../lib/api';
 import { ContentItem } from '../../types';
+import CoverImage from '../../components/ui/CoverImage';
 
 const categories = ['全部', '传统工艺', '戏曲音乐', '民俗节俗', '饮食医药', '民间文学', '传统美术'];
 
@@ -75,7 +76,7 @@ export default function ContentListPage() {
                 fontSize: 28, color: '#c08a3e', overflow: 'hidden',
               }}>
                 {item.cover_url
-                  ? <img src={buildImageUrl(item.cover_url)} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  ? <CoverImage coverUrl={item.cover_url} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   : <span className="opacity-30">📖</span>}
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>

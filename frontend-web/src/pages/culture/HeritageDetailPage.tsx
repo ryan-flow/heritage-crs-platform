@@ -2,7 +2,8 @@ import { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { ArrowLeft, Tag } from 'lucide-react';
-import { apiRequest, buildImageUrl } from '../../lib/api';
+import { apiRequest } from '../../lib/api';
+import CoverImage from '../../components/ui/CoverImage';
 import { ContentItem } from '../../types';
 import { useAuthStore } from '../../stores/auth-store';
 import { GlassCard } from '../../components/ui/GlassCard';
@@ -53,7 +54,7 @@ export default function HeritageDetailPage() {
     <div className="pb-8">
       {item.cover_url && (
         <div className="h-48 bg-parchment-dark relative">
-          <img src={buildImageUrl(item.cover_url)} alt={item.title} className="w-full h-full object-cover" />
+          <CoverImage coverUrl={item.cover_url} alt={item.title} className="w-full h-full object-cover" />
           <button onClick={() => navigate(-1)} className="absolute top-4 left-4 p-2 glass-card rounded-xl">
             <ArrowLeft size={18} className="text-ink" />
           </button>

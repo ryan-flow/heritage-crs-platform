@@ -2,7 +2,8 @@ import { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { ArrowRight, MapPin, Clock, MessageSquare, BookOpen, Sparkles, ChevronRight, Calendar } from 'lucide-react';
-import { apiRequest, buildImageUrl, shortenReason } from '../../lib/api';
+import { apiRequest, shortenReason } from '../../lib/api';
+import CoverImage from '../../components/ui/CoverImage';
 import { RecommendData, ContentItem, Activity, DiscussionTopic } from '../../types';
 import { DigitalHumanModel } from '../../components/digital-human/DigitalHumanModel';
 import '../../components/digital-human/DigitalHumanModel.css';
@@ -163,7 +164,7 @@ export default function HomePage() {
                 {firstContent.cover_url ? (
                   <div className="w-[114px] h-[78px] rounded-2xl overflow-hidden shrink-0 transition-transform duration-300 group-hover:scale-105"
                     style={{ boxShadow: '0 6px 16px rgba(121,58,31,0.08)' }}>
-                    <img src={buildImageUrl(firstContent.cover_url)} alt="" className="w-full h-full object-cover" loading="lazy" />
+                    <CoverImage coverUrl={firstContent.cover_url} alt="" className="w-full h-full object-cover" loading="lazy" fallback={<span className="text-3xl">📜</span>} />
                   </div>
                 ) : (
                   <div className="w-[114px] h-[78px] rounded-2xl shrink-0 flex items-center justify-center text-3xl
@@ -198,7 +199,7 @@ export default function HomePage() {
                     }}>
                     <div className="h-[110px] flex items-center justify-center overflow-hidden bg-[#f0e6d8]">
                       {item.cover_url
-                        ? <img src={buildImageUrl(item.cover_url)} alt="" className="w-full h-full object-cover transition-transform duration-500 hover:scale-110" loading="lazy" />
+                        ? <CoverImage coverUrl={item.cover_url} alt="" className="w-full h-full object-cover transition-transform duration-500 hover:scale-110" loading="lazy" />
                         : <span className="text-4xl opacity-40">📖</span>}
                     </div>
                     <div className="p-3 flex-1 flex flex-col">
@@ -229,7 +230,7 @@ export default function HomePage() {
                     <div className="w-[72px] h-[72px] rounded-xl shrink-0 overflow-hidden"
                       style={{ background: '#f0e6d8' }}>
                       {item.cover_url
-                        ? <img src={buildImageUrl(item.cover_url)} alt="" className="w-full h-full object-cover" loading="lazy" />
+                        ? <CoverImage coverUrl={item.cover_url} alt="" className="w-full h-full object-cover" loading="lazy" fallback={<Calendar size={22} className="text-cinnabar-500/40 m-auto mt-[25px]" />} />
                         : <Calendar size={22} className="text-cinnabar-500/40 m-auto mt-[25px]" />}
                     </div>
                     <div className="flex-1 min-w-0">

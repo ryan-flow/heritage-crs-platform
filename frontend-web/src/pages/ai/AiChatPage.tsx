@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Send, Trash2, Sparkles, RotateCcw, Volume2, VolumeX, ArrowLeft, Info, ChevronRight, ChevronDown, ChevronUp, ThumbsUp, ThumbsDown, Copy, BookOpen, Calendar, MessageCircle } from 'lucide-react';
-import { apiRequest, buildImageUrl, shortenReason } from '../../lib/api';
+import { apiRequest, shortenReason } from '../../lib/api';
+import CoverImage from '../../components/ui/CoverImage';
 import { useAuthStore } from '../../stores/auth-store';
 import { useChatStore } from '../../stores/chat-store';
 import { AiChatResponse, RecommendCard, CrsAnswerResponse } from '../../types';
@@ -420,7 +421,7 @@ export default function AiChatPage() {
                   }}
                   className="w-full text-left border-none bg-transparent cursor-pointer p-4 flex gap-3.5 items-start">
                     {card.cover_url ? (
-                      <img src={buildImageUrl(card.cover_url)} alt="" className="w-[52px] h-[52px] rounded-xl object-cover shrink-0" style={{ background: '#f5e8d5' }} />
+                      <CoverImage coverUrl={card.cover_url} alt="" className="w-[52px] h-[52px] rounded-xl object-cover shrink-0" style={{ background: '#f5e8d5' }} />
                     ) : (
                       <div className="w-[52px] h-[52px] rounded-xl shrink-0 flex items-center justify-center text-xl"
                         style={{ background: 'linear-gradient(135deg, #f5e8d5, #eadcc8)', color: '#c08a3e' }}>

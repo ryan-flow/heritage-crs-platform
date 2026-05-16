@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { Sparkles, ExternalLink, ChevronDown, ChevronUp, ThumbsUp, ThumbsDown } from 'lucide-react'
 import { RecommendCard } from '../../types'
-import { buildImageUrl } from '../../lib/api'
+import CoverImage from '../ui/CoverImage'
 import { useState } from 'react'
 
 interface Props {
@@ -49,7 +49,7 @@ function RecommendCardItem({ card, idx, onTrack }: { card: RecommendCard; idx: n
       <div className="flex gap-3 p-3 cursor-pointer" onClick={handleClick}>
         {card.cover_url && (
           <div className="w-20 h-20 shrink-0 rounded-lg overflow-hidden bg-amber-50">
-            <img src={buildImageUrl(card.cover_url)} alt={card.title} className="w-full h-full object-cover" />
+            <CoverImage coverUrl={card.cover_url} alt={card.title} className="w-full h-full object-cover" />
           </div>
         )}
         <div className="flex-1 min-w-0">

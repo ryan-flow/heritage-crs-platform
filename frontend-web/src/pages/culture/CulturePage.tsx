@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Search, ChevronRight } from 'lucide-react';
-import { apiRequest, buildImageUrl } from '../../lib/api';
+import { apiRequest } from '../../lib/api';
+import CoverImage from '../../components/ui/CoverImage';
 import { ContentItem } from '../../types';
 import { GlassCard } from '../../components/ui/GlassCard';
 import { SkeletonLoader } from '../../components/ui/SkeletonLoader';
@@ -75,7 +76,7 @@ export default function CulturePage() {
             >
               {item.cover_url && (
                 <div className="w-14 h-14 shrink-0 rounded-lg overflow-hidden bg-parchment-dark">
-                  <img src={buildImageUrl(item.cover_url)} alt="" className="w-full h-full object-cover" loading="lazy" />
+                  <CoverImage coverUrl={item.cover_url} alt="" className="w-full h-full object-cover" loading="lazy" />
                 </div>
               )}
               <div className="flex-1 min-w-0">
