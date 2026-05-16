@@ -450,7 +450,7 @@ export default function ProfilePage() {
             briefValue={
               heritageCategories.length
                 ? heritageCategories.slice(0, 3).join('、')
-                : '暂无偏好数据'
+                : '和黑塔聊聊，让我了解你~'
             }
             expanded={expandedCards.has(1)}
             onToggle={() => toggleCard(1)}

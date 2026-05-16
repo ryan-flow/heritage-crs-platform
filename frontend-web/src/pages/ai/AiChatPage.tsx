@@ -310,9 +310,9 @@ export default function AiChatPage() {
         {store.messages.length === 0 && (
           <>
             {mode === 'cold_start' ? (
-              /* ── Cold Start: digital human + welcome + category prompts ── */
-              <div className="flex flex-col items-center pt-6">
-                <div className="rounded-[30px] px-5 py-8 text-center relative overflow-hidden mb-6 w-full"
+              /* ── Cold Start: badge → h1 → DH → welcome → category prompts ── */
+              <div className="flex flex-col items-center pt-4">
+                <div className="rounded-[30px] px-5 py-5 text-center relative overflow-hidden mb-5 w-full"
                   style={{
                     background: 'linear-gradient(160deg, #3d2340 0%, #6b3a5b 25%, #8b4513 60%, #5c3a20 100%)',
                     boxShadow: '0 20px 48px rgba(60,25,35,0.24), 0 0 0 1px rgba(255,238,220,0.06)',
@@ -322,30 +322,29 @@ export default function AiChatPage() {
                   <span className="relative inline-block px-3.5 py-1 rounded-full text-xs font-semibold bg-white/[0.14] text-[#ffe1bc] mb-3 tracking-wider">
                     ✦ 黑塔 · Heritage AI
                   </span>
+                  <h1 className="relative text-[26px] font-black text-[#fff9f1] m-0 mb-3 tracking-wide" style={{ textShadow: '0 4px 18px rgba(0,0,0,0.2)' }}>
+                    想认识你
+                  </h1>
                   <div className="relative flex justify-center">
                     <DigitalHumanModel variant="ai" mood={mood} size={200} />
                   </div>
                   <div className="absolute top-8 right-8 w-1.5 h-1.5 rounded-full bg-amber-200/30 ping-slow" />
                   <div className="absolute bottom-20 left-6 w-1 h-1 rounded-full bg-purple-200/30 ping-slow" style={{ animationDelay: '1s' }} />
                 </div>
-                <p className="text-sm text-[#5a4430] mb-5 leading-relaxed px-4 text-center">
+                <p className="text-sm text-ink-secondary mb-5 leading-relaxed px-4 text-center">
                   我是黑塔，你的非遗导览官。选一个你感兴趣的方向，让我为你推荐吧~
                 </p>
                 {Object.entries(COLD_START_CATEGORIES).map(([category, questions]) => (
                   <div key={category} className="w-full mb-4">
-                    <h3 className="text-xs font-bold text-[#8b6a4b] mb-2.5 flex items-center gap-1.5">
+                    <h3 className="text-xs font-bold text-ink-muted mb-2.5 flex items-center gap-1.5">
                       <span className="w-1.5 h-1.5 rounded-full bg-brand" />
                       {category}
                     </h3>
                     <div className="flex flex-wrap gap-2">
                       {questions.map((q, qi) => (
                         <button key={qi} onClick={() => handleSend(q)}
-                          className="px-4 py-2.5 rounded-full text-xs cursor-pointer border-none transition-all duration-200 hover:shadow-md active:scale-[0.97]"
-                          style={{
-                            background: 'linear-gradient(180deg, #fbefe3, #f3e2cf)',
-                            border: '1px solid rgba(217,184,147,0.26)',
-                            color: '#7b4d27',
-                          }}>{q}</button>
+                          className="px-4 py-2.5 rounded-full text-xs cursor-pointer border-none transition-all duration-200 hover:shadow-md active:scale-[0.97] bg-gradient-to-b from-gold-50 to-gold-100 text-gold-600 border border-gold-200/30"
+                        >{q}</button>
                       ))}
                     </div>
                   </div>
