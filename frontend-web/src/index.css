@@ -291,6 +291,67 @@ body {
 }
 .rise-in { animation: riseIn 0.44s ease-out both; }
 
+/* 逐项交错入场 — 通过 animation-delay 控制 */
+.rise-in-stagger > * {
+  opacity: 0;
+  animation: riseIn 0.44s ease-out forwards;
+}
+.rise-in-stagger > *:nth-child(1) { animation-delay: 0s; }
+.rise-in-stagger > *:nth-child(2) { animation-delay: 0.06s; }
+.rise-in-stagger > *:nth-child(3) { animation-delay: 0.12s; }
+.rise-in-stagger > *:nth-child(4) { animation-delay: 0.18s; }
+.rise-in-stagger > *:nth-child(5) { animation-delay: 0.24s; }
+.rise-in-stagger > *:nth-child(6) { animation-delay: 0.30s; }
+.rise-in-stagger > *:nth-child(7) { animation-delay: 0.36s; }
+.rise-in-stagger > *:nth-child(8) { animation-delay: 0.42s; }
+
+/* fade-in only (no translate) */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.fade-in { animation: fadeIn 0.35s ease-out both; }
+.fade-in-delay-1 { animation-delay: 0.1s; }
+.fade-in-delay-2 { animation-delay: 0.2s; }
+.fade-in-delay-3 { animation-delay: 0.3s; }
+
+/* fade-in-up — 上滑淡入，用于首页区块交错入场 */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in-up {
+  animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* 首页快捷入口卡片交错入场 */
+.quick-entry-card {
+  animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* 首页卡片 hover 增强 */
+.home-hero { transition: box-shadow 0.4s ease; }
+.content-card { transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+.event-card { transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+.topic-card { transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+
+.home-page {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+  .home-hero { min-height: 280px; border-radius: 40px; }
+  .home-hero h2 { font-size: 36px; }
+}
+
+/* 呼吸脉冲 — 用于重点元素吸引注意力 */
+@keyframes breathe {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(159, 45, 34, 0.24); }
+  50%      { box-shadow: 0 0 0 8px rgba(159, 45, 34, 0); }
+}
+.breathe-ring { animation: breathe 2.4s ease-in-out infinite; }
+
 /* ── 分隔线 ── */
 .split-line {
   height: 1px;
