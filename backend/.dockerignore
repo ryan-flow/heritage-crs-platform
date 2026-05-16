@@ -6,6 +6,9 @@ venv/
 *.db
 *.sqlite3
 storage/tts/
+storage/pdf_import/
+storage/web_crawl/
+storage/uploads/
 crawler/output/
 tools/archive/
 tests/
