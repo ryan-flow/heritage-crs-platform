@@ -411,28 +411,7 @@
   background: rgba(173, 142, 255, 0.48);
 }
 
-/* TTS button */
-.dhm-tts-btn {
-  position: absolute;
-  bottom: 8px;
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 4px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.6);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(229, 221, 208, 0.5);
-  cursor: pointer;
-  color: var(--color-ink-secondary);
-  z-index: 10;
-  transition: all 0.2s;
-}
-.dhm-tts-btn:hover {
-  background: rgba(255,255,255,0.9);
-  color: var(--color-ink);
-}
-
-/* ═══════════ 心情标签 ═══════════ */
+/* ═══════════ 心情标签 (unused, kept for reference) ═══════════ */
 .mood-tag {
   position: absolute;
   bottom: 12px;

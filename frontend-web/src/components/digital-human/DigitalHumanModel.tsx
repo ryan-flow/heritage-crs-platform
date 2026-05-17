@@ -1,12 +1,9 @@
-import { useRef, useCallback, useState } from 'react';
-import { Volume2, VolumeX } from 'lucide-react';
+import { useState } from 'react';
 
 interface Props {
   variant?: 'hero' | 'ai' | 'fab';
   mood?: 'curious' | 'thinking' | 'confident';
-  speaking?: boolean;
   size?: number;
-  onSpeak?: () => void;
   greeting?: string;
 }
 
@@ -15,20 +12,16 @@ const API_BASE = import.meta.env.VITE_API_BASE || '/api/v1';
 export function DigitalHumanModel({
   variant = 'ai',
   mood = 'curious',
-  speaking = false,
   size = 280,
-  onSpeak,
   greeting = '来跟我聊聊吧！',
 }: Props) {
-  const audioRef = useRef<HTMLAudioElement | null>(null);
   const [clicked, setClicked] = useState(false);
-  const [ttsSpeaking, setTtsSpeaking] = useState(false);
+  const audioRef = { current: null as HTMLAudioElement | null };
 
-  const handleClick = useCallback(() => {
+  const handleClick = () => {
     setClicked(true);
     setTimeout(() => setClicked(false), 600);
-    onSpeak?.();
-    if (greeting && !audioRef.current?.src) {
+    if (greeting) {
       fetch(`${API_BASE}/ai/tts`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -40,35 +33,21 @@ export function DigitalHumanModel({
             : `${API_BASE.replace('/api/v1', '')}${data.data.audio_url}`;
           if (!audioRef.current) audioRef.current = new Audio();
           audioRef.current.src = url;
-          setTtsSpeaking(true);
-          audioRef.current.onended = () => setTtsSpeaking(false);
           audioRef.current.play();
         }
       }).catch(() => {});
     }
-  }, [onSpeak, greeting]);
-
-  const toggleSpeak = useCallback(() => {
-    if (ttsSpeaking && audioRef.current) { audioRef.current.pause(); setTtsSpeaking(false); }
-  }, [ttsSpeaking]);
+  };
 
   const scale = variant === 'hero' ? 1.04 : variant === 'fab' ? 0.72 : 1;
-  const stateClass = (speaking || ttsSpeaking) ? 'state-speaking' : 'state-open';
   const moodClass = `mood-${mood}`;
 
   return (
     <div
-      className={`dhm-stage variant-${variant} ${stateClass} ${moodClass} ${clicked ? 'clicked' : ''} guofeng-press`}
+      className={`dhm-stage variant-${variant} state-open ${moodClass} ${clicked ? 'clicked' : ''} guofeng-press`}
       style={{ width: size, height: size }}
       onClick={handleClick}
     >
-      {/* TTS indicator */}
-      {greeting && (
-        <button onClick={toggleSpeak} className="dhm-tts-btn">
-          {ttsSpeaking ? <VolumeX size={14} /> : <Volume2 size={14} />}
-        </button>
-      )}
-
       {/* Avatar container */}
       <div className="dhm-avatar" style={{ transform: `scale(${scale})` }}>
         <div className="dhm-shadow" />
@@ -119,8 +98,6 @@ export function DigitalHumanModel({
           <div className="dhm-hem-line" />
         </div>
       </div>
-
-      <audio ref={audioRef} onEnded={() => onSpeak?.()} />
     </div>
   );
 }
