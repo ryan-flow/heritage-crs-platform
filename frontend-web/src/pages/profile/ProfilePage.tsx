@@ -190,7 +190,7 @@ function StatCard({
 }) {
   const Icon = STAT_ICONS[index] || TrendingUp;
   return (
-    <GlassCard className="!p-4 text-center !rounded-[28px]">
+    <GlassCard className="!p-4 text-center !rounded-[18px]">
       {loading ? (
         <div className="flex flex-col items-center gap-2">
           <SkeletonLoader variant="text" className="!h-6 !w-12" />
@@ -350,7 +350,7 @@ export default function ProfilePage() {
     <div className="px-6 pb-9 pt-0 space-y-[18px]">
 
       {/* ═══ Hero Banner — 用户信息头部 ═══ */}
-      <div className="relative overflow-hidden rounded-[30px] bg-gradient-to-br from-[#2a1611] via-cinnabar-700 to-gold-400 p-7 mt-4">
+      <div className="relative overflow-hidden rounded-[18px] bg-gradient-to-br from-[#2a1611] via-cinnabar-700 to-gold-400 p-7 mt-4">
         {/* 背景装饰 */}
         <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
         <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/2" />

@@ -55,7 +55,7 @@ export default function DashboardPage() {
             return (
               <GlassCard
                 key={i}
-                className="!p-4 !rounded-[28px] rise-in"
+                className="!p-4 !rounded-[18px] rise-in"
                 style={{ animationDelay: `${i * 0.05}s` }}
               >
                 <div className="flex items-center gap-3">

@@ -64,7 +64,7 @@ export default function DiscussionDetailPage() {
     return (
       <div className="px-5 py-5 space-y-4">
         <SkeletonLoader variant="text" className="!w-20 !h-4" />
-        <SkeletonLoader variant="image" className="!h-48 !rounded-[28px]" />
+        <SkeletonLoader variant="image" className="!h-48 !rounded-[18px]" />
         <SkeletonLoader variant="text" className="!w-3/4 !h-6" />
         <SkeletonLoader variant="text" className="!w-1/2 !h-4" />
         <SkeletonLoader variant="text" className="!h-20" />
@@ -103,7 +103,7 @@ export default function DiscussionDetailPage() {
 
       {/* ── Cover Image ── */}
       {item.cover_url && (
-        <div className="mb-4 rounded-[28px] overflow-hidden bg-parchment-dark">
+        <div className="mb-4 rounded-[18px] overflow-hidden bg-parchment-dark">
           <CoverImage
             coverUrl={item.cover_url}
             alt={item.title}

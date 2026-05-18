@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { ArrowLeft, Heart, Eye, Tag } from 'lucide-react';
+import { ArrowLeft, Heart, Eye, Tag, ChevronRight } from 'lucide-react';
 import { apiRequest } from '../../lib/api';
 import CoverImage from '../../components/ui/CoverImage';
 import { ContentItem } from '../../types';
@@ -24,6 +24,14 @@ export default function ContentDetailPage() {
 
   const item = data?.data;
 
+  // 猜你喜欢：相同分类的其他内容
+  const { data: relatedData } = useQuery({
+    queryKey: ['related-contents', item?.category],
+    queryFn: () => apiRequest<{ code: number; data: ContentItem[] }>(`/contents/?category=${item?.category || ''}&limit=4`),
+    enabled: !!item?.category,
+  });
+  const relatedItems = (relatedData?.data || []).filter((r: ContentItem) => r.id !== Number(id)).slice(0, 3);
+
   useEffect(() => {
     if (id && session?.userId) {
       apiRequest('/recommend/track', {
@@ -32,6 +40,9 @@ export default function ContentDetailPage() {
       }).catch(() => {});
     }
   }, [id, session?.userId]);
+
+  // Key 随加载状态变化，触发入场动画
+  const loadKey = isLoading ? 'loading' : `loaded-${id}`;
 
   if (isLoading) {
     return (
@@ -55,7 +66,7 @@ export default function ContentDetailPage() {
   }
 
   return (
-    <div className="pb-8">
+    <div className="pb-12 page-enter" key={loadKey}>
       {/* Hero Image Area */}
       {item.cover_url ? (
         <div className="h-56 bg-parchment-dark relative">
@@ -82,7 +93,7 @@ export default function ContentDetailPage() {
 
         {/* Meta Row */}
         <div className="flex items-center flex-wrap gap-2 mt-3 text-xs text-ink-muted">
-          {item.category && <SealBadge variant="gold">{item.category}</SealBadge>}
+          {item.category && <SealBadge variant="jade">{item.category}</SealBadge>}
           {item.region && (
             <span className="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full bg-parchment-dark/50 text-ink-secondary">
               <Tag size={11} /> {item.region}
@@ -115,10 +126,10 @@ export default function ContentDetailPage() {
           </div>
         )}
 
-        {/* Content Body */}
-        <div className="mt-5 text-sm text-ink leading-relaxed whitespace-pre-wrap space-y-3 font-sans">
+        {/* Content Body — prose-serif 排版系统 */}
+        <div className="mt-5 prose-serif whitespace-pre-wrap space-y-1">
           {(item.content || item.summary || '').split('\n').filter(Boolean).map((p, i) => (
-            <p key={i}>{p}</p>
+            <p key={i} className={i > 0 ? 'first:!text-inherit first:!float-none' : ''}>{p}</p>
           ))}
         </div>
 
@@ -129,6 +140,51 @@ export default function ContentDetailPage() {
           </p>
         )}
       </div>
+
+      {/* ═══════════════════════════════════════
+          猜你喜欢 — 同分类推荐文章
+         ═══════════════════════════════════════ */}
+      {relatedItems.length > 0 && (
+        <div className="px-4 mt-8 animate-fade-in-up">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-base font-bold text-ink flex items-center gap-2">
+              <span className="text-jade-500">📖</span> 猜你喜欢
+            </h3>
+            <button onClick={() => navigate('/content')}
+              className="text-xs text-brand font-semibold border-none bg-transparent cursor-pointer inline-flex items-center gap-0.5 hover:gap-1.5 transition-all">
+              更多 <ChevronRight size={12} />
+            </button>
+          </div>
+          <div className="flex gap-3 overflow-x-auto pb-2 -mx-4 px-4 snap-x snap-mandatory scrollbar-hide">
+            {relatedItems.map((r: ContentItem) => (
+              <button key={r.id} onClick={() => { navigate(`/content/${r.id}`); window.scrollTo(0, 0); }}
+                className="snap-start shrink-0 w-[160px] rounded-[18px] overflow-hidden text-left border-none bg-white cursor-pointer group
+                  transition-all duration-200 hover:-translate-y-1 hover:shadow-lg active:scale-[0.98]"
+                style={{
+                  background: 'linear-gradient(180deg, rgba(255,252,247,0.98), rgba(249,239,225,0.98))',
+                  boxShadow: '0 8px 20px rgba(121,58,31,0.06)',
+                  border: '1px solid rgba(219,191,155,0.18)',
+                }}>
+                <div className="h-[100px] bg-parchment-dark overflow-hidden">
+                  {r.cover_url ? (
+                    <CoverImage coverUrl={r.cover_url} alt="" className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" loading="lazy" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-2xl opacity-30">📖</div>
+                  )}
+                </div>
+                <div className="p-3">
+                  <h4 className="text-[13px] font-bold text-ink leading-snug line-clamp-2 mb-1
+                    transition-colors group-hover:text-brand">{r.title}</h4>
+                  {r.category && (
+                    <span className="text-[10px] text-jade-600 bg-jade-50 px-2 py-0.5 rounded-full font-medium">{r.category}</span>
+                  )}
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       <FloatingAiButton context={item?.title} />
     </div>
   );

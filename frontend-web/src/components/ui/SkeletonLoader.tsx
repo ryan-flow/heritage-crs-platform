@@ -11,5 +11,14 @@ export function SkeletonLoader({ variant = 'text', className = '' }: Props) {
     image: 'h-48 w-full rounded-lg',
   }[variant];
 
-  return <div className={`skeleton ${variantClass} ${className}`} />;
+  return (
+    <div
+      className={`rounded-[14px] ${variantClass} ${className}`}
+      style={{
+        background: 'linear-gradient(90deg, #f2e8da 25%, #eadcc8 50%, #f2e8da 75%)',
+        backgroundSize: '240% 100%',
+        animation: 'skeletonShimmer 1.4s ease infinite',
+      }}
+    />
+  );
 }

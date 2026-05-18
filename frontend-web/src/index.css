@@ -12,6 +12,10 @@
   --color-accent: #c08a3e;
   --color-accent-soft: #f7ecd6;
 
+  /* ── Hero 渐变统一 token ── */
+  --gradient-hero: linear-gradient(160deg, #5c1a1a 0%, #9f2d22 30%, #b34130 55%, #8b4513 100%);
+  --gradient-hero-ai: linear-gradient(160deg, #3d2340 0%, #6b3a5b 25%, #8b4513 60%, #5c3a20 100%);
+
   /* ── 文字层级 ── */
   --color-ink: #2c2416;
   --color-ink-secondary: #5a4430;
@@ -59,8 +63,10 @@
   --font-serif: "Noto Serif SC", "Source Han Serif SC", "STKaiti", "KaiTi", "STSong", serif;
   --font-sans: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", sans-serif;
 
-  /* ── 圆角 ── */
-  --radius-card: 28px;
+  /* ── 圆角 3 级体系 ── */
+  --radius-container: 32px;
+  --radius-card: 18px;
+  --radius-element: 10px;
   --radius-hero: 36px;
   --radius-pill: 999px;
 
@@ -85,7 +91,12 @@
 body {
   margin: 0;
   font-family: var(--font-sans);
-  background: linear-gradient(180deg, #fff8ef 0%, #f7efe0 42%, #f7f3eb 100%);
+  background:
+    /* 宣纸纹理：极淡的横向纤维 */
+    repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(139,106,75,0.02) 2px, rgba(139,106,75,0.02) 3px),
+    repeating-linear-gradient(90deg, transparent, transparent 4px, rgba(139,106,75,0.015) 4px, rgba(139,106,75,0.015) 5px),
+    /* 主背景渐变 */
+    linear-gradient(180deg, #fff8ef 0%, #f7efe0 42%, #f7f3eb 100%);
   color: var(--color-ink);
   -webkit-font-smoothing: antialiased;
   line-height: 1.6;
@@ -95,196 +106,26 @@ body {
 
 #root { max-width: 100%; margin: 0 auto; min-height: 100vh; }
 
-/* ═══════════════════════════════════════════
-   缺失组件：毛玻璃卡片 GlassCard
-   ═══════════════════════════════════════════ */
+/* GlassCard / InkButton / SealBadge / SkeletonLoader
+   → 样式已内联到各自组件文件中 */
 
-.glass-card {
-  background: linear-gradient(180deg, rgba(255, 252, 247, 0.98), rgba(249, 239, 225, 0.98));
-  border: 1px solid rgba(219, 191, 155, 0.18);
-  border-radius: var(--radius-card);
-  box-shadow: 0 14px 34px rgba(121, 58, 31, 0.08);
-  transition: all 0.22s ease;
-}
+/* 页面过渡动画 (PageTransition 组件使用) */
 
-.glass-card-elevated {
-  background: linear-gradient(180deg, rgba(255, 252, 247, 0.99), rgba(249, 239, 225, 0.99));
-  border: 1px solid rgba(219, 191, 155, 0.25);
-  border-radius: var(--radius-card);
-  box-shadow: 0 18px 40px rgba(121, 58, 31, 0.10);
-}
-
-/* ═══════════════════════════════════════════
-   缺失组件：水墨按钮 InkButton
-   ═══════════════════════════════════════════ */
-
-.ink-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.625rem 1.5rem;
-  font-weight: 600;
-  font-size: 0.875rem;
-  border-radius: var(--radius-pill);
-  transition: all 0.22s ease;
-  cursor: pointer;
-  border: none;
-  outline: none;
-}
-
-.ink-btn-primary {
-  background: linear-gradient(135deg, #9f2d22, #c04833);
-  color: #fff;
-  box-shadow: 0 8px 20px rgba(159, 45, 34, 0.24);
-}
-
-.ink-btn-primary:hover { box-shadow: 0 10px 24px rgba(159, 45, 34, 0.32); }
-.ink-btn-primary:active { transform: scale(0.97); }
-
-.ink-btn-outline {
-  background: #f9f0e2;
-  color: #8a5a20;
-  border: 1.5px solid rgba(197, 160, 120, 0.3);
-}
-
-.ink-btn-outline:hover { background: #f5e6d2; border-color: rgba(197, 160, 120, 0.5); }
-
-.ink-btn-ghost {
-  background: transparent;
-  color: var(--color-ink-secondary);
-}
-
-.ink-btn-ghost:hover { background: rgba(44, 36, 22, 0.04); }
-
-/* ═══════════════════════════════════════════
-   缺失组件：印章徽章 SealBadge
-   ═══════════════════════════════════════════ */
-
-.seal-badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 2px 10px;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 1px;
-  border-radius: 2px;
-  position: relative;
-  font-family: var(--font-serif);
-  clip-path: polygon(2% 0%, 98% 0%, 100% 4%, 96% 6%, 100% 10%, 98% 12%, 100% 50%, 98% 88%, 100% 94%, 96% 96%, 100% 100%, 50% 97%, 0% 100%, 4% 96%, 0% 94%, 4% 88%, 0% 50%, 4% 12%, 0% 10%, 3% 6%, 0% 4%);
-}
-
-.seal-badge-cinnabar {
-  background: rgba(192, 57, 43, 0.10);
-  color: #c0392b;
-  border: 1px solid rgba(192, 57, 43, 0.30);
-}
-
-.seal-badge-gold {
-  background: rgba(192, 138, 62, 0.10);
-  color: #a07230;
-  border: 1px solid rgba(192, 138, 62, 0.30);
-}
-
-.seal-badge-jade {
-  background: rgba(91, 140, 90, 0.10);
-  color: #4a7a49;
-  border: 1px solid rgba(91, 140, 90, 0.30);
-}
-
-/* ═══════════════════════════════════════════
-   缺失组件：朱砂渐变 / 页面过渡 / 卡片悬浮
-   ═══════════════════════════════════════════ */
-
+/* ── 朱砂渐变 (通用) ── */
 .cinnabar-gradient {
   background: linear-gradient(135deg, #9f2d22, #c04833);
 }
 
+/* ── 页面入场 (PageTransition 组件使用) ── */
 .page-enter {
   animation: pageIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
-
 @keyframes pageIn {
   from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
-.card-lift {
-  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.card-lift:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 18px 36px rgba(121, 58, 31, 0.12);
-}
-
-/* ═══════════════════════════════════════════
-   小程序风格卡片 (card class)
-   ═══════════════════════════════════════════ */
-
-.card {
-  background: linear-gradient(180deg, rgba(255, 252, 247, 0.98), rgba(249, 239, 225, 0.98));
-  border-radius: var(--radius-card);
-  box-shadow: 0 14px 34px rgba(121, 58, 31, 0.10);
-  padding: 24px;
-  margin-bottom: 18px;
-  transition: transform 0.22s ease, box-shadow 0.22s ease;
-}
-.card:active { transform: translateY(1px) scale(0.996); }
-
-/* ── 主按钮 (小程序 primary-btn) ── */
-.primary-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 16px 32px;
-  border-radius: 999px;
-  background: linear-gradient(135deg, #9f2d22, #c04833);
-  color: #fff;
-  font-weight: 700;
-  font-size: 16px;
-  letter-spacing: 2px;
-  border: none;
-  cursor: pointer;
-  box-shadow: 0 8px 20px rgba(159, 45, 34, 0.24);
-  transition: all 0.22s ease;
-}
-.primary-btn:active { transform: translateY(2px) scale(0.985); }
-
-/* ── 芯片 ── */
-.chip {
-  display: inline-flex;
-  align-items: center;
-  padding: 4px 16px;
-  min-height: 40px;
-  border-radius: 999px;
-  background: #f7e7dc;
-  color: #9f2d22;
-  font-size: 13px;
-  font-weight: 500;
-  border: none;
-  cursor: pointer;
-  transition: all 0.22s ease;
-}
-.chip-active {
-  background: linear-gradient(135deg, #9f2d22, #bf563f);
-  color: #fff7ef;
-  box-shadow: 0 8px 20px rgba(159, 45, 34, 0.20);
-}
-
-/* ── 骨架屏 ── */
-.skeleton {
-  background: linear-gradient(90deg, #f2e8da 25%, #eadcc8 50%, #f2e8da 75%);
-  background-size: 240% 100%;
-  animation: skeletonShimmer 1.4s ease infinite;
-  border-radius: 14px;
-}
-@keyframes skeletonShimmer {
-  0% { background-position: 100% 50%; }
-  100% { background-position: 0 50%; }
-}
-
-/* ── 入场动画 ── */
+/* ── 入场动画 riseIn ── */
 @keyframes riseIn {
   from { opacity: 0; transform: translateY(16px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -330,10 +171,8 @@ body {
 }
 
 /* 首页卡片 hover 增强 */
-.home-hero { transition: box-shadow 0.4s ease; }
-.content-card { transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
-.event-card { transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
-.topic-card { transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+/* Hero 区 */
+.hero-section { transition: box-shadow 0.4s ease; }
 
 .home-page {
   max-width: 800px;
@@ -341,8 +180,7 @@ body {
 }
 
 @media (min-width: 768px) {
-  .home-hero { min-height: 280px; border-radius: 40px; }
-  .home-hero h2 { font-size: 36px; }
+  .hero-section { min-height: 240px; border-radius: 40px; }
 }
 
 /* 呼吸脉冲 — 用于重点元素吸引注意力 */
@@ -356,6 +194,55 @@ body {
 .split-line {
   height: 1px;
   background: linear-gradient(90deg, transparent, #d4c4aa, transparent);
+}
+
+/* ── 骨架屏闪烁 (SkeletonLoader 组件引用) ── */
+@keyframes skeletonShimmer {
+  0% { background-position: 100% 50%; }
+  100% { background-position: 0 50%; }
+}
+
+/* ═══════════════════════════════════════════
+   内容详情页排版系统 (ContentDetailPage)
+   ═══════════════════════════════════════════ */
+
+.prose-serif {
+  font-family: var(--font-serif);
+  font-size: 0.9375rem;
+  line-height: 1.85;
+  color: var(--color-ink);
+}
+
+.prose-serif p {
+  margin-bottom: 0.75em;
+  text-indent: 0;
+}
+
+.prose-serif p:first-child::first-letter {
+  font-size: 2.8em;
+  font-weight: 700;
+  float: left;
+  line-height: 0.85;
+  margin-right: 0.4rem;
+  margin-top: 0.12rem;
+  color: var(--color-brand);
+  font-family: var(--font-serif);
+}
+
+.prose-serif p:first-child::first-line {
+  font-variant: small-caps;
+  letter-spacing: 0.02em;
+}
+
+/* 引用块 */
+.prose-serif blockquote {
+  margin: 1.2em 0;
+  padding: 0.6em 1em 0.6em 1.2em;
+  border-left: 3px solid var(--color-accent);
+  background: rgba(192, 138, 62, 0.06);
+  border-radius: 0 8px 8px 0;
+  color: var(--color-ink-secondary);
+  font-style: italic;
 }
 
 /* ═══════════════════════════════════════════
@@ -451,6 +338,10 @@ body {
 ::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: #d4c4aa; border-radius: 10px; }
+
+/* 隐藏滚动条但保留滚动功能（横向滚动容器用） */
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 
 /* ═══════════════════════════════════════════
    工具类

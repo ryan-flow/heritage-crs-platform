@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { ArrowRight, MapPin, Clock, MessageSquare, BookOpen, Sparkles, ChevronRight, Calendar } from 'lucide-react';
+import { MapPin, Clock, MessageSquare, BookOpen, Sparkles, ChevronRight, Calendar } from 'lucide-react';
 import { apiRequest, shortenReason } from '../../lib/api';
 import CoverImage from '../../components/ui/CoverImage';
 import { RecommendData, ContentItem, Activity, DiscussionTopic } from '../../types';
@@ -9,14 +9,13 @@ import { DigitalHumanModel } from '../../components/digital-human/DigitalHumanMo
 import '../../components/digital-human/DigitalHumanModel.css';
 import { useAuthStore } from '../../stores/auth-store';
 import { GlassCard } from '../../components/ui/GlassCard';
-import { InkButton } from '../../components/ui/InkButton';
 
-/* ── 功能区名片配置 ── */
+/* ── 功能区名片配置（精简版） ── */
 const QUICK_ENTRIES = [
-  { label: '非遗文化', note: '策展精选', icon: BookOpen, path: '/culture', bg: '#fff5eb', hue: 'culture' },
-  { label: '非遗场馆', note: '线下体验', icon: MapPin, path: '/places', bg: '#f5f0e8', hue: 'place' },
-  { label: '浏览历史', note: '足迹回顾', icon: Clock, path: '/history', bg: '#f0f0f5', hue: 'history' },
-  { label: 'AI 对话', note: '黑塔导览', icon: MessageSquare, path: '/ai', bg: '#fff0ec', hue: 'ai' },
+  { label: '非遗文化', icon: BookOpen, path: '/culture', bg: '#fff5eb' },
+  { label: '非遗场馆', icon: MapPin, path: '/places', bg: '#f5f0e8' },
+  { label: '浏览历史', icon: Clock, path: '/history', bg: '#f0f0f5' },
+  { label: 'AI 对话', icon: MessageSquare, path: '/ai', bg: '#fff0ec' },
 ];
 
 export default function HomePage() {
@@ -27,10 +26,9 @@ export default function HomePage() {
     queryFn: () => apiRequest<{ code: number; data: RecommendData }>(`/recommend/?user_id=${session?.userId}&scene=home`),
     enabled: !!session?.userId,
   });
-  const recommend = data?.data || { guide_text: '', contents: [], events: [], topics: [], profile_summary: null };
+  const recommend = data?.data || { contents: [], events: [], topics: [], profile_summary: null };
   const crsState = (recommend as Record<string, unknown>).crs_state as Record<string, unknown> || {};
   const crsMode = (crsState.mode as string) || 'cold_start';
-  const confidence = Math.round(Number(crsState.stage_progress_percent || 0));
   const mood = crsMode === 'precision' ? 'confident' : crsMode === 'mixed' ? 'thinking' : 'curious';
   const firstContent = recommend.contents?.[0];
 
@@ -42,79 +40,78 @@ export default function HomePage() {
     <div className="home-page px-4 sm:px-6 pb-10 space-y-5 max-w-2xl mx-auto">
 
       {/* ═══════════════════════════════════════
-         Hero 区 — 黑塔数字人导览
-         布局：数字人居中在上 → 文字块在下
+         Hero 区 — 数字人居中 + 下方文字简介
          ═══════════════════════════════════════ */}
-      <section className="home-hero relative rounded-[36px] px-5 pt-8 pb-6 flex flex-col items-center text-center overflow-hidden"
+      <section className="hero-section relative rounded-[36px] flex flex-col items-center text-center overflow-hidden px-5 pt-3 pb-4"
         style={{
-          background: 'linear-gradient(160deg, #5c1a1a 0%, #9f2d22 30%, #b34130 55%, #8b4513 100%)',
+          background: 'var(--gradient-hero)',
           boxShadow: '0 22px 46px rgba(127,29,29,0.30)',
         }}>
         {/* 装饰光晕 */}
-        <div className="absolute -top-16 -right-16 w-52 h-52 rounded-full bg-white/[0.03] blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-10 -left-10 w-40 h-40 rounded-full bg-amber-400/[0.04] blur-2xl pointer-events-none" />
-        <div className="absolute top-1/4 right-1/4 w-2 h-2 rounded-full bg-white/25 ping-slow pointer-events-none" />
-        <div className="absolute bottom-1/3 left-1/4 w-1.5 h-1.5 rounded-full bg-amber-200/20 ping-slow pointer-events-none" style={{ animationDelay: '1.5s' }} />
+        <div className="absolute -top-16 -right-16 w-48 h-48 rounded-full bg-white/[0.04] blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-6 -left-6 w-36 h-36 rounded-full bg-amber-400/[0.05] blur-2xl pointer-events-none" />
 
-        {/* 数字人 — 居中 220px */}
+        {/* 数字人 */}
         <div className="relative z-10">
-          <DigitalHumanModel variant="hero" mood={mood} size={220} greeting="来跟我聊聊吧！" />
+          <DigitalHumanModel variant="hero" mood={mood} size={180} greeting="来跟我聊聊吧！" />
         </div>
 
-        {/* 文字块 — 位于数字人下方 */}
-        <div className="relative z-10 animate-fade-in-up max-w-[280px] mt-2">
-          <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-semibold tracking-[0.6px] text-amber-200 bg-white/[0.14] backdrop-blur-sm mb-3">
+        {/* 文字块 — 紧贴数字人下方 */}
+        <div className="relative z-10 animate-fade-in-up max-w-[240px] -mt-2">
+          <span className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-[11px] font-semibold tracking-[0.6px] text-amber-200 bg-white/[0.14] backdrop-blur-sm mb-1.5">
             <span className="w-1.5 h-1.5 rounded-full bg-amber-200 animate-pulse" />
             数字导览中枢
           </span>
-          <h2 className="text-[26px] font-extrabold text-[#fff8f1] leading-tight mb-2"
+          <h2 className="text-[20px] font-extrabold text-[#fff8f1] leading-tight mb-0.5"
             style={{ textShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
             和黑塔聊聊非遗
           </h2>
-          <p className="text-sm text-white/85 mb-4 leading-relaxed">
+          <p className="text-[12px] text-white/80 mb-2.5 leading-relaxed">
             {crsMode === 'precision'
               ? '已为你准备好个性化推荐'
               : crsMode === 'mixed'
               ? '正在探索你的兴趣偏好'
               : '让我来了解你喜欢什么'}
           </p>
-          <InkButton variant="primary" size="md" onClick={() => navigate('/ai')}
-            className="shadow-lg shadow-amber-900/20 hover:shadow-amber-900/30 whitespace-nowrap">
-            <Sparkles size={14} /> 开始对话 <ArrowRight size={14} />
-          </InkButton>
+          <button onClick={() => navigate('/ai')}
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-bold text-white border-none cursor-pointer transition-all duration-200 hover:shadow-lg active:scale-[0.97]"
+            style={{
+              background: 'linear-gradient(135deg, #c04833, #d4684f)',
+              boxShadow: '0 4px 12px rgba(180,60,30,0.3)',
+            }}>
+            开始对话 →
+          </button>
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════
-         引导语
-         ═══════════════════════════════════════ */}
-      {recommend.guide_text && (
-        <GlassCard className="px-6 py-5 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
-          <p className="m-0 text-sm text-ink-secondary leading-relaxed">{recommend.guide_text}</p>
-        </GlassCard>
-      )}
+      {/* Hero → 内容区渐变过渡条 */}
+      <div className="h-6 -mt-4 -mx-4 sm:-mx-6 relative pointer-events-none"
+        style={{
+          background: 'linear-gradient(180deg, #7a2a1a 0%, rgba(159,45,34,0.3) 50%, transparent 100%)',
+          maskImage: 'linear-gradient(90deg, transparent 3%, black 20%, black 80%, transparent 97%)',
+          WebkitMaskImage: 'linear-gradient(90deg, transparent 3%, black 20%, black 80%, transparent 97%)',
+        }} />
 
       {/* ═══════════════════════════════════════
-         快捷入口 Grid — 统一高度防换行
+         快捷入口 Grid
          ═══════════════════════════════════════ */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 animate-fade-in-up" style={{ animationDelay: '0.15s' }}>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 animate-fade-in-up" style={{ animationDelay: '0.05s' }}>
         {QUICK_ENTRIES.map((item, i) => {
           const Icon = item.icon;
           return (
             <button key={item.path} onClick={() => navigate(item.path)}
-              className="quick-entry-card relative rounded-[24px] p-4 border-none cursor-pointer text-left flex flex-col gap-1
-                transition-all duration-300 ease-out min-h-[96px]
+              className="quick-entry-card relative rounded-[12px] p-3 border-none cursor-pointer text-left flex flex-col gap-1.5
+                transition-all duration-300 ease-out
                 hover:-translate-y-1 hover:shadow-lg active:scale-[0.98]"
               style={{
                 background: item.bg,
-                boxShadow: '0 14px 34px rgba(121,58,31,0.08)',
-                animationDelay: `${0.2 + i * 0.08}s`,
+                boxShadow: '0 10px 24px rgba(121,58,31,0.06)',
+                animationDelay: `${0.05 + i * 0.03}s`,
               }}>
-              <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-white/60 backdrop-blur-sm text-brand">
-                <Icon size={18} />
+              <div className="w-8 h-8 rounded-[10px] flex items-center justify-center bg-white/60 backdrop-blur-sm text-brand">
+                <Icon size={16} />
               </div>
-              <span className="text-[15px] font-bold text-ink leading-tight">{item.label}</span>
-              <span className="text-[12px] text-ink-muted leading-tight">{item.note}</span>
+              <span className="text-[13px] font-bold text-ink leading-tight">{item.label}</span>
             </button>
           );
         })}
@@ -135,13 +132,13 @@ export default function HomePage() {
              精选推荐 — 横版信息流布局
              ═══════════════════════════════════════ */}
           {firstContent && (
-            <GlassCard elevated hover className="px-6 py-5 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+            <GlassCard elevated hover className="px-6 py-5 animate-fade-in-up" style={{ animationDelay: '0.05s' }}>
               <div className="flex items-center justify-between mb-3.5">
                 <div className="flex items-center gap-2">
                   <Sparkles size={14} className="text-gold" />
                   <span className="text-lg font-extrabold text-ink">精选推荐</span>
                 </div>
-                <span className="seal-badge seal-badge-cinnabar">文化</span>
+                <span className="seal-badge seal-badge-jade">文化</span>
               </div>
               <button onClick={() => { trackClick('content', firstContent.id); navigate(`/content/${firstContent.id}`); }}
                 className="w-full border-none bg-transparent p-0 cursor-pointer text-left flex gap-3.5 group">
@@ -167,7 +164,7 @@ export default function HomePage() {
              文化内容 — 横版信息流（图片左 + 文字右）
              ═══════════════════════════════════════ */}
           {recommend.contents && recommend.contents.length > 1 && (
-            <section className="animate-fade-in-up" style={{ animationDelay: '0.25s' }}>
+            <section className="animate-fade-in-up" style={{ animationDelay: '0.12s' }}>
               <SectionHeader title="文化内容" onViewAll={() => navigate('/content')} />
               <div className="space-y-3">
                 {recommend.contents.slice(1, 6).map((item: ContentItem, i: number) => (
@@ -198,7 +195,7 @@ export default function HomePage() {
              推荐活动 — 横版（方形封面左 + 信息右）
              ═══════════════════════════════════════ */}
           {recommend.events && recommend.events.length > 0 && (
-            <section className="animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
+            <section className="animate-fade-in-up" style={{ animationDelay: '0.12s' }}>
               <SectionHeader title="推荐活动" onViewAll={() => navigate('/activity')} />
               <div className="space-y-3">
                 {recommend.events.slice(0, 3).map((item: Activity, i: number) => (
@@ -230,7 +227,7 @@ export default function HomePage() {
              社区讨论
              ═══════════════════════════════════════ */}
           {recommend.topics && recommend.topics.length > 0 && (
-            <section className="animate-fade-in-up" style={{ animationDelay: '0.35s' }}>
+            <section className="animate-fade-in-up" style={{ animationDelay: '0.12s' }}>
               <SectionHeader title="社区讨论" onViewAll={() => navigate('/discussion')} />
               <div className="space-y-2.5">
                 {recommend.topics.slice(0, 3).map((item: DiscussionTopic, i: number) => (

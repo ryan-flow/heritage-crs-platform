@@ -106,7 +106,7 @@ export default function AppLayout() {
       {menuOpen && (
         <>
           <div className="fixed inset-0 z-40" onClick={() => setMenuOpen(false)} />
-          <div className="absolute right-4 top-[52px] z-50 rounded-[20px] p-2 w-[180px]"
+          <div className="absolute right-4 top-[52px] z-50 rounded-[10px] p-2 w-[180px]"
             style={{
               background: 'linear-gradient(180deg, rgba(255,252,247,0.98), rgba(249,239,225,0.98))',
               boxShadow: '0 14px 34px rgba(121,58,31,0.12)',

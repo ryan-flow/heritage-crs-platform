@@ -26,7 +26,8 @@
 .orbit-1 {
   width: 100px;
   height: 100px;
-  left: 20px;
+  left: 50%;
+  margin-left: -50px;
   top: 7px;
   background: radial-gradient(circle, rgba(175, 139, 255, 0.34), rgba(175, 139, 255, 0.08) 72%, transparent 78%);
 }
@@ -34,7 +35,8 @@
 .orbit-2 {
   width: 72px;
   height: 72px;
-  left: 34px;
+  left: 50%;
+  margin-left: -36px;
   top: 21px;
   background: radial-gradient(circle, rgba(128, 210, 255, 0.22), transparent 72%);
 }
@@ -45,12 +47,13 @@
   animation: sparkFloat 2s ease-in-out infinite;
 }
 
-.spark-1 { width: 7px; height: 7px; left: 19px; top: 14px; }
-.spark-2 { width: 5px; height: 5px; right: 22px; top: 30px; animation-delay: 0.2s; }
-.spark-3 { width: 4px; height: 4px; right: 27px; top: 53px; animation-delay: 0.38s; }
+.spark-1 { width: 7px; height: 7px; left: 50%; margin-left: -38px; top: 14px; }
+.spark-2 { width: 5px; height: 5px; left: 50%; margin-left: 32px; top: 30px; animation-delay: 0.2s; }
+.spark-3 { width: 4px; height: 4px; left: 50%; margin-left: 40px; top: 53px; animation-delay: 0.38s; }
 
 .dhm-pedestal {
-  left: 27px;
+  left: 50%;
+  margin-left: -43px;   /* 86px 宽度的一半 */
   bottom: 38px;
   width: 86px;
   height: 18px;
@@ -62,8 +65,9 @@
 /* ── Avatar 容器 ── */
 .dhm-avatar {
   position: absolute;
-  left: 19px;
+  left: 50%;
   top: 9px;
+  margin-left: -51px;   /* 102px 宽度的一半，水平居中 */
   width: 102px;
   height: 146px;
   transform-origin: center top;

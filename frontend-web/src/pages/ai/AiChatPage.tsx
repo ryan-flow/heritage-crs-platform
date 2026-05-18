@@ -214,19 +214,12 @@ export default function AiChatPage() {
         </div>
       )}
 
-      {/* Header */}
+      {/* Header — 简洁顶栏 */}
       <header className="px-4 py-2.5 flex items-center justify-between shrink-0 z-10 relative"
         style={{ background: 'rgba(255,250,243,0.78)', backdropFilter: 'blur(16px)', borderBottom: '1px solid rgba(219,191,155,0.15)' }}>
         <button onClick={() => navigate('/')} className="p-2 border-none bg-transparent cursor-pointer text-[#5a4430] hover:text-[#2f2419] transition-colors"><ArrowLeft size={20} /></button>
-        <div className="flex items-center gap-2.5">
-          <span className="text-[16px] font-bold text-[#2f2419] tracking-wide">黑塔</span>
-          <span className="text-[11px] px-2.5 py-0.5 rounded-full font-semibold"
-            style={{
-              background: mode === 'precision' ? 'rgba(76,175,80,0.12)' : mode === 'mixed' ? 'rgba(33,150,243,0.12)' : 'rgba(255,152,0,0.12)',
-              color: mode === 'precision' ? '#388e3c' : mode === 'mixed' ? '#1976d2' : '#e65100',
-            }}>{MODE_LABELS[mode]}</span>
-          <button onClick={handleClear} className="p-1.5 rounded-lg border-none bg-transparent cursor-pointer text-[#9c846d] hover:text-[#5a4430] transition-colors"><Trash2 size={16} /></button>
-        </div>
+        <span className="text-[16px] font-bold text-[#2f2419]">黑塔 · 非遗导览</span>
+        <button onClick={handleClear} className="p-1.5 rounded-[10px] border-none bg-transparent cursor-pointer text-[#9c846d] hover:text-[#5a4430] hover:bg-[#f5e8d5]/50 transition-colors" title="清空对话"><Trash2 size={15} /></button>
       </header>
 
       {/* CRS Status Bar — always visible, click to expand detail */}
@@ -257,7 +250,7 @@ export default function AiChatPage() {
 
       {/* CRS Detail Panel — expandable on status bar click */}
       {crsExpanded && (
-        <div className="mx-4 mb-3 rounded-[20px] px-5 py-4 text-sm text-[#5a4430] shrink-0 animate-fade-in-up"
+        <div className="mx-4 mb-3 rounded-[10px] px-5 py-4 text-sm text-[#5a4430] shrink-0 animate-fade-in-up"
           style={{ background: 'linear-gradient(180deg, rgba(255,252,247,0.98), rgba(249,239,225,0.98))', boxShadow: '0 12px 28px rgba(112,74,41,0.06)', border: '1px solid rgba(219,191,155,0.22)' }}>
           <div className="flex items-center justify-between mb-3">
             <span className="font-bold text-base">了解进度 · {MODE_LABELS[mode]}</span>
@@ -306,97 +299,88 @@ export default function AiChatPage() {
 
       {/* Messages area */}
       <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3 z-10">
-        {/* Empty state */}
+
+        {/* ═══════════════════════════════════════
+           数字人专用区域 — 对标小程序 ai-top-stage
+           无论是否有消息，始终可见
+           ═══════════════════════════════════════ */}
+        <div className="rounded-[18px] px-5 pt-4 pb-3 text-center relative overflow-hidden"
+          style={{
+            background: 'linear-gradient(180deg, rgba(255,252,247,0.98), rgba(249,239,225,0.98))',
+            border: '1px solid rgba(219,191,155,0.22)',
+            boxShadow: '0 8px 24px rgba(112,74,41,0.06)',
+          }}>
+          {/* 装饰光晕 */}
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-48 rounded-full bg-[radial-gradient(circle,rgba(192,138,62,0.06)_0%,transparent_65%)] pointer-events-none" />
+          <div className="absolute -bottom-4 -right-4 w-24 h-24 rounded-full bg-[radial-gradient(circle,rgba(159,45,34,0.03)_0%,transparent_70%)] pointer-events-none" />
+
+          {/* 文案 */}
+          <div className="relative z-10 mb-2">
+            <span className="inline-block px-3 py-0.5 rounded-full text-[10px] font-semibold bg-brand-soft text-brand mb-1.5 tracking-wider">
+              ✦ 黑塔 · Heritage AI
+            </span>
+            <h2 className="text-[20px] font-black text-[#2f2419] m-0 leading-tight" style={{ letterSpacing: '0.5px' }}>
+              {MODE_HERO_TITLES[mode] || '想认识你'}
+            </h2>
+          </div>
+
+          {/* 数字人 — 居中展示 */}
+          <div className="relative z-10 flex justify-center -my-1">
+            <DigitalHumanModel variant="ai" mood={mood} size={140} />
+          </div>
+
+          {/* 提示文案 */}
+          <p className="relative z-10 text-[11px] text-[#9c846d] mt-1 mb-0">轻触黑塔可播放语音讲解</p>
+        </div>
+
+        {/* Empty state — 只有分类引导，数字人已在 top-stage */}
         {store.messages.length === 0 && (
-          <>
-            {mode === 'cold_start' ? (
-              /* ── Cold Start: badge → h1 → DH → welcome → category prompts ── */
-              <div className="flex flex-col items-center pt-4">
-                <div className="rounded-[30px] px-5 py-5 text-center relative overflow-hidden mb-5 w-full"
-                  style={{
-                    background: 'linear-gradient(160deg, #3d2340 0%, #6b3a5b 25%, #8b4513 60%, #5c3a20 100%)',
-                    boxShadow: '0 20px 48px rgba(60,25,35,0.24), 0 0 0 1px rgba(255,238,220,0.06)',
-                  }}>
-                  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-64 rounded-full bg-[radial-gradient(circle,rgba(255,200,140,0.1)_0%,transparent_65%)] pointer-events-none" />
-                  <div className="absolute bottom-0 left-1/4 w-48 h-32 rounded-full bg-[radial-gradient(circle,rgba(175,130,200,0.08)_0%,transparent_65%)] pointer-events-none" />
-                  <span className="relative inline-block px-3.5 py-1 rounded-full text-xs font-semibold bg-white/[0.14] text-[#ffe1bc] mb-3 tracking-wider">
-                    ✦ 黑塔 · Heritage AI
-                  </span>
-                  <h1 className="relative text-[26px] font-black text-[#fff9f1] m-0 mb-3 tracking-wide" style={{ textShadow: '0 4px 18px rgba(0,0,0,0.2)' }}>
-                    想认识你
-                  </h1>
-                  <div className="relative flex justify-center">
-                    <DigitalHumanModel variant="ai" mood={mood} size={200} />
-                  </div>
-                  <div className="absolute top-8 right-8 w-1.5 h-1.5 rounded-full bg-amber-200/30 ping-slow" />
-                  <div className="absolute bottom-20 left-6 w-1 h-1 rounded-full bg-purple-200/30 ping-slow" style={{ animationDelay: '1s' }} />
+          <div className="flex flex-col items-center pt-1 animate-fade-in-up">
+            <p className="text-sm text-ink-secondary mb-4 leading-relaxed px-4 text-center">
+              我是黑塔，你的非遗导览官。选一个你感兴趣的方向，让我为你推荐吧~
+            </p>
+            {mode === 'cold_start' && Object.entries(COLD_START_CATEGORIES).map(([category, questions]) => (
+              <div key={category} className="w-full mb-3">
+                <h3 className="text-xs font-bold text-ink-muted mb-2 flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-brand" />
+                  {category}
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {questions.map((q, qi) => (
+                    <button key={qi} onClick={() => handleSend(q)}
+                      className="px-4 py-2.5 rounded-full text-xs cursor-pointer border-none transition-all duration-200 hover:shadow-md active:scale-[0.97] bg-gradient-to-b from-gold-50 to-gold-100 text-gold-600 border border-gold-200/30"
+                    >{q}</button>
+                  ))}
                 </div>
-                <p className="text-sm text-ink-secondary mb-5 leading-relaxed px-4 text-center">
-                  我是黑塔，你的非遗导览官。选一个你感兴趣的方向，让我为你推荐吧~
-                </p>
-                {Object.entries(COLD_START_CATEGORIES).map(([category, questions]) => (
-                  <div key={category} className="w-full mb-4">
-                    <h3 className="text-xs font-bold text-ink-muted mb-2.5 flex items-center gap-1.5">
-                      <span className="w-1.5 h-1.5 rounded-full bg-brand" />
-                      {category}
-                    </h3>
-                    <div className="flex flex-wrap gap-2">
-                      {questions.map((q, qi) => (
-                        <button key={qi} onClick={() => handleSend(q)}
-                          className="px-4 py-2.5 rounded-full text-xs cursor-pointer border-none transition-all duration-200 hover:shadow-md active:scale-[0.97] bg-gradient-to-b from-gold-50 to-gold-100 text-gold-600 border border-gold-200/30"
-                        >{q}</button>
-                      ))}
-                    </div>
-                  </div>
-                ))}
               </div>
-            ) : (
-              /* ── Other modes: hero with title ── */
-              <div className="rounded-[30px] px-5 py-6 text-center relative overflow-hidden mb-5"
-                style={{
-                  background: 'linear-gradient(160deg, #3d2340 0%, #6b3a5b 25%, #8b4513 60%, #5c3a20 100%)',
-                  boxShadow: '0 20px 48px rgba(60,25,35,0.24), 0 0 0 1px rgba(255,238,220,0.06)',
-                }}>
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-64 rounded-full bg-[radial-gradient(circle,rgba(255,200,140,0.1)_0%,transparent_65%)] pointer-events-none" />
-                <div className="absolute bottom-0 left-1/4 w-48 h-32 rounded-full bg-[radial-gradient(circle,rgba(175,130,200,0.08)_0%,transparent_65%)] pointer-events-none" />
-                <span className="relative inline-block px-3.5 py-1 rounded-full text-xs font-semibold bg-white/[0.14] text-[#ffe1bc] mb-3 tracking-wider">
-                  ✦ 黑塔 · Heritage AI
-                </span>
-                <h1 className="relative text-[28px] font-black text-[#fff9f1] m-0 mb-2 tracking-wide" style={{ textShadow: '0 4px 18px rgba(0,0,0,0.2)' }}>
-                  {MODE_HERO_TITLES[mode]}
-                </h1>
-                <p className="relative text-sm text-white/85 mb-4 leading-relaxed">我是你的非遗文化导览官，问我任何关于非遗的问题</p>
-                <div className="relative flex justify-center">
-                  <DigitalHumanModel variant="ai" mood={mood} size={200} />
-                </div>
-                <div className="absolute top-8 right-8 w-1.5 h-1.5 rounded-full bg-amber-200/30 ping-slow" />
-                <div className="absolute bottom-20 left-6 w-1 h-1 rounded-full bg-purple-200/30 ping-slow" style={{ animationDelay: '1s' }} />
-              </div>
-            )}
-          </>
+            ))}
+          </div>
         )}
 
         {/* Messages */}
         {store.messages.map((msg, idx) => (
           <div key={msg.id || idx}>
             <div className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-              <div className={`max-w-[86%] ${msg.role === 'user' ? '' : 'w-full'}`}>
+              <div className={`${msg.role === 'user' ? 'max-w-[78%]' : 'max-w-[92%] w-full'}`}>
                 <p className={`text-[11px] mb-1.5 ${msg.role === 'user' ? 'text-right mr-2 text-[#9a7757]' : 'ml-2 text-[#9a7757]'}`}>
                   {msg.role === 'user' ? '我' : '黑塔'}
                 </p>
                 {msg.role === 'user' ? (
-                  <div className="px-4 py-3 rounded-[20px] rounded-tr-md text-sm text-[#fff9f4] leading-relaxed"
+                  <div className="px-4 py-3 rounded-[10px] rounded-tr-md text-sm text-[#fff9f4] leading-relaxed"
                     style={{
                       background: 'linear-gradient(135deg, #b84835, #d4684f)',
                       boxShadow: '0 6px 16px rgba(160,50,30,0.12)',
                     }}>{msg.text}</div>
                 ) : (
-                  <div className="px-4 py-3 rounded-[20px] rounded-tl-md text-sm text-[#473022] leading-relaxed"
+                  <div className="px-4 py-3 rounded-[10px] rounded-tl-md text-sm text-[#473022] leading-relaxed relative"
                     style={{
                       background: 'linear-gradient(180deg, #fdf8f0, #f7ebd8)',
                       border: '1px solid rgba(219,191,155,0.22)',
                       boxShadow: '0 3px 12px rgba(121,58,31,0.03)',
                     }}>
+                    {/* 品牌色左侧竖条 */}
+                    <div className="absolute left-0 top-3 bottom-3 w-[3px] rounded-r-[2px]"
+                      style={{ background: 'linear-gradient(180deg, #9f2d22, #c08a3e)' }} />
                     <div className="whitespace-pre-wrap">{msg.text}</div>
                     {msg.isTransition && <div className="mt-1.5 text-xs text-brand font-semibold">—— 黑塔的反馈</div>}
                     {!msg.isTransition && !store.sending && (
@@ -441,7 +425,7 @@ export default function AiChatPage() {
           <div className="flex justify-start">
             <div>
               <p className="text-[11px] mb-1.5 ml-2 text-[#9a7757]">黑塔</p>
-              <div className="px-5 py-3.5 rounded-[20px] rounded-tl-md flex items-center gap-2.5"
+              <div className="px-5 py-3.5 rounded-[10px] rounded-tl-md flex items-center gap-2.5"
                 style={{ background: '#faf2e6', border: '1px solid rgba(226,197,163,0.25)', boxShadow: '0 3px 10px rgba(121,58,31,0.02)' }}>
                 <div className="flex gap-1">
                   {[0,1,2].map(i => (
@@ -456,7 +440,7 @@ export default function AiChatPage() {
 
         {/* ASK prompt — hidden in precision mode */}
         {store.askPrompt && !store.sending && mode !== 'precision' && (
-          <div className="rounded-[20px] px-5 py-4 animate-fade-in-up"
+          <div className="rounded-[10px] px-5 py-4 animate-fade-in-up"
             style={{
               background: 'linear-gradient(180deg, rgba(255,252,247,0.98), rgba(249,239,225,0.98))',
               boxShadow: '0 12px 28px rgba(112,74,41,0.06)', border: '1px solid rgba(219,191,155,0.22)',
@@ -511,8 +495,8 @@ export default function AiChatPage() {
                       <div className="flex items-center gap-2 mb-1.5">
                         <span className="text-[10px] px-2 py-0.5 rounded-full font-medium"
                           style={{
-                            background: card.type === 'content' ? 'rgba(192,57,43,0.1)' : card.type === 'event' ? 'rgba(192,138,62,0.1)' : 'rgba(91,140,90,0.1)',
-                            color: card.type === 'content' ? '#b5342e' : card.type === 'event' ? '#a07230' : '#4a7a49',
+                            background: card.type === 'content' ? 'rgba(91,140,90,0.1)' : card.type === 'event' ? 'rgba(192,138,62,0.1)' : 'rgba(192,57,43,0.1)',
+                            color: card.type === 'content' ? '#4a7a49' : card.type === 'event' ? '#a07230' : '#b5342e',
                           }}>
                           {card.type === 'content' ? '文化' : card.type === 'event' ? '活动' : '讨论'}
                         </span>
@@ -619,15 +603,16 @@ export default function AiChatPage() {
             onKeyDown={e => e.key === 'Enter' && handleSend()}
             placeholder="输入你的问题..."
             disabled={store.sending}
-            className="flex-1 h-[46px] rounded-[22px] px-5 text-sm outline-none box-border disabled:opacity-50 transition-all duration-200 focus:shadow-md"
+            className="flex-1 h-[46px] rounded-[10px] px-5 text-sm outline-none box-border disabled:opacity-50 transition-all duration-200
+              focus:shadow-[0_0_0_3px_rgba(192,138,62,0.12),0_4px_12px_rgba(192,138,62,0.08)]
+              focus:scale-[1.02] focus:border-[#d4b896]"
             style={{
               background: '#fffdf8',
               border: input.trim() ? '1.5px solid #d4b896' : '1.5px solid #eadbc8',
               color: '#2f2419',
-              boxShadow: input.trim() ? '0 0 0 3px rgba(192,138,62,0.06)' : 'none',
             }} />
           <button onClick={() => handleSend()} disabled={!input.trim() || store.sending}
-            className="w-[46px] h-[46px] rounded-[22px] flex items-center justify-center border-none cursor-pointer shrink-0 disabled:opacity-40 transition-all duration-200"
+            className="w-[46px] h-[46px] rounded-[10px] flex items-center justify-center border-none cursor-pointer shrink-0 disabled:opacity-40 transition-all duration-200"
             style={{
               background: input.trim() && !store.sending ? 'linear-gradient(135deg, #c08a3e, #d9ab53)' : '#e8d8c0',
               color: input.trim() && !store.sending ? '#fff' : '#b8a080',
