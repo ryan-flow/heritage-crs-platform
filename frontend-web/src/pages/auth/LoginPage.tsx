@@ -26,9 +26,10 @@ export default function LoginPage() {
   const handleGuestLogin = async () => {
     setError(''); setLoading(true);
     try {
-      const res = await apiRequest<ApiResponse<Session>>('/auth/guest', { method: 'POST' });
+      const res = await apiRequest<ApiResponse<Session>>('/auth/guest', { method: 'POST', timeout: 15000 });
       if (res.code === 0 && res.data) { setSession(res.data); navigate('/', { replace: true }); }
-    } catch (err: unknown) { setError(err instanceof Error ? err.message : '网络错误'); }
+      else setError(res.message || '游客登录失败');
+    } catch { setError('服务暂不可用，请稍后再试'); }
     finally { setLoading(false); }
   };
 
@@ -139,8 +140,8 @@ export default function LoginPage() {
         {/* Guest & Test */}
         <div className="w-full mt-4 space-y-2.5">
           <button onClick={handleGuestLogin} disabled={loading}
-            className="w-full h-12 rounded-full text-amber-300/80 font-semibold bg-white/[0.07] border border-amber-300/20 cursor-pointer hover:bg-white/[0.12] transition-colors">
-            游客体验
+            className="w-full h-12 rounded-full text-amber-300/80 font-semibold bg-white/[0.07] border border-amber-300/20 cursor-pointer hover:bg-white/[0.12] transition-colors disabled:opacity-50">
+            {loading ? '请稍候...' : '游客体验'}
           </button>
           {testAccount && (
             <button onClick={fillTest}
