@@ -183,6 +183,17 @@ export interface ChatMessage {
   isTransition?: boolean;
 }
 
+export interface ActionTask {
+  id: string;
+  title: string;
+  desc: string;
+  type: 'content' | 'event' | 'topic';
+  targetId: number;
+  done: boolean;
+  recommended?: boolean;
+  metaTitle?: string;
+}
+
 export interface AiChatResponse {
   answer: string;
   source: string;

@@ -5,7 +5,7 @@ import { apiRequest, shortenReason } from '../../lib/api';
 import CoverImage from '../../components/ui/CoverImage';
 import { useAuthStore } from '../../stores/auth-store';
 import { useChatStore } from '../../stores/chat-store';
-import { AiChatResponse, RecommendCard, CrsAnswerResponse } from '../../types';
+import { AiChatResponse, RecommendCard, CrsAnswerResponse, ActionTask } from '../../types';
 import { DigitalHumanModel } from '../../components/digital-human/DigitalHumanModel';
 import '../../components/digital-human/DigitalHumanModel.css';
 
@@ -14,10 +14,26 @@ import '../../components/digital-human/DigitalHumanModel.css';
    ================================================================ */
 
 const CRS_MODE_QUESTIONS: Record<string, string[]> = {
-  cold_start: ['第一次接触非遗，从哪类开始比较容易上手？', '传统工艺类和戏曲音乐类，哪个更适合零基础体验？', '有什么适合周末去现场感受的非遗活动？', '中国有多少项非遗被列入了联合国名录？'],
-  mixed: ['云锦和苏绣，哪种工艺更值得深入看？', '古琴和古筝在听感上有什么本质区别？', '京剧和昆曲的表演风格差异在哪？', '非遗和乡村振兴是怎么结合的？'],
-  precision: ['景德镇的柴窑和气窑烧出来的瓷器差别在哪？', '侗族大歌的演唱技巧为什么很难用乐谱记录？', '有哪些冷门但非常值得了解的非遗项目？', '数字化技术对非遗保护带来了什么改变？'],
+  cold_start: ['第一次接触非遗，从哪类开始比较容易上手？', '传统工艺类和戏曲音乐类，哪个更适合零基础体验？', '有什么适合周末去现场感受的非遗活动？', '中国有多少项非遗被列入了联合国名录？', '皮影戏、木偶戏、布袋戏，这些有什么不同？', '二十四节气除了指导农事，还有什么文化意义？', '非遗和普通手艺最大的区别在哪里？', '想带小朋友了解非遗，从哪个方向切入比较好？', '非遗传承人是怎么培养出来的？', '非遗和乡村振兴是怎么结合的？', '现在最热门的非遗体验活动有哪些？', '想系统地了解一个非遗类别，推荐什么顺序？'],
+  mixed: ['云锦和苏绣，哪种工艺更值得深入看？', '古琴和古筝在听感上有什么本质区别？', '京剧和昆曲的表演风格差异在哪？', '端午节在不同地区有什么不同的庆祝方式？', '非遗传承中活态传承是什么意思？', '有没有适合自己动手体验的非遗项目？', '中医里的经络理论和非遗有什么关系？', '如果想系统地了解一个非遗类别，推荐什么顺序？', '花灯制作属于哪一类非遗？入门难度如何？', '非遗进校园活动一般会包含哪些内容？', '非遗和乡村振兴是怎么结合的？', '现在最热门的非遗体验活动有哪些？'],
+  precision: ['景德镇的柴窑和气窑烧出来的瓷器差别在哪？', '侗族大歌的演唱技巧为什么很难用乐谱记录？', '蜀锦的挑花结本工艺具体是怎么操作的？', '中医针灸和艾灸在传承路线上有什么不同？', '皮影戏的雕刻刀法对最终演出效果有多大影响？', '非遗文创产品为什么经常被说不夠原汁原味？', '有哪些冷门但非常值得了解的非遗项目？', '非遗保护中的生产性保护是什么概念？', '如何判断一场非遗演出的质量好不好？', '数字化技术对非遗保护带来了什么改变？'],
 };
+
+const KEYWORD_FOLLOWUP_MAP: { keyword: string; questions: string[] }[] = [
+  { keyword: '皮影', questions: ['皮影戏适合从哪些代表作品入门？', '现在哪里还能看到皮影戏现场表演？', '皮影戏和木偶戏有什么区别？', '如果想现场体验皮影戏，先看什么最容易入门？'] },
+  { keyword: '昆曲', questions: ['昆曲适合先听哪几段经典唱段？', '第一次看昆曲演出，最值得注意什么？', '昆曲和京剧在观演体验上有什么差别？', '如果想线下体验昆曲，应该优先选讲座还是演出？'] },
+  { keyword: '云锦', questions: ['云锦最值得先了解的工艺步骤是什么？', '云锦和普通织锦最大的区别在哪里？', '看云锦时怎样才算看懂门道？', '如果想深入了解云锦，可以先看内容还是先看展览？'] },
+  { keyword: '古琴', questions: ['古琴适合从哪些代表曲目开始听？', '古琴为什么会给人特别静心的感觉？', '古琴和古筝在听感上有什么差别？', '如果想体验古琴，先听讲解还是先听完整曲子更合适？'] },
+  { keyword: '端午', questions: ['除了吃粽子，端午还有哪些核心习俗值得了解？', '端午背后的文化象征可以怎么理解？', '端午习俗为什么会因地区不同而变化？', '如果想做端午主题活动，适合先选哪类体验项目？'] },
+  { keyword: '书法', questions: ['书法作为非遗，最适合从哪种字体开始认识？', '书法欣赏时可以先看哪些基本线索？', '书法为什么也被纳入非遗保护？', '如果是初学者，先看名作还是先了解工具更合适？'] },
+  { keyword: '苏绣', questions: ['苏绣和湘绣最大的风格差异在哪？', '苏绣的双面绣工艺为什么被认为是最难的？', '想近距离看苏绣作品，推荐去哪里？', '苏绣入门可以从哪些小件绣品开始了解？'] },
+  { keyword: '京剧', questions: ['京剧脸谱的颜色分别代表什么含义？', '京剧的四大行当分别有什么特点？', '第一次看京剧，选哪出戏最容易看进去？', '京剧的唱腔体系和其他戏曲有什么不同？'] },
+  { keyword: '中医', questions: ['中医针灸为什么能入选联合国非遗名录？', '中医的望闻问切和现代医学诊断有什么互补？', '有没有适合普通人体验的中医养生方法？', '中药材炮制工艺本身也是非遗吗？'] },
+  { keyword: '剪纸', questions: ['剪纸艺术为什么能流传这么久？', '中国南北方剪纸风格有什么明显不同？', '想学剪纸，从什么基本技法开始练？', '剪纸在现代设计中是怎么被应用的？'] },
+  { keyword: '陶瓷', questions: ['景德镇为什么被称为瓷都？', '青花瓷的制作流程包含哪些关键步骤？', '古代陶瓷工艺是怎么传承到今天的？', '现代陶艺和传统制瓷工艺最大的区别是什么？'] },
+  { keyword: '太极', questions: ['太极拳作为非遗有什么特别的文化价值？', '太极拳的不同流派之间差异大吗？', '太极的养生效果从现代科学角度怎么解释？', '学太极拳零基础可以从哪里开始？'] },
+  { keyword: '非遗', questions: ['非遗和普通传统文化项目有什么区别？', '中国目前有多少项世界级非遗？', '非遗传承人需要满足什么条件？', '为什么非遗保护越来越受到重视？'] },
+];
 
 const COLD_START_CATEGORIES: Record<string, string[]> = {
   '传统工艺': ['青花瓷是怎么制作的？', '苏绣和湘绣有什么区别？', '木雕工艺有哪些流派？'],
@@ -43,6 +59,8 @@ export default function AiChatPage() {
   const [waitingTip, setWaitingTip] = useState('');
   const [sourceTag, setSourceTag] = useState('');
   const [presets, setPresets] = useState<{ text: string; display: string }[]>([]);
+  const [presetQueue, setPresetQueue] = useState<string[]>([]);
+  const [recentPresets, setRecentPresets] = useState<string[]>([]);
   const [crsExpanded, setCrsExpanded] = useState(false);
   const [crsTimeline, setCrsTimeline] = useState<{ ask_id: string; question_text: string; answer?: string; score_delta?: number }[]>([]);
   const [modeCelebrating, setModeCelebrating] = useState(false);
@@ -53,6 +71,12 @@ export default function AiChatPage() {
   const [feedbackGiven, setFeedbackGiven] = useState<Record<string, string>>({});
   const [overallFeedback, setOverallFeedback] = useState('');
   const [rewriteSuggestions, setRewriteSuggestions] = useState<string[]>([]);
+  const [actionTasks, setActionTasks] = useState<ActionTask[]>([]);
+  const [kgEntity, setKgEntity] = useState('');
+  const [kgPathText, setKgPathText] = useState('');
+  const [kgSimilarNames, setKgSimilarNames] = useState<string[]>([]);
+  const [kgExpandItems, setKgExpandItems] = useState<{ entity: string }[]>([]);
+  const [celebrationParticles, setCelebrationParticles] = useState<{ id: number; x: number; y: number; color: string }[]>([]);
 
   const bottomRef = useRef<HTMLDivElement>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -61,7 +85,7 @@ export default function AiChatPage() {
   const scrollToBottom = () => bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
 
   useEffect(() => { scrollToBottom(); }, [store.messages]);
-  useEffect(() => { loadCrsState(); return () => { if (typingTimerRef.current) clearInterval(typingTimerRef.current); }; }, []);
+  useEffect(() => { loadCrsState(); generatePresets(); return () => { if (typingTimerRef.current) clearInterval(typingTimerRef.current); }; }, []);
 
   // Typewriter effect
   const startTyping = (text: string) => {
@@ -133,18 +157,72 @@ export default function AiChatPage() {
       store.setCrsState({ mode: newMode, confidence_score: payload.crs_confidence?.confidence_score || 0, session_id: payload.crs_session_id });
       if (oldMode !== newMode && newMode !== 'cold_start') triggerModeCelebration(newMode);
       if (payload.ask_prompt) store.setAsk(payload.ask_prompt, payload.ask_options || [], payload.ask_id || '');
+      // KG info
+      if (payload.kg_entity) setKgEntity(payload.kg_entity);
+      if (payload.kg_path?.path) setKgPathText(payload.kg_path.path.map(p => p.entity || p.relation || '').filter(Boolean).join(' → '));
+      if (payload.kg_similar?.items) setKgSimilarNames(payload.kg_similar.items.map(i => i.entity));
+      if (payload.kg_expand?.items) setKgExpandItems(payload.kg_expand.items);
+      // Build action tasks from recommend cards
+      if (payload.recommend_cards?.length) {
+        const tasks: ActionTask[] = payload.recommend_cards.map((c, i) => ({
+          id: `${c.type}_${c.id}_${Date.now()}`,
+          title: c.title,
+          desc: shortenReason(c.reason, c.summary || ''),
+          type: c.type,
+          targetId: c.id,
+          done: false,
+          recommended: i === 0,
+          metaTitle: c.type === 'content' ? '阅读内容' : c.type === 'event' ? '报名活动' : '参与讨论',
+        }));
+        setActionTasks(tasks);
+      }
       generatePresets(payload);
     } catch { store.addMessage({ id: 'a_err', role: 'ai', text: '提问失败，请稍后重试。' }); }
     finally { store.setSending(false); setWaitingTip(''); }
   };
 
-  const generatePresets = (payload: AiChatResponse) => {
-    const f = payload.recommended_questions?.length ? payload.recommended_questions : payload.followup_questions?.slice(0, 4) || [];
-    if (f.length) setPresets(f.map((t: string) => ({ text: t, display: t.length > 16 ? t.slice(0, 16) + '…' : t })));
-    else {
-      const pool = CRS_MODE_QUESTIONS[store.crsState.mode || 'cold_start'] || CRS_MODE_QUESTIONS.cold_start;
-      setPresets([...pool].sort(() => Math.random() - 0.5).slice(0, 4).map((t: string) => ({ text: t, display: t.length > 16 ? t.slice(0, 16) + '…' : t })));
+  const buildPresetQueue = (basePool: string[]) => {
+    const pool = [...basePool].sort(() => Math.random() - 0.5);
+    setPresetQueue(pool);
+    return pool;
+  };
+
+  const generatePresets = (payload?: AiChatResponse) => {
+    const mode = store.crsState.mode || 'cold_start';
+    if (payload?.recommended_questions?.length) {
+      const f = payload.recommended_questions.slice(0, 6);
+      setPresetQueue(f);
+      setPresets(f.slice(0, 4).map(t => ({ text: t, display: t.length > 16 ? t.slice(0, 16) + '…' : t })));
+      return;
     }
+    if (payload?.followup_questions?.length) {
+      const f = payload.followup_questions.slice(0, 6);
+      setPresetQueue(f);
+      setPresets(f.slice(0, 4).map(t => ({ text: t, display: t.length > 16 ? t.slice(0, 16) + '…' : t })));
+      return;
+    }
+    // Try keyword match from recent messages
+    const lastMsg = store.messages.filter(m => m.role === 'user').slice(-1)[0]?.text || '';
+    for (const entry of KEYWORD_FOLLOWUP_MAP) {
+      if (lastMsg.includes(entry.keyword)) {
+        const qs = [...entry.questions].sort(() => Math.random() - 0.5);
+        setPresetQueue(qs);
+        setPresets(qs.slice(0, 4).map(t => ({ text: t, display: t.length > 16 ? t.slice(0, 16) + '…' : t })));
+        return;
+      }
+    }
+    const pool = CRS_MODE_QUESTIONS[mode] || CRS_MODE_QUESTIONS.cold_start;
+    const shuffled = buildPresetQueue(pool);
+    setPresets(shuffled.slice(0, 4).map(t => ({ text: t, display: t.length > 16 ? t.slice(0, 16) + '…' : t })));
+  };
+
+  const refreshPresets = () => {
+    const pool = presetQueue.length > 4 ? presetQueue : [...(CRS_MODE_QUESTIONS[store.crsState.mode || 'cold_start'] || CRS_MODE_QUESTIONS.cold_start)].sort(() => Math.random() - 0.5);
+    const remaining = pool.filter(t => !recentPresets.includes(t));
+    const picked = remaining.length >= 4 ? remaining.slice(0, 4) : pool.slice(0, 4);
+    setPresets(picked.map(t => ({ text: t, display: t.length > 16 ? t.slice(0, 16) + '…' : t })));
+    setRecentPresets(prev => [...prev.slice(-6), ...picked]);
+    apiRequest('/recommend/track', { method: 'POST', data: { user_id: session?.userId, action: 'skip', target_type: 'preset', source_scene: 'ai_chat' } }).catch(() => {});
   };
 
   const handleAskAnswer = async (answer: string) => {
@@ -165,6 +243,12 @@ export default function AiChatPage() {
   };
 
   const triggerModeCelebration = (mode: string) => {
+    const colors = mode === 'precision' ? ['#4caf50','#81c784','#a5d6a7','#66bb6a','#2e7d32','#1b5e20'] : ['#2196f3','#64b5f6','#90caf9','#42a5f5','#1565c0','#0d47a1'];
+    const particles = Array.from({ length: 16 }, (_, i) => ({
+      id: i, x: (Math.random() - 0.5) * 300, y: (Math.random() - 0.5) * 300,
+      color: colors[i % colors.length],
+    }));
+    setCelebrationParticles(particles);
     setModeCelebrating(true); setCelebrationMode(mode);
     setTimeout(() => { setModeCelebrating(false); setCelebrationMode(''); }, 3000);
   };
@@ -175,6 +259,8 @@ export default function AiChatPage() {
 
   const handleClear = () => {
     store.clearHistory(); setCrsTimeline([]); setSourceTag(''); setPresets([]); setRewriteSuggestions([]);
+    setActionTasks([]); setKgEntity(''); setKgPathText(''); setKgSimilarNames([]); setKgExpandItems([]);
+    setRecentPresets([]); setPresetQueue([]);
     if (session?.userId) apiRequest('/ai/crs/reset', { method: 'POST', data: { user_id: session.userId } }).catch(() => {});
   };
 
@@ -201,16 +287,27 @@ export default function AiChatPage() {
 
       {/* Mode celebration overlay */}
       {modeCelebrating && (
-        <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center gap-4" style={{ background: 'rgba(62,39,20,0.72)', backdropFilter: 'blur(8px)' }}>
-          <div className="w-[210px] h-[210px] rounded-full border-2 border-amber-300/60 animate-ping" />
-          <span className="text-5xl animate-bounce">🎉</span>
-          <h2 className="text-2xl font-extrabold text-white m-0" style={{ textShadow: '0 0 20px rgba(200,60,30,0.5)' }}>
-            {celebrationMode === 'precision' ? '精准模式已开启' : '探索模式已开启'}
+        <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center gap-3 overflow-hidden" style={{ background: 'rgba(62,39,20,0.72)', backdropFilter: 'blur(8px)' }}>
+          {/* Particles */}
+          {celebrationParticles.map(p => (
+            <div key={p.id} className="celebrate-particle" style={{
+              '--px': p.x + 'px', '--py': p.y + 'px',
+              background: p.color, left: '50%', top: '50%',
+              animationDelay: (p.id * 0.05) + 's',
+            } as React.CSSProperties} />
+          ))}
+          <div className="w-[160px] h-[160px] rounded-full border-2 border-white/20 animate-ping absolute" />
+          <span className="text-5xl animate-bounce relative">{celebrationMode === 'precision' ? '🎯' : '🔮'}</span>
+          <h2 className="text-xl font-extrabold text-white m-0 relative" style={{ textShadow: '0 0 20px rgba(200,60,30,0.5)' }}>
+            {celebrationMode === 'precision' ? '了解升级 · 精准模式已开启' : '了解升级 · 探索模式已开启'}
           </h2>
-          <span className="px-6 py-1.5 rounded-full text-3xl font-black text-white"
+          <span className="px-6 py-1.5 rounded-full text-2xl font-black text-white relative"
             style={{ background: celebrationMode === 'precision' ? 'rgba(76,175,80,0.7)' : 'rgba(33,150,243,0.7)' }}>
             {MODE_LABELS[celebrationMode] || celebrationMode}
           </span>
+          <p className="text-white/70 text-sm mt-1 relative">
+            {celebrationMode === 'precision' ? '黑塔已深度理解你的偏好，精准推荐已开启' : '黑塔已初步了解你的偏好'}
+          </p>
         </div>
       )}
 
@@ -333,12 +430,13 @@ export default function AiChatPage() {
           <p className="relative z-10 text-[11px] text-[#9c846d] mt-1 mb-0">轻触黑塔可播放语音讲解</p>
         </div>
 
-        {/* Empty state — 只有分类引导，数字人已在 top-stage */}
+        {/* Empty state */}
         {store.messages.length === 0 && (
           <div className="flex flex-col items-center pt-1 animate-fade-in-up">
-            <p className="text-sm text-ink-secondary mb-4 leading-relaxed px-4 text-center">
-              我是黑塔，你的非遗导览官。选一个你感兴趣的方向，让我为你推荐吧~
-            </p>
+            <div className="text-center mb-4 px-4">
+              <p className="text-xs font-bold text-[#8b6a4b] mb-1.5">先和黑塔聊聊你想了解的非遗方向</p>
+              <p className="text-[11px] text-[#9c846d]">支持本地知识优先回答，也会顺手给你补上活动和延伸推荐。</p>
+            </div>
             {mode === 'cold_start' && Object.entries(COLD_START_CATEGORIES).map(([category, questions]) => (
               <div key={category} className="w-full mb-3">
                 <h3 className="text-xs font-bold text-ink-muted mb-2 flex items-center gap-1.5">
@@ -405,16 +503,23 @@ export default function AiChatPage() {
             </div>
             {/* Follow-up question chips after last non-transition AI message */}
             {!msg.isTransition && msg.role === 'ai' && idx === store.messages.length - 1 && presets.length > 0 && !store.sending && (
-              <div className="flex flex-wrap gap-1.5 mt-2 ml-2">
-                {presets.slice(0, 4).map((p, pi) => (
-                  <button key={pi} onClick={() => handleSend(p.text)}
-                    className="px-3.5 py-1.5 rounded-full text-xs cursor-pointer border-none transition-all duration-200 hover:shadow-sm active:scale-[0.97]"
-                    style={{
-                      background: 'rgba(244,228,208,0.45)',
-                      border: '1px solid rgba(213,185,153,0.22)',
-                      color: '#8c5a31',
-                    }}>继续追问: {p.display || p.text}</button>
-                ))}
+              <div className="flex flex-col gap-1.5 mt-2 ml-2">
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] font-semibold text-[#9c846d] tracking-wider">推荐发问</span>
+                  <button onClick={refreshPresets} className="text-[10px] px-2 py-0.5 rounded-full cursor-pointer border-none transition-colors"
+                    style={{ background: 'rgba(219,191,155,0.18)', color: '#8a6b4b' }}>换一批</button>
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {presets.slice(0, 4).map((p, pi) => (
+                    <button key={pi} onClick={() => handleSend(p.text)}
+                      className="px-3.5 py-1.5 rounded-full text-xs cursor-pointer border-none transition-all duration-200 hover:shadow-sm active:scale-[0.97]"
+                      style={{
+                        background: 'rgba(244,228,208,0.45)',
+                        border: '1px solid rgba(213,185,153,0.22)',
+                        color: '#8c5a31',
+                      }}>{p.display || p.text}</button>
+                  ))}
+                </div>
               </div>
             )}
           </div>
@@ -461,131 +566,197 @@ export default function AiChatPage() {
           </div>
         )}
 
-        {/* Recommend cards — prominent, always when available */}
+        {/* ═══════ L2 本轮结果 ═══════ */}
         {store.recommendCards.length > 0 && !store.sending && (
-          <div className="animate-fade-in-up space-y-3">
-            <h4 className="text-base font-bold text-[#2f2419] flex items-center gap-2 px-1">
-              <Sparkles size={16} style={{ color: '#d7a445' }} /> AI 为你推荐
-              <span className="text-xs font-normal text-[#a08868]">· {MODE_LABELS[mode]}模式</span>
-            </h4>
-            {store.recommendCards.map((card, idx) => {
-              const expanded = explainExpanded[idx] || false;
-              const fb = feedbackGiven[idx];
-              return (
-                <div key={idx} className="rounded-[18px] overflow-hidden"
-                  style={{
-                    background: 'rgba(255,250,243,0.92)',
-                    border: '1px solid rgba(238,216,191,0.82)',
-                    boxShadow: '0 8px 20px rgba(121,58,31,0.04)',
-                  }}>
-                  <button onClick={() => {
-                    trackCard(card, 'click');
-                    navigate(card.type === 'content' ? `/content/${card.id}` : card.type === 'event' ? `/activity/${card.id}` : `/discussion/${card.id}`);
-                  }}
-                  className="w-full text-left border-none bg-transparent cursor-pointer p-4 flex gap-3.5 items-start">
-                    {card.cover_url ? (
-                      <CoverImage coverUrl={card.cover_url} alt="" className="w-[52px] h-[52px] rounded-xl object-cover shrink-0" style={{ background: '#f5e8d5' }} />
-                    ) : (
-                      <div className="w-[52px] h-[52px] rounded-xl shrink-0 flex items-center justify-center text-xl"
-                        style={{ background: 'linear-gradient(135deg, #f5e8d5, #eadcc8)', color: '#c08a3e' }}>
-                        {card.type === 'content' ? '📖' : card.type === 'event' ? '📅' : '💬'}
-                      </div>
-                    )}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1.5">
-                        <span className="text-[10px] px-2 py-0.5 rounded-full font-medium"
-                          style={{
-                            background: card.type === 'content' ? 'rgba(91,140,90,0.1)' : card.type === 'event' ? 'rgba(192,138,62,0.1)' : 'rgba(192,57,43,0.1)',
-                            color: card.type === 'content' ? '#4a7a49' : card.type === 'event' ? '#a07230' : '#b5342e',
-                          }}>
-                          {card.type === 'content' ? '文化' : card.type === 'event' ? '活动' : '讨论'}
-                        </span>
-                        <span className="text-[13px] font-semibold text-[#2f2419]">{card.title}</span>
-                      </div>
-                      <p className="text-[11px] text-[#7b6141] leading-relaxed line-clamp-2">
-                        {shortenReason(card.reason, card.summary || '')}
-                      </p>
-                    </div>
-                    <ChevronRight size={14} className="shrink-0 mt-1 text-[#d4c4aa]" />
-                  </button>
+          <>
+            <div className="layer-divider">
+              <div className="layer-divider-line" />
+              <span className="layer-divider-label">本轮结果</span>
+              <div className="layer-divider-line" />
+            </div>
 
-                  {/* Explain toggle */}
-                  {card.explain && (
-                    <>
-                      <button onClick={() => setExplainExpanded({ ...explainExpanded, [idx]: !expanded })}
-                        className="w-full flex items-center justify-center gap-1 py-2 px-4 text-xs text-[#8a5a2b] border-none bg-[#faf3e8] cursor-pointer hover:bg-[#f5e8d5] transition-colors">
-                        {expanded ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
-                        {expanded ? '收起解释' : '展开解释'}
-                      </button>
-                      {expanded && (
-                        <div className="px-4 py-3 space-y-2 text-xs text-[#5a4430] bg-[#fdf9f2] border-t border-[rgba(238,216,191,0.5)]">
-                          {card.explain.match_score_text && <p>📊 匹配度：{card.explain.match_score_text}</p>}
-                          {card.explain.final_score_text && <p>⭐ 综合分：{card.explain.final_score_text}</p>}
-                          {card.explain.novelty_score_text && <p>🆕 新颖度：{card.explain.novelty_score_text}</p>}
-                          {card.explain.diversity_penalty_text && <p>🔄 多样性：{card.explain.diversity_penalty_text}</p>}
+            <div className="animate-fade-in-up space-y-3">
+              <h4 className="text-base font-bold text-[#2f2419] flex items-center gap-2 px-1">
+                <Sparkles size={16} style={{ color: '#d7a445' }} /> 延伸推荐
+                <span className="text-xs font-normal text-[#a08868]">· {MODE_LABELS[mode]}模式</span>
+              </h4>
+              {store.recommendCards.map((card, idx) => {
+                const expanded = explainExpanded[idx] || false;
+                const fb = feedbackGiven[idx];
+                const display = card.explain?.display;
+                return (
+                  <div key={idx} className="rounded-[18px] overflow-hidden"
+                    style={{
+                      background: 'rgba(255,250,243,0.92)',
+                      border: '1px solid rgba(238,216,191,0.82)',
+                      boxShadow: '0 8px 20px rgba(121,58,31,0.04)',
+                    }}>
+                    <button onClick={() => { trackCard(card, 'click'); navigate(card.type === 'content' ? `/content/${card.id}` : card.type === 'event' ? `/activity/${card.id}` : `/discussion/${card.id}`); }}
+                    className="w-full text-left border-none bg-transparent cursor-pointer p-4 flex gap-3.5 items-start">
+                      {card.cover_url ? (
+                        <CoverImage coverUrl={card.cover_url} alt="" className="w-[52px] h-[52px] rounded-xl object-cover shrink-0" style={{ background: '#f5e8d5' }} />
+                      ) : (
+                        <div className="w-[52px] h-[52px] rounded-xl shrink-0 flex items-center justify-center text-xl"
+                          style={{ background: 'linear-gradient(135deg, #f5e8d5, #eadcc8)', color: '#c08a3e' }}>
+                          {card.type === 'content' ? '📖' : card.type === 'event' ? '📅' : '💬'}
                         </div>
                       )}
-                    </>
-                  )}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1.5">
+                          <span className="text-[10px] px-2 py-0.5 rounded-full font-medium"
+                            style={{ background: card.type === 'content' ? 'rgba(91,140,90,0.1)' : card.type === 'event' ? 'rgba(192,138,62,0.1)' : 'rgba(192,57,43,0.1)',
+                              color: card.type === 'content' ? '#4a7a49' : card.type === 'event' ? '#a07230' : '#b5342e' }}>
+                            {card.type === 'content' ? '文化' : card.type === 'event' ? '活动' : '讨论'}
+                          </span>
+                          <span className="text-[13px] font-semibold text-[#2f2419]">{card.title}</span>
+                        </div>
+                        <p className="text-[11px] text-[#7b6141] leading-relaxed line-clamp-2">
+                          {shortenReason(card.reason, card.summary || '')}
+                        </p>
+                      </div>
+                      <ChevronRight size={14} className="shrink-0 mt-1 text-[#d4c4aa]" />
+                    </button>
 
-                  {/* Feedback per card */}
-                  {fb ? (
-                    <div className="px-4 py-2 text-xs text-center text-[#8a5a2b] bg-[#faf3e8] border-t border-[rgba(238,216,191,0.5)]">
-                      {fb === 'like' ? '👍 感谢反馈' : '👎 会继续优化'}
+                    {/* Action buttons per card: like/dislike */}
+                    <div className="px-4 py-2 flex items-center gap-3 border-t border-[rgba(238,216,191,0.4)]">
+                      {fb ? (
+                        <span className="text-[11px] text-[#8a5a2b]">{fb === 'like' ? '👍 已推荐' : '👎 已过滤'}</span>
+                      ) : (
+                        <>
+                          <button onClick={() => { trackCard(card, 'feedback_like'); setFeedbackGiven({...feedbackGiven, [idx]: 'like'}); }}
+                            className="px-2.5 py-1 rounded-full text-[10px] cursor-pointer border-none transition-colors"
+                            style={{ background: 'rgba(76,175,80,0.08)', color: '#388e3c' }}>👍</button>
+                          <button onClick={() => { trackCard(card, 'feedback_dislike'); setFeedbackGiven({...feedbackGiven, [idx]: 'dislike'}); }}
+                            className="px-2.5 py-1 rounded-full text-[10px] cursor-pointer border-none transition-colors"
+                            style={{ background: 'rgba(192,57,43,0.06)', color: '#b5342e' }}>👎</button>
+                          <span className="text-[10px] text-[#9c846d]">有帮助吗？</span>
+                        </>
+                      )}
+                      <button onClick={() => setExplainExpanded({ ...explainExpanded, [idx]: !expanded })}
+                        className="ml-auto px-2.5 py-1 rounded-full text-[10px] cursor-pointer border-none transition-colors flex items-center gap-1"
+                        style={{ background: 'rgba(219,191,155,0.12)', color: '#8a6b4b' }}>
+                        {expanded ? <ChevronUp size={10} /> : <ChevronDown size={10} />}
+                        {expanded ? '收起' : '解释'}
+                      </button>
                     </div>
-                  ) : null}
-                </div>
-              );
-            })}
 
-            {/* Overall feedback */}
-            {!overallFeedback && (
-              <div className="flex items-center justify-center gap-3 py-2.5">
-                <span className="text-xs text-[#a08868]">这些推荐对你有帮助吗？</span>
-                <button onClick={() => feedbackOverall('like')} className="px-3.5 py-1.5 rounded-full text-xs cursor-pointer border-none transition-all duration-200 hover:shadow-sm active:scale-[0.97]"
-                  style={{ background: 'rgba(76,175,80,0.08)', color: '#388e3c' }}>
-                  👍 有帮助
-                </button>
-                <button onClick={() => feedbackOverall('dislike')} className="px-3.5 py-1.5 rounded-full text-xs cursor-pointer border-none transition-all duration-200 hover:shadow-sm active:scale-[0.97]"
-                  style={{ background: 'rgba(192,57,43,0.06)', color: '#b5342e' }}>
-                  👎 没帮助
-                </button>
+                    {/* Expanded explain — L2 scores + L3 strategy + L4 KG */}
+                    {expanded && (
+                      <div className="px-4 py-3 space-y-2 text-[11px] text-[#5a4430] bg-[#fdf9f2] border-t border-[rgba(238,216,191,0.5)]">
+                        {card.explain?.final_score_text && <p>📊 综合分：{card.explain.final_score_text}</p>}
+                        {card.explain?.match_score_text && <p>📈 匹配度：{card.explain.match_score_text}</p>}
+                        {card.explain?.novelty_score_text && <p>🆕 新颖度：{card.explain.novelty_score_text}</p>}
+                        {card.explain?.diversity_penalty_text && <p>🔄 多样性：{card.explain.diversity_penalty_text}</p>}
+                        {display?.matchDetailText && <p>🔍 匹配依据：{display.matchDetailText}</p>}
+                        {card.explain?.crs_mode_label && <p>🎯 推荐方式：{card.explain.crs_mode_label}</p>}
+                        {display?.sources?.length ? <p>📚 数据来源：{display.sources.join('、')}</p> : null}
+                        {display?.heritageTerms?.length ? <p>🏷️ 兴趣维度：{display.heritageTerms.join('、')}</p> : null}
+                        {display?.similarEntities?.length ? <p>🔗 相似推荐：{display.similarEntities.join(' / ')}</p> : null}
+                        {display?.expandPath ? <p>🔄 关联路径：{display.expandPath}</p> : null}
+                        {display?.kgReasonText ? <p>🧠 推荐原因：{display.kgReasonText}</p> : null}
+                        {card.explain?.kg_score_text ? <p>⚡ 知识图谱相似度：{card.explain.kg_score_text}</p> : null}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+
+              {/* Overall feedback */}
+              {!overallFeedback && (
+                <div className="flex items-center justify-center gap-3 py-2.5">
+                  <span className="text-xs text-[#a08868]">这些推荐对你有帮助吗？</span>
+                  <button onClick={() => feedbackOverall('like')} className="px-3.5 py-1.5 rounded-full text-xs cursor-pointer border-none transition-all duration-200 hover:shadow-sm active:scale-[0.97]"
+                    style={{ background: 'rgba(76,175,80,0.08)', color: '#388e3c' }}>👍 有帮助</button>
+                  <button onClick={() => feedbackOverall('dislike')} className="px-3.5 py-1.5 rounded-full text-xs cursor-pointer border-none transition-all duration-200 hover:shadow-sm active:scale-[0.97]"
+                    style={{ background: 'rgba(192,57,43,0.06)', color: '#b5342e' }}>👎 没帮助</button>
+                </div>
+              )}
+            </div>
+
+            {/* Action tasks */}
+            {actionTasks.length > 0 && (
+              <div className="rounded-[18px] overflow-hidden animate-fade-in-up"
+                style={{ background: 'rgba(255,250,243,0.92)', border: '1px solid rgba(238,216,191,0.82)', boxShadow: '0 8px 20px rgba(121,58,31,0.04)' }}>
+                <h4 className="text-sm font-bold text-[#2f2419] px-4 pt-3 pb-1">📋 行动清单</h4>
+                {actionTasks.map((task) => (
+                  <div key={task.id} onClick={() => setActionTasks(prev => prev.map(t => t.id === task.id ? { ...t, done: !t.done } : t))}
+                    className="flex items-start gap-3 px-4 py-2.5 cursor-pointer transition-colors hover:bg-[#faf3e8]">
+                    <div className={`w-4 h-4 rounded-full mt-0.5 shrink-0 flex items-center justify-center text-[9px] font-bold transition-colors ${
+                      task.done ? 'bg-[#5b8c5a] text-white' : task.recommended ? 'border-2 border-[#d7a445]' : 'border-2 border-[#d4c4aa]'
+                    }`}>
+                      {task.done ? '✓' : task.recommended ? '★' : ''}
+                    </div>
+                    <div className={`flex-1 min-w-0 ${task.done ? 'opacity-50' : ''}`}>
+                      <div className={`text-xs font-semibold text-[#2f2419] ${task.done ? 'line-through' : ''}`}>{task.title}</div>
+                      <div className="text-[10px] text-[#9c846d] mt-0.5">{task.metaTitle || (task.type === 'content' ? '阅读内容' : task.type === 'event' ? '报名活动' : '参与讨论')}</div>
+                    </div>
+                  </div>
+                ))}
               </div>
             )}
-          </div>
-        )}
 
-        {/* Rewrite suggestions */}
-        {rewriteSuggestions.length > 0 && !store.sending && (
-          <div className="rounded-[18px] px-4 py-3"
-            style={{ background: 'rgba(247,240,227,0.72)', border: '1px solid rgba(219,191,155,0.18)' }}>
-            <h4 className="text-xs font-bold text-[#8b6a4b] mb-2.5">💡 换个问法试试</h4>
-            <div className="flex flex-wrap gap-2">
-              {rewriteSuggestions.map((s, i) => (
-                <button key={i} onClick={() => handleSend(s)}
-                  className="px-3 py-1.5 rounded-full text-xs cursor-pointer border-none hover:opacity-80 transition-opacity"
-                  style={{ background: 'rgba(244,228,208,0.52)', color: '#7b4d27', border: '1px solid rgba(213,185,153,0.26)' }}>
-                  {s}
-                </button>
-              ))}
+            {/* ═══════ L3 深入细节 ═══════ */}
+            {(rewriteSuggestions.length > 0 || kgEntity || (store.crsState.mode && crsExpanded)) && (
+              <div className="layer-divider dashed">
+                <div className="layer-divider-line dashed" />
+                <span className="layer-divider-label">深入细节</span>
+                <div className="layer-divider-line dashed" />
+              </div>
+            )}
+
+            {/* Rewrite suggestions */}
+            {rewriteSuggestions.length > 0 && (
+              <div className="rounded-[18px] px-4 py-3"
+                style={{ background: 'rgba(247,240,227,0.72)', border: '1px solid rgba(219,191,155,0.18)' }}>
+                <h4 className="text-xs font-bold text-[#8b6a4b] mb-2.5">💡 换个问法试试</h4>
+                <div className="flex flex-wrap gap-2">
+                  {rewriteSuggestions.map((s, i) => (
+                    <button key={i} onClick={() => handleSend(s)}
+                      className="px-3 py-1.5 rounded-full text-xs cursor-pointer border-none hover:opacity-80 transition-opacity"
+                      style={{ background: 'rgba(244,228,208,0.52)', color: '#7b4d27', border: '1px solid rgba(213,185,153,0.26)' }}>{s}</button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* KG entity panel */}
+            {kgEntity && (
+              <div className="rounded-[18px] px-4 py-3"
+                style={{ background: 'rgba(247,242,230,0.80)', border: '1px solid rgba(219,191,155,0.18)' }}>
+                <h4 className="text-xs font-bold text-[#8b6a4b] mb-2.5">🧠 关联推荐依据</h4>
+                <p className="text-[11px] text-[#5a4430] mb-1">当前识别实体：<span className="font-semibold text-brand">{kgEntity}</span></p>
+                {kgPathText && <p className="text-[11px] text-[#7b6141] mb-2">关联路径：{kgPathText}</p>}
+                {kgSimilarNames.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5 mb-1.5">
+                    {kgSimilarNames.map((n, i) => (
+                      <span key={i} className="px-2 py-0.5 rounded-full text-[10px]" style={{ background: 'rgba(91,140,90,0.08)', color: '#4a7a49' }}>相似：{n}</span>
+                    ))}
+                  </div>
+                )}
+                {kgExpandItems.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5">
+                    {kgExpandItems.map((item, i) => (
+                      <span key={i} className="px-2 py-0.5 rounded-full text-[10px]" style={{ background: 'rgba(192,138,62,0.08)', color: '#a07230' }}>扩展：{item.entity}</span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* CTA bar */}
+            <div className="flex gap-3 pt-2">
+              <button onClick={() => navigate('/content')}
+                className="flex-1 h-[48px] rounded-full text-sm font-bold text-white border-none cursor-pointer flex items-center justify-center gap-1.5 transition-all duration-200 hover:shadow-lg active:scale-[0.97]"
+                style={{ background: 'linear-gradient(135deg, #9f2d22, #c04833)', boxShadow: '0 6px 16px rgba(159,45,34,0.18)' }}>
+                <BookOpen size={14} /> 看相关内容
+              </button>
+              <button onClick={() => navigate('/activity')}
+                className="flex-1 h-[48px] rounded-full text-sm font-bold text-white border-none cursor-pointer flex items-center justify-center gap-1.5 transition-all duration-200 hover:shadow-lg active:scale-[0.97]"
+                style={{ background: 'linear-gradient(135deg, #b98535, #d7a953)', boxShadow: '0 6px 16px rgba(185,133,53,0.18)' }}>
+                <Calendar size={14} /> 去报名活动
+              </button>
             </div>
-          </div>
-        )}
-
-        {/* CTA bar */}
-        {store.recommendCards.length > 0 && !store.sending && (
-          <div className="flex gap-3 pt-2">
-            <button onClick={() => navigate('/content')}
-              className="flex-1 h-[48px] rounded-full text-sm font-bold text-white border-none cursor-pointer flex items-center justify-center gap-1.5 transition-all duration-200 hover:shadow-lg active:scale-[0.97]"
-              style={{ background: 'linear-gradient(135deg, #9f2d22, #c04833)', boxShadow: '0 6px 16px rgba(159,45,34,0.18)' }}>
-              <BookOpen size={14} /> 看相关内容
-            </button>
-            <button onClick={() => navigate('/activity')}
-              className="flex-1 h-[48px] rounded-full text-sm font-bold text-white border-none cursor-pointer flex items-center justify-center gap-1.5 transition-all duration-200 hover:shadow-lg active:scale-[0.97]"
-              style={{ background: 'linear-gradient(135deg, #b98535, #d7a953)', boxShadow: '0 6px 16px rgba(185,133,53,0.18)' }}>
-              <Calendar size={14} /> 去报名活动
-            </button>
-          </div>
+          </>
         )}
 
         <div ref={bottomRef} />
