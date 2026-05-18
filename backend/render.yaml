@@ -15,3 +15,5 @@ services:
         value: ""
       - key: DOUBAO_TTS_ACCESS_TOKEN
         value: ""
+      - key: SQLITE_DB_FILE
+        value: "heritage_platform.db"
