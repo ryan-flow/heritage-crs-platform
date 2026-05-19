@@ -1,13 +1,12 @@
 import { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { ArrowLeft, Heart, Eye, Tag, ChevronRight } from 'lucide-react';
+import { ArrowLeft, ChevronRight } from 'lucide-react';
 import { apiRequest } from '../../lib/api';
 import CoverImage from '../../components/ui/CoverImage';
 import { ContentItem } from '../../types';
 import { useAuthStore } from '../../stores/auth-store';
 import { GlassCard } from '../../components/ui/GlassCard';
-import { SealBadge } from '../../components/ui/SealBadge';
 import { SkeletonLoader } from '../../components/ui/SkeletonLoader';
 import FloatingAiButton from '../../components/ui/FloatingAiButton';
 
@@ -65,17 +64,38 @@ export default function ContentDetailPage() {
     );
   }
 
+  // 解析 displayBlocks 数据
+  const displayBlocks = item.displayBlocks || {};
+  const highlights = displayBlocks.highlights || [];
+  const readingTips = displayBlocks.reading_tips || [];
+  const introText = displayBlocks.intro || item.summary || '';
+  const bodyText = item.content || item.summary || '';
+
   return (
     <div className="pb-12 page-enter" key={loadKey}>
-      {/* Hero Image Area */}
+      {/* ═══════════════════════════════════════
+          Cover Image Hero — 小程序同款设计
+         ═══════════════════════════════════════ */}
       {item.cover_url ? (
-        <div className="h-56 bg-parchment-dark relative">
+        <div className="relative h-[220px] overflow-hidden">
           <CoverImage coverUrl={item.cover_url} alt={item.title} className="w-full h-full object-cover" />
-          <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/30 to-transparent pointer-events-none" />
+          {/* 渐变遮罩 */}
+          <div className="absolute inset-0 bg-gradient-to-b from-[rgba(16,10,8,0.08)] to-[rgba(18,9,6,0.68)]" />
+          {/* 返回按钮 */}
           <div className="absolute top-4 left-4">
             <GlassCard as="button" onClick={() => navigate(-1)} className="p-2 rounded-xl cursor-pointer backdrop-blur-md">
-              <ArrowLeft size={18} className="text-ink" />
+              <ArrowLeft size={18} className="text-white" />
             </GlassCard>
+          </div>
+          {/* 封面上的标题信息 */}
+          <div className="absolute left-4 right-4 bottom-5">
+            <span className="inline-block px-2.5 py-1 rounded-full bg-[rgba(255,245,230,0.18)] text-[#ffe1b7] text-xs mb-2">
+              {item.chapter || '非遗文化'}
+            </span>
+            <h1 className="text-xl font-bold text-[#fff8f2] leading-snug mb-1">{item.title}</h1>
+            <p className="text-sm text-[rgba(255,242,231,0.86)]">
+              {item.sub_chapter || item.content_type || '中国非遗精选'}
+            </p>
           </div>
         </div>
       ) : (
@@ -88,52 +108,69 @@ export default function ContentDetailPage() {
       )}
 
       <div className="px-4">
-        {/* Title */}
-        <h1 className="text-xl font-serif font-bold text-ink mt-4 leading-snug">{item.title}</h1>
-
-        {/* Meta Row */}
-        <div className="flex items-center flex-wrap gap-2 mt-3 text-xs text-ink-muted">
-          {item.category && <SealBadge variant="jade">{item.category}</SealBadge>}
-          {item.region && (
-            <span className="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full bg-parchment-dark/50 text-ink-secondary">
-              <Tag size={11} /> {item.region}
-            </span>
-          )}
-          <span className="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full bg-parchment-dark/50 text-ink-secondary">
-            <Eye size={11} /> {item.view_count || 0}
+        {/* ═══════════════════════════════════════
+            元信息标签条
+           ═══════════════════════════════════════ */}
+        <div className="flex flex-wrap gap-2 pt-4 pb-2">
+          <span className="chip !bg-[#f5e7d6] !text-[#8b6139] !min-h-0 !py-0.5 !px-2.5 !text-[11px]">
+            {item.chapter || '非遗文化'}
           </span>
-          <span className="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full bg-parchment-dark/50 text-ink-secondary">
-            <Heart size={11} /> {item.like_count || 0}
+          <span className="chip !bg-[#f5e7d6] !text-[#8b6139] !min-h-0 !py-0.5 !px-2.5 !text-[11px]">
+            {item.sub_chapter || item.content_type || '专题导读'}
           </span>
         </div>
 
-        {/* Chapter Info */}
-        {item.chapter && (
-          <GlassCard className="mt-3 p-3 text-xs text-ink-secondary">
-            <span className="font-medium text-ink">章节：</span>
-            {item.chapter}{item.sub_chapter ? ` · ${item.sub_chapter}` : ''}
-          </GlassCard>
+        {/* ═══════════════════════════════════════
+            导览摘要
+           ═══════════════════════════════════════ */}
+        {introText && (
+          <div className="py-4 border-b border-[rgba(133,97,63,0.10)]">
+            <h2 className="text-sm font-bold text-[#38261a] mb-2.5">导览摘要</h2>
+            <p className="text-[13px] text-[#6f5540] leading-relaxed">{introText}</p>
+          </div>
         )}
 
-        {/* Tags */}
-        {item.tags && item.tags.length > 0 && (
-          <div className="flex flex-wrap gap-1.5 mt-3">
-            {item.tags.map((t, i) => (
-              <span key={i} className="text-xs px-2.5 py-0.5 rounded-full bg-parchment-dark/60 text-ink-muted border border-gold-200/30 font-sans">
-                #{t}
-              </span>
+        {/* ═══════════════════════════════════════
+            三分钟看点
+           ═══════════════════════════════════════ */}
+        {highlights.length > 0 && (
+          <div className="py-4 border-b border-[rgba(133,97,63,0.10)]">
+            <h2 className="text-sm font-bold text-[#38261a] mb-2.5">三分钟看点</h2>
+            {highlights.map((h: string, i: number) => (
+              <p key={i} className="text-[13px] text-[#6b513b] leading-relaxed mb-2">
+                {i + 1}. {h}
+              </p>
             ))}
           </div>
         )}
 
-        {/* Content Body — prose-serif 排版系统 */}
-        <div className="mt-5 prose-serif whitespace-pre-wrap space-y-1">
-          {(item.content || item.summary || '').split('\n').filter(Boolean).map((p, i) => (
-            <p key={i} className={i > 0 ? 'first:!text-inherit first:!float-none' : ''}>{p}</p>
-          ))}
-        </div>
+        {/* ═══════════════════════════════════════
+            阅读建议
+           ═══════════════════════════════════════ */}
+        {readingTips.length > 0 && (
+          <div className="py-4 border-b border-[rgba(133,97,63,0.10)] bg-[rgba(247,240,227,0.72)] -mx-4 px-4">
+            <h2 className="text-sm font-bold text-[#38261a] mb-2.5">阅读建议</h2>
+            {readingTips.map((tip: string, i: number) => (
+              <p key={i} className="text-[13px] text-[#6b513b] leading-relaxed mb-2">
+                {tip}
+              </p>
+            ))}
+          </div>
+        )}
 
-        {/* Source */}
+        {/* ═══════════════════════════════════════
+            延展讲解
+           ═══════════════════════════════════════ */}
+        {bodyText && (
+          <div className="py-4">
+            <h2 className="text-sm font-bold text-[#38261a] mb-2.5">延展讲解</h2>
+            <div className="text-[13px] text-[#5a4430] leading-relaxed whitespace-pre-wrap">
+              {bodyText}
+            </div>
+          </div>
+        )}
+
+        {/* 来源 */}
         {item.source_site && (
           <p className="mt-6 pt-3 text-xs text-ink-muted border-t border-ink-muted/15">
             来源：{item.source_site}

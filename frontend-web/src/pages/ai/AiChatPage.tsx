@@ -276,19 +276,19 @@ export default function AiChatPage() {
 
   return (
     <div className="flex flex-col h-screen max-w-[480px] mx-auto relative overflow-hidden" style={{
-      background: 'linear-gradient(180deg, #faf3e8 0%, #f3e7d6 30%, #efe0cd 60%, #e8d9c4 100%)',
+      background: 'linear-gradient(180deg, #fbf4ea 0%, #f5ebdc 52%, #ecdeca 100%)',
     }}>
-      {/* Background decorative elements */}
+      {/* ═══════════════════════════════════════
+          极光背景效果 — 对标小程序
+         ═══════════════════════════════════════ */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute -top-20 -left-20 w-72 h-72 rounded-full bg-[radial-gradient(circle,rgba(192,138,62,0.06)_0%,transparent_70%)]" />
-        <div className="absolute top-1/4 -right-16 w-56 h-56 rounded-full bg-[radial-gradient(circle,rgba(159,45,34,0.04)_0%,transparent_70%)]" />
-        <div className="absolute bottom-1/3 -left-10 w-48 h-48 rounded-full bg-[radial-gradient(circle,rgba(91,140,90,0.04)_0%,transparent_70%)]" />
+        <div className="absolute -top-10 -left-20 w-72 h-72 rounded-full bg-[radial-gradient(circle,rgba(255,201,135,0.22)_0%,transparent_70%)] blur-3xl" />
+        <div className="absolute top-1/4 -right-16 w-56 h-56 rounded-full bg-[radial-gradient(circle,rgba(142,122,240,0.13)_0%,transparent_70%)] blur-3xl" />
       </div>
 
       {/* Mode celebration overlay */}
       {modeCelebrating && (
         <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center gap-3 overflow-hidden" style={{ background: 'rgba(62,39,20,0.72)', backdropFilter: 'blur(8px)' }}>
-          {/* Particles */}
           {celebrationParticles.map(p => (
             <div key={p.id} className="celebrate-particle" style={{
               '--px': p.x + 'px', '--py': p.y + 'px',
@@ -311,7 +311,9 @@ export default function AiChatPage() {
         </div>
       )}
 
-      {/* Header — 简洁顶栏 */}
+      {/* ═══════════════════════════════════════
+          Header — 简洁顶栏
+         ═══════════════════════════════════════ */}
       <header className="px-4 py-2.5 flex items-center justify-between shrink-0 z-10 relative"
         style={{ background: 'rgba(255,250,243,0.78)', backdropFilter: 'blur(16px)', borderBottom: '1px solid rgba(219,191,155,0.15)' }}>
         <button onClick={() => navigate('/')} className="p-2 border-none bg-transparent cursor-pointer text-[#5a4430] hover:text-[#2f2419] transition-colors"><ArrowLeft size={20} /></button>
@@ -319,7 +321,9 @@ export default function AiChatPage() {
         <button onClick={handleClear} className="p-1.5 rounded-[10px] border-none bg-transparent cursor-pointer text-[#9c846d] hover:text-[#5a4430] hover:bg-[#f5e8d5]/50 transition-colors" title="清空对话"><Trash2 size={15} /></button>
       </header>
 
-      {/* CRS Status Bar — always visible, click to expand detail */}
+      {/* ═══════════════════════════════════════
+          CRS Status Bar — 可展开详情
+         ═══════════════════════════════════════ */}
       <div onClick={() => setCrsExpanded(!crsExpanded)} className="mx-4 mb-3 px-4 py-2.5 rounded-2xl flex items-center gap-3 cursor-pointer shrink-0 z-10 relative transition-shadow hover:shadow-md"
         style={{
           background: 'rgba(255,252,247,0.95)',
@@ -345,7 +349,7 @@ export default function AiChatPage() {
         {crsExpanded ? <ChevronUp size={14} className="text-[#9c846d] shrink-0" /> : <ChevronDown size={14} className="text-[#9c846d] shrink-0" />}
       </div>
 
-      {/* CRS Detail Panel — expandable on status bar click */}
+      {/* CRS Detail Panel */}
       {crsExpanded && (
         <div className="mx-4 mb-3 rounded-[10px] px-5 py-4 text-sm text-[#5a4430] shrink-0 animate-fade-in-up"
           style={{ background: 'linear-gradient(180deg, rgba(255,252,247,0.98), rgba(249,239,225,0.98))', boxShadow: '0 12px 28px rgba(112,74,41,0.06)', border: '1px solid rgba(219,191,155,0.22)' }}>
@@ -353,7 +357,6 @@ export default function AiChatPage() {
             <span className="font-bold text-base">了解进度 · {MODE_LABELS[mode]}</span>
             <span className="text-xl font-extrabold text-brand">{Math.round(confidence)}%</span>
           </div>
-          {/* Confidence bar */}
           <div className="h-3 rounded-full mb-3" style={{ background: 'rgba(0,0,0,0.06)' }}>
             <div className="h-full rounded-full transition-all duration-700"
               style={{
@@ -361,7 +364,6 @@ export default function AiChatPage() {
                 background: mode === 'precision' ? 'linear-gradient(90deg, #4caf50, #81c784)' : mode === 'mixed' ? 'linear-gradient(90deg, #2196f3, #64b5f6)' : 'linear-gradient(90deg, #ff9800, #ffb74d)',
               }} />
           </div>
-          {/* Dimension bars */}
           {[
             { key: 'explicit', label: '你的选择', color: 'linear-gradient(90deg, #8B4513, #A0522D)' },
             { key: 'implicit', label: '你的行为', color: 'linear-gradient(90deg, #6A0DAD, #9370DB)' },
@@ -375,7 +377,6 @@ export default function AiChatPage() {
               <span className="w-8 text-xs text-[#8b6a4b]">{dims[d.key as keyof typeof dims] || 0}</span>
             </div>
           ))}
-          {/* Timeline */}
           {crsTimeline.length > 0 && (
             <div className="mt-3 pt-3 border-t border-[rgba(219,191,155,0.2)]">
               <span className="text-xs font-bold text-[#8b6a4b] mb-2 block">了解历程</span>
@@ -398,36 +399,68 @@ export default function AiChatPage() {
       <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3 z-10">
 
         {/* ═══════════════════════════════════════
-           数字人专用区域 — 对标小程序 ai-top-stage
-           无论是否有消息，始终可见
+           ai-top-stage — 对标小程序精确实现
            ═══════════════════════════════════════ */}
-        <div className="rounded-[18px] px-5 pt-4 pb-3 text-center relative overflow-hidden"
+        <div className="relative overflow-hidden rounded-[24px] px-5 pt-5 pb-4 text-center"
           style={{
-            background: 'linear-gradient(180deg, rgba(255,252,247,0.98), rgba(249,239,225,0.98))',
-            border: '1px solid rgba(219,191,155,0.22)',
-            boxShadow: '0 8px 24px rgba(112,74,41,0.06)',
+            background: 'linear-gradient(135deg, #5B3A7A 0%, #6B3A5B 35%, #7a4020 65%, #8B4513 100%)',
+            boxShadow: '0 18px 42px rgba(70, 35, 49, 0.18)',
+            border: '1px solid rgba(255, 238, 220, 0.08)',
           }}>
           {/* 装饰光晕 */}
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-48 rounded-full bg-[radial-gradient(circle,rgba(192,138,62,0.06)_0%,transparent_65%)] pointer-events-none" />
-          <div className="absolute -bottom-4 -right-4 w-24 h-24 rounded-full bg-[radial-gradient(circle,rgba(159,45,34,0.03)_0%,transparent_70%)] pointer-events-none" />
+          <div className="absolute inset-0 pointer-events-none"
+            style={{
+              background: 'radial-gradient(circle at 20% 12%, rgba(255,255,255,0.10), transparent 32%), radial-gradient(circle at 78% 16%, rgba(167,129,255,0.18), transparent 30%)',
+            }}
+          />
+          {/* 底部紫色光晕 */}
+          <div className="absolute left-1/2 top-[180px] w-[420px] h-[220px] -translate-x-1/2 pointer-events-none"
+            style={{
+              background: 'radial-gradient(circle, rgba(170,120,255,0.20), rgba(170,120,255,0.02) 70%, transparent 76%)',
+              filter: 'blur(6px)',
+            }}
+          />
+          {/* 清空按钮 */}
+          <button
+            onClick={handleClear}
+            className="absolute top-3 right-3 z-10 px-2 py-1 rounded-full text-[11px] border-none cursor-pointer transition-colors"
+            style={{
+              background: 'rgba(255, 248, 237, 0.08)',
+              color: 'rgba(255, 241, 226, 0.62)',
+            }}
+          >
+            清空
+          </button>
 
           {/* 文案 */}
-          <div className="relative z-10 mb-2">
-            <span className="inline-block px-3 py-0.5 rounded-full text-[10px] font-semibold bg-brand-soft text-brand mb-1.5 tracking-wider">
-              ✦ 黑塔 · Heritage AI
+          <div className="relative z-10 mb-1">
+            <span className="inline-block px-3 py-0.5 rounded-full text-[10px] font-semibold bg-white/10 text-[#ffe1bc] mb-1.5 tracking-wider">
+              黑塔 · Heritage AI
             </span>
-            <h2 className="text-[20px] font-black text-[#2f2419] m-0 leading-tight" style={{ letterSpacing: '0.5px' }}>
+            <h2 className="text-[22px] font-black text-[#fff8f2] m-0 leading-tight" style={{ letterSpacing: '0.5px' }}>
               {MODE_HERO_TITLES[mode] || '想认识你'}
             </h2>
           </div>
 
           {/* 数字人 — 居中展示 */}
-          <div className="relative z-10 flex justify-center -my-1">
+          <div className="relative z-10 flex justify-center my-2">
             <DigitalHumanModel variant="ai" mood={mood} size={140} />
           </div>
 
-          {/* 提示文案 */}
-          <p className="relative z-10 text-[11px] text-[#9c846d] mt-1 mb-0">轻触黑塔可播放语音讲解</p>
+          {/* CTA 按钮 */}
+          <div className="relative z-10 mt-1">
+            <button
+              onClick={() => handleSend(CRS_MODE_QUESTIONS[mode || 'cold_start'][Math.floor(Math.random() * CRS_MODE_QUESTIONS[mode || 'cold_start'].length)])}
+              className="min-w-[200px] h-[42px] px-6 rounded-full text-sm font-extrabold border-none cursor-pointer guofeng-press"
+              style={{
+                background: 'linear-gradient(135deg, #ffd39a, #ffb765)',
+                color: '#5d2410',
+                boxShadow: '0 14px 32px rgba(255, 183, 101, 0.22)',
+              }}
+            >
+              随机问一个问题
+            </button>
+          </div>
         </div>
 
         {/* Empty state */}
@@ -547,8 +580,8 @@ export default function AiChatPage() {
         {store.askPrompt && !store.sending && mode !== 'precision' && (
           <div className="rounded-[10px] px-5 py-4 animate-fade-in-up"
             style={{
-              background: 'linear-gradient(180deg, rgba(255,252,247,0.98), rgba(249,239,225,0.98))',
-              boxShadow: '0 12px 28px rgba(112,74,41,0.06)', border: '1px solid rgba(219,191,155,0.22)',
+              background: 'linear-gradient(180deg, rgba(255,248,238,0.98), rgba(253,241,221,0.96))',
+              boxShadow: '0 12px 28px rgba(112,74,41,0.06)', border: '1px solid rgba(221,187,138,0.28)',
             }}>
             <p className="text-sm font-semibold text-[#2f2419] mb-3 flex items-center gap-2">
               <span className="text-base">💭</span> {store.askPrompt}
