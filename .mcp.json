@@ -2,19 +2,36 @@
   "mcpServers": {
     "context7": {
       "command": "npx",
-      "args": ["-y", "@upstash/context7-mcp@2.1.8"]
+      "args": [
+        "-y",
+        "@upstash/context7-mcp@2.1.8"
+      ]
     },
     "playwright": {
       "command": "npx",
-      "args": ["-y", "@playwright/mcp@0.0.70", "--headless"]
+      "args": [
+        "-y",
+        "@playwright/mcp@0.0.70",
+        "--headless"
+      ]
     },
     "glance": {
       "command": "npx",
-      "args": ["-y", "glance-mcp@1.1.0"]
+      "args": [
+        "-y",
+        "glance-mcp@1.1.0"
+      ]
     },
     "drawio": {
       "command": "npx",
-      "args": ["-y", "drawio-mcp"]
+      "args": [
+        "-y",
+        "drawio-mcp"
+      ]
+    },
+    "supabase": {
+      "type": "http",
+      "url": "https://mcp.supabase.com/mcp?project_ref=pvbfnscxejyommijiico"
     }
   }
 }

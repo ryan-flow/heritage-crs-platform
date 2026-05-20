@@ -271,7 +271,12 @@ export default function AiChatPage() {
 
   const confidence = store.crsState.confidence_score || 0;
   const mode = store.crsState.mode || 'cold_start';
-  const mood = mode === 'precision' ? 'confident' : mode === 'mixed' ? 'thinking' : 'curious';
+  // CRS 三阶段 → 数字人情绪映射
+  // cold_start → curious（好奇询问）| mixed → thinking（思考推荐）| precision → confident（自信推荐）
+  const mood = mode === 'cold_start' ? 'curious' : mode === 'mixed' ? 'thinking' : 'confident';
+  const greeting = mode === 'cold_start' ? '来跟我聊聊你想了解什么非遗吧！'
+    : mode === 'mixed' ? '让我想想什么适合你...'
+    : '我已经很了解你啦，看看这些推荐喜不喜欢！';
   const dims = store.crsState.dimensions || {};
 
   return (
@@ -444,7 +449,7 @@ export default function AiChatPage() {
 
           {/* 数字人 — 居中展示 */}
           <div className="relative z-10 flex justify-center my-2">
-            <DigitalHumanModel variant="ai" mood={mood} size={140} />
+            <DigitalHumanModel variant="ai" mood={mood} size={140} greeting={greeting} />
           </div>
 
           {/* CTA 按钮 */}
@@ -516,7 +521,7 @@ export default function AiChatPage() {
                     {msg.isTransition && <div className="mt-1.5 text-xs text-brand font-semibold">—— 黑塔的反馈</div>}
                     {!msg.isTransition && !store.sending && (
                       <div className="flex gap-2 mt-3 flex-wrap">
-                        <button onClick={() => handleSend(msg.text.slice(0, 40))}
+                        <button onClick={() => handleSend('能展开讲讲刚才说的内容吗？')}
                           className="px-3.5 py-1.5 rounded-full text-xs cursor-pointer transition-all duration-200 hover:shadow-sm"
                           style={{ background: 'rgba(244,228,208,0.6)', color: '#8c5a31', border: '1px solid rgba(213,185,153,0.3)' }}>
                           ↪ 继续追问

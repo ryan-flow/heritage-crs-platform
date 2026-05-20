@@ -19,7 +19,7 @@ from app.core.database import Base, engine
 @asynccontextmanager
 async def lifespan(_: FastAPI) -> AsyncIterator[None]:
     Base.metadata.create_all(bind=engine)
-    _ensure_sqlite_columns()
+    # No-op: SQLite migration adapter removed (PostgreSQL only)
     _ensure_seed_data()
     yield
 
@@ -58,7 +58,6 @@ app = FastAPI(title=settings.app_name, debug=settings.app_debug, lifespan=lifesp
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -72,12 +71,7 @@ app.mount("/storage", StaticFiles(directory=str(static_dir)), name="storage")
 
 
 def _ensure_sqlite_columns() -> None:
-    """
-    兼容已运行中的 SQLite 库：增量补齐新字段，避免手动迁移。
-    仅做“加列”操作，不影响现有数据和业务逻辑。
-    """
-    if not settings.sqlite_url.startswith("sqlite:///"):
-        return
+    return  # Dead code: PostgreSQL only
 
     table_columns = {
         "contents": {
