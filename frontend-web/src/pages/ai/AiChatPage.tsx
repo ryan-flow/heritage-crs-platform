@@ -326,7 +326,7 @@ export default function AiChatPage() {
          ═══════════════════════════════════════ */}
       <div onClick={() => setCrsExpanded(!crsExpanded)} className="mx-4 mb-3 px-4 py-2.5 rounded-2xl flex items-center gap-3 cursor-pointer shrink-0 z-10 relative transition-shadow hover:shadow-md"
         style={{
-          background: 'rgba(255,252,247,0.95)',
+          background: 'rgba(255, 251, 245, 0.95)',
           border: '1px solid rgba(219,191,155,0.18)',
           boxShadow: crsExpanded ? '0 8px 20px rgba(112,74,41,0.08)' : '0 4px 12px rgba(112,74,41,0.04)',
         }}>
@@ -352,7 +352,7 @@ export default function AiChatPage() {
       {/* CRS Detail Panel */}
       {crsExpanded && (
         <div className="mx-4 mb-3 rounded-[10px] px-5 py-4 text-sm text-[#5a4430] shrink-0 animate-fade-in-up"
-          style={{ background: 'linear-gradient(180deg, rgba(255,252,247,0.98), rgba(249,239,225,0.98))', boxShadow: '0 12px 28px rgba(112,74,41,0.06)', border: '1px solid rgba(219,191,155,0.22)' }}>
+          style={{ background: 'rgba(255, 251, 245, 0.96)', boxShadow: '0 12px 28px rgba(112,74,41,0.06)', border: '1px solid rgba(219,191,155,0.22)' }}>
           <div className="flex items-center justify-between mb-3">
             <span className="font-bold text-base">了解进度 · {MODE_LABELS[mode]}</span>
             <span className="text-xl font-extrabold text-brand">{Math.round(confidence)}%</span>
@@ -618,7 +618,7 @@ export default function AiChatPage() {
                 const fb = feedbackGiven[idx];
                 const display = card.explain?.display;
                 return (
-                  <div key={idx} className="rounded-[18px] overflow-hidden"
+                  <div key={idx} className="rounded-[14px] overflow-hidden"
                     style={{
                       background: 'rgba(255,250,243,0.92)',
                       border: '1px solid rgba(238,216,191,0.82)',
@@ -708,7 +708,7 @@ export default function AiChatPage() {
 
             {/* Action tasks */}
             {actionTasks.length > 0 && (
-              <div className="rounded-[18px] overflow-hidden animate-fade-in-up"
+              <div className="rounded-[14px] overflow-hidden animate-fade-in-up"
                 style={{ background: 'rgba(255,250,243,0.92)', border: '1px solid rgba(238,216,191,0.82)', boxShadow: '0 8px 20px rgba(121,58,31,0.04)' }}>
                 <h4 className="text-sm font-bold text-[#2f2419] px-4 pt-3 pb-1">📋 行动清单</h4>
                 {actionTasks.map((task) => (
@@ -739,7 +739,7 @@ export default function AiChatPage() {
 
             {/* Rewrite suggestions */}
             {rewriteSuggestions.length > 0 && (
-              <div className="rounded-[18px] px-4 py-3"
+              <div className="rounded-[14px] px-4 py-3"
                 style={{ background: 'rgba(247,240,227,0.72)', border: '1px solid rgba(219,191,155,0.18)' }}>
                 <h4 className="text-xs font-bold text-[#8b6a4b] mb-2.5">💡 换个问法试试</h4>
                 <div className="flex flex-wrap gap-2">
@@ -754,7 +754,7 @@ export default function AiChatPage() {
 
             {/* KG entity panel */}
             {kgEntity && (
-              <div className="rounded-[18px] px-4 py-3"
+              <div className="rounded-[14px] px-4 py-3"
                 style={{ background: 'rgba(247,242,230,0.80)', border: '1px solid rgba(219,191,155,0.18)' }}>
                 <h4 className="text-xs font-bold text-[#8b6a4b] mb-2.5">🧠 关联推荐依据</h4>
                 <p className="text-[11px] text-[#5a4430] mb-1">当前识别实体：<span className="font-semibold text-brand">{kgEntity}</span></p>

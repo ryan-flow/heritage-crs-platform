@@ -59,14 +59,38 @@ export function buildImageUrl(raw: string | null | undefined): string {
   const s = String(raw).trim()
   if (!s) return ''
   if (s.startsWith('http://') || s.startsWith('https://')) return s
-  if (s.startsWith('/storage/') || s.startsWith('/static/')) {
-    return `${API_BASE.replace('/api/v1', '')}${s}`
-  }
-  const idx = s.indexOf('/storage/')
-  if (idx >= 0) return `${API_BASE.replace('/api/v1', '')}${s.slice(idx)}`
-  const idx2 = s.indexOf('/static/')
-  if (idx2 >= 0) return `${API_BASE.replace('/api/v1', '')}${s.slice(idx2)}`
-  return `${API_BASE.replace('/api/v1', '')}/storage/${s.replace(/\\/g, '/')}`
+
+  const host = API_BASE.replace(/\/api\/v1\/?$/, '')
+
+  // Absolute storage paths
+  if (s.startsWith('/storage/') || s.startsWith('/static/')) return `${host}${s}`
+
+  // /covers/ → /storage/covers/
+  if (s.startsWith('/covers/')) return `${host}/storage${s}`
+
+  // /discussion_covers/ → /storage/discussion_covers/
+  if (s.startsWith('/discussion_covers/')) return `${host}/storage${s}`
+
+  // /web_crawl/ → /storage/web_crawl/
+  if (s.startsWith('/web_crawl/')) return `${host}/storage${s}`
+
+  // /tts/ → /storage/tts/
+  if (s.startsWith('/tts/')) return `${host}/storage${s}`
+
+  // Search for storage/static path anywhere in string
+  const storageIdx = s.indexOf('/storage/')
+  if (storageIdx >= 0) return `${host}${s.slice(storageIdx)}`
+
+  const staticIdx = s.indexOf('/static/')
+  if (staticIdx >= 0) return `${host}${s.slice(staticIdx)}`
+
+  // Filename-only fallback: guess storage path by pattern
+  const filename = s.replace(/\\/g, '/').split('/').pop() || s
+  if (/\.mp3$/i.test(filename)) return `${host}/storage/tts/${filename}`
+  if (/^topic_|^discussion_/i.test(filename)) return `${host}/storage/discussion_covers/${filename}`
+  if (/\.(png|jpg|jpeg|webp|gif|svg)$/i.test(filename)) return `${host}/storage/covers/${filename}`
+
+  return `${host}/storage/${s.replace(/\\/g, '/')}`
 }
 
 export function shortenReason(text: string | null | undefined, fallback: string): string {

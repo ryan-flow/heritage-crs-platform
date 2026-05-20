@@ -8,7 +8,8 @@ class Settings(BaseSettings):
     app_debug: bool = True
     api_prefix: str = "/api/v1"
 
-    sqlite_db_file: str = "heritage_platform.db"
+    # Database (PostgreSQL)
+    database_url: str = ""
     admin_username: str = "admin"
     admin_password: str = "admin123"
     admin_token: str = "REPLACED_ADMIN_TOKEN"
@@ -42,10 +43,15 @@ class Settings(BaseSettings):
     )
 
     @property
-    def sqlite_url(self) -> str:
-        backend_dir = Path(__file__).resolve().parents[2]
-        db_path = backend_dir / self.sqlite_db_file
-        return f"sqlite:///{db_path.as_posix()}"
+    def db_url(self) -> str:
+        """PostgreSQL connection URL. Set DATABASE_URL in .env or environment."""
+        url = self.database_url
+        if not url:
+            raise ValueError(
+                "DATABASE_URL is not set. "
+                "Example: postgresql://heritage:heritage123@localhost:5432/heritage"
+            )
+        return url
 
     @property
     def backend_dir(self) -> Path:

@@ -1,33 +1,48 @@
-version: "3.8"
-
 services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: heritage-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: heritage
+      POSTGRES_USER: heritage
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-heritage123}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U heritage -d heritage"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
   backend:
     build:
       context: .
       dockerfile: Dockerfile
     container_name: heritage-crs-api
     restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
     ports:
       - "8000:8000"
     environment:
       - APP_ENV=production
       - APP_DEBUG=false
-      - SQLITE_DB_FILE=data/heritage_platform.db
+      - DATABASE_URL=postgresql://heritage:${POSTGRES_PASSWORD:-heritage123}@postgres:5432/heritage
       - ADMIN_USERNAME=admin
       - ADMIN_PASSWORD=admin123
       - ADMIN_TOKEN=REPLACED_ADMIN_TOKEN
       - DOUBAO_API_URL=https://ark.cn-beijing.volces.com/api/v3/chat/completions
-      - DOUBAO_API_KEY=REPLACED_API_KEY
+      - DOUBAO_API_KEY=${DOUBAO_API_KEY}
       - DOUBAO_MODEL=doubao-seed-2-0-pro-260215
+      - DOUBAO_TTS_APPID=${DOUBAO_TTS_APPID}
+      - DOUBAO_TTS_ACCESS_TOKEN=${DOUBAO_TTS_ACCESS_TOKEN}
     volumes:
-      - heritage-data:/app/data
-    healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/')"]
-      interval: 30s
-      timeout: 3s
-      retries: 3
-      start_period: 30s
+      - ./storage:/app/storage
 
 volumes:
-  heritage-data:
+  pgdata:
     driver: local

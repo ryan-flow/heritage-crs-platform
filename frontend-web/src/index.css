@@ -18,8 +18,12 @@
 
   /* ── 文字层级 ── */
   --color-ink: #2c2416;
-  --color-ink-secondary: #5a4430;
+  --color-ink-secondary: #7b6141;
   --color-ink-muted: #8b6a4b;
+
+  /* ── 卡片底层变量 ── */
+  --color-card-bg: rgba(255, 251, 245, 0.96);
+  --color-card-border: rgba(219, 191, 155, 0.18);
 
   /* ── 朱砂红系 ── */
   --color-cinnabar: #c0392b;
@@ -65,10 +69,11 @@
 
   /* ── 圆角 3 级体系 ── */
   --radius-container: 32px;
-  --radius-card: 18px;
-  --radius-element: 10px;
+  --radius-card: 14px;
+  --radius-element: 8px;
   --radius-hero: 36px;
   --radius-pill: 999px;
+  --radius-chip: 999px;
 
   /* ── 间距网格 (4px 基准) ── */
   --space-section: 24px;
@@ -354,6 +359,43 @@ body {
 .bg-parchment { background-color: var(--color-parchment); }
 .bg-parchment-dark { background-color: var(--color-parchment-dark); }
 
+/* ── 毛玻璃卡片变体 ── */
+.glass-card {
+  background: var(--color-card-bg);
+  border: 1px solid var(--color-card-border);
+  border-radius: var(--radius-card);
+  box-shadow: 0 7px 17px rgba(121, 58, 31, 0.10);
+}
+.glass-card-elevated {
+  box-shadow: 0 9px 20px rgba(121, 58, 31, 0.14);
+}
+
+/* ── Pill 标签 (对标小程序 .chip) ── */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 999px;
+  background: var(--color-brand-soft);
+  color: var(--color-brand);
+  transition: transform 0.22s ease, box-shadow 0.22s ease, filter 0.22s ease;
+  cursor: default;
+  white-space: nowrap;
+}
+.chip:active {
+  transform: scale(0.97);
+}
+.chip-accent {
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+}
+.chip-jade {
+  background: var(--color-jade-50);
+  color: var(--color-jade-600);
+}
+
 /* ═══════════════════════════════════════════
    Home 微交互 & 响应式工具
    ═══════════════════════════════════════════ */
@@ -384,7 +426,7 @@ body {
   box-shadow: 0 18px 38px rgba(121, 58, 31, 0.12);
 }
 .card-interactive:active {
-  transform: translateY(-1px) scale(0.985);
+  transform: translateY(1px) scale(0.985);
 }
 .card-interactive:focus-visible {
   outline: 2px solid rgba(159, 45, 34, 0.45);

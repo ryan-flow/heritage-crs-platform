@@ -81,9 +81,9 @@ export default function ActivityListPage() {
                   key={item.id}
                   type="button"
                   onClick={() => navigate(`/activity/${item.id}`)}
-                  className="card-interactive w-full text-left bg-gradient-to-b from-[rgba(255,252,247,0.98)] to-[rgba(249,239,225,0.98)]"
+                  className="card-interactive w-full text-left"
                   style={{
-                    background: 'linear-gradient(180deg, rgba(255,252,247,0.98), rgba(249,239,225,0.98))',
+                    background: 'rgba(255, 251, 245, 0.96)',
                   }}
                 >
                   <GlassCard hover className="p-3.5 flex items-center gap-3">

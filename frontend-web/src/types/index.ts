@@ -50,6 +50,12 @@ export interface ContentItem {
   reason?: string;
   snippet?: string;
   explain?: RecommendExplain;
+  displayBlocks?: {
+    highlights?: string[];
+    reading_tips?: string[];
+    intro?: string;
+  };
+  content_type?: string;
 }
 
 // ===== Activity (活动) =====
@@ -91,6 +97,9 @@ export interface DiscussionTopic {
   reason?: string;
   snippet?: string;
   explain?: RecommendExplain;
+  heat_score?: number;
+  title_short?: string;
+  heat_level_text?: string;
 }
 
 // ===== Recommend =====

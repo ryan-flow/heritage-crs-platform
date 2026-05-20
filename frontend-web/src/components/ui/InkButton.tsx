@@ -1,26 +1,34 @@
 import { type ButtonHTMLAttributes } from 'react';
 
 interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'outline' | 'ghost';
+  variant?: 'primary' | 'secondary' | 'outline' | 'ghost';
   size?: 'sm' | 'md' | 'lg';
   loading?: boolean;
 }
 
 const variantStyles: Record<string, string> = {
   primary: [
-    'bg-gradient-to-r from-[#9f2d22] to-[#c04833] text-white',
-    'shadow-[0_8px_20px_rgba(159,45,34,0.24)]',
-    'hover:shadow-[0_10px_24px_rgba(159,45,34,0.32)]',
-    'active:scale-[0.97]',
+    'bg-gradient-to-br from-[#9f2d22] to-[#c04833] text-white',
+    'shadow-[0_7px_16px_rgba(159,45,34,0.22)]',
+    'hover:shadow-[0_9px_22px_rgba(159,45,34,0.30)]',
+    'active:translate-y-[1px] active:scale-[0.985]',
+  ].join(' '),
+  secondary: [
+    'bg-gradient-to-br from-[#c08a3e] to-[#d5a24d] text-white',
+    'shadow-[0_7px_16px_rgba(192,138,62,0.22)]',
+    'hover:shadow-[0_9px_22px_rgba(192,138,62,0.30)]',
+    'active:translate-y-[1px] active:scale-[0.985]',
   ].join(' '),
   outline: [
     'bg-[#f9f0e2] text-[#8a5a20]',
     'border border-[rgba(197,160,120,0.3)]',
     'hover:bg-[#f5e6d2] hover:border-[rgba(197,160,120,0.5)]',
+    'active:translate-y-[1px] active:scale-[0.985]',
   ].join(' '),
   ghost: [
     'bg-transparent text-ink-secondary',
     'hover:bg-[rgba(44,36,22,0.04)]',
+    'active:translate-y-[1px] active:scale-[0.985]',
   ].join(' '),
 };
 

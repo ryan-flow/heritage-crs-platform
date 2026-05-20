@@ -195,10 +195,10 @@ export default function ContentDetailPage() {
           <div className="flex gap-3 overflow-x-auto pb-2 -mx-4 px-4 snap-x snap-mandatory scrollbar-hide">
             {relatedItems.map((r: ContentItem) => (
               <button key={r.id} onClick={() => { navigate(`/content/${r.id}`); window.scrollTo(0, 0); }}
-                className="snap-start shrink-0 w-[160px] rounded-[18px] overflow-hidden text-left border-none bg-white cursor-pointer group
+                className="snap-start shrink-0 w-[160px] rounded-[14px] overflow-hidden text-left border-none cursor-pointer group
                   transition-all duration-200 hover:-translate-y-1 hover:shadow-lg active:scale-[0.98]"
                 style={{
-                  background: 'linear-gradient(180deg, rgba(255,252,247,0.98), rgba(249,239,225,0.98))',
+                  background: 'rgba(255, 251, 245, 0.96)',
                   boxShadow: '0 8px 20px rgba(121,58,31,0.06)',
                   border: '1px solid rgba(219,191,155,0.18)',
                 }}>

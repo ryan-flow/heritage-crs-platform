@@ -1,7 +1,5 @@
+import csv, io, json, os, ssl, time, urllib.request
 from datetime import datetime
-import csv
-import io
-import json
 from pathlib import Path
 from uuid import uuid4
 
@@ -963,3 +961,56 @@ def delete_kb_item(item_id: int, db: Session = Depends(get_db)):
     db.delete(item)
     db.commit()
     return success({"id": item_id}, "删除成功")
+
+
+PIXABAY_KEY = "55468384-6826bf941c33f15394e137805"
+STORAGE_DIR = Path(__file__).resolve().parents[4] / "storage" / "covers"
+
+
+@router.post("/fix-covers")
+def admin_fix_covers(db: Session = Depends(get_db)):
+    """Pixabay 搜图补封面：为没有合适封面的内容搜图，失败的删除。"""
+    items = db.query(Content).filter(
+        Content.cover_url.like("%_1.jpg"),
+        Content.status == "published"
+    ).order_by(Content.id).all()
+
+    results = {"fixed": 0, "deleted": 0, "failed": []}
+    ctx = ssl.create_default_context()
+
+    for item in items:
+        q = item.title.replace("'", "").replace('"', "")
+        params = urllib.parse.urlencode({
+            "key": PIXABAY_KEY, "q": q,
+            "image_type": "photo", "orientation": "horizontal",
+            "safesearch": "true", "per_page": 3,
+        })
+        try:
+            req = urllib.request.Request(
+                f"https://pixabay.com/api/?{params}",
+                headers={"User-Agent": "HeritageCRS/1.0"}
+            )
+            with urllib.request.urlopen(req, timeout=15, context=ctx) as resp:
+                hits = json.loads(resp.read()).get("hits", [])
+            if hits:
+                img_url = hits[0]["webformatURL"]
+                req2 = urllib.request.Request(img_url, headers={"User-Agent": "Mozilla/5.0"})
+                with urllib.request.urlopen(req2, timeout=20, context=ctx) as resp2:
+                    data = resp2.read()
+                if len(data) > 5000:
+                    filename = f"pixabay_{item.id}_{int(time.time())}.jpg"
+                    (STORAGE_DIR / filename).write_bytes(data)
+                    item.cover_url = f"/storage/covers/{filename}"
+                    db.commit()
+                    results["fixed"] += 1
+                    continue
+        except Exception:
+            pass
+        # No match → delete
+        db.delete(item)
+        db.commit()
+        results["deleted"] += 1
+        results["failed"].append(item.id)
+        time.sleep(0.5)
+
+    return success(results, f"修复完成：{results['fixed']} 已补图，{results['deleted']} 已删除")
