@@ -66,6 +66,9 @@ app.include_router(api_router, prefix=settings.api_prefix)
 app.include_router(kg.router, prefix="/api/kg", tags=["kg-compat"])
 static_dir = settings.backend_dir / "storage"
 static_dir.mkdir(parents=True, exist_ok=True)
+assets_dir = settings.backend_dir / "assets"
+assets_dir.mkdir(parents=True, exist_ok=True)
+app.mount("/assets", StaticFiles(directory=str(assets_dir)), name="assets")
 app.mount("/static", StaticFiles(directory=str(static_dir)), name="static")
 app.mount("/storage", StaticFiles(directory=str(static_dir)), name="storage")
 
