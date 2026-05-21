@@ -14,6 +14,11 @@ function TabGlyph({ active, type }: { active: boolean; type: string }) {
       <div style={{ width: 8, height: 2.5, background: c, borderRadius: 1 }} />
     </div>
   );
+  if (type === 'ai') return (
+    <div className="relative w-6 h-6 flex items-center justify-center">
+      <div style={{ width: 10, height: 10, background: c, clipPath: 'polygon(50% 0%, 61% 35%, 100% 50%, 61% 65%, 50% 100%, 39% 65%, 0% 50%, 39% 35%)' }} />
+    </div>
+  );
   if (type === 'content') return (
     <div className="relative w-[22px] h-6 rounded" style={{ border: `2.5px solid ${c}` }}>
       <div className="absolute top-1.5 left-1 right-1 h-[1.5px]" style={{ background: c }} />
@@ -43,16 +48,17 @@ function TabGlyph({ active, type }: { active: boolean; type: string }) {
 }
 
 const tabs = [
-  { path: '/', label: '首页', type: 'home' },
+  { path: '/ai', label: 'AI', type: 'ai' },
+  { path: '/home', label: '推荐', type: 'home' },
   { path: '/content', label: '文化', type: 'content' },
   { path: '/activity', label: '活动', type: 'activity' },
-  { path: '/discussion', label: '讨论', type: 'discussion' },
   { path: '/profile', label: '我的', type: 'profile' },
 ] as const;
 
 function useActiveTab(pathname: string) {
-  if (pathname === '/') return 0;
-  return tabs.findIndex(t => pathname.startsWith(t.path) && t.path !== '/');
+  if (pathname === '/ai') return 0;
+  if (pathname === '/home' || pathname === '/') return 1;
+  return tabs.findIndex(t => pathname.startsWith(t.path) && t.path !== '/ai' && t.path !== '/home');
 }
 
 export default function AppLayout() {

@@ -49,7 +49,8 @@ export default function App() {
         <Route path="users" element={<AdminUser />} />
       </Route>
       <Route path="/" element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
-        <Route index element={<HomePage />} />
+        <Route index element={<Navigate to="/ai" replace />} />
+        <Route path="home" element={<HomePage />} />
         <Route path="ai" element={<AiChatPage />} />
         <Route path="content" element={<ContentListPage />} />
         <Route path="content/:id" element={<ContentDetailPage />} />
