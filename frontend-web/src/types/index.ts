@@ -258,3 +258,17 @@ export interface DashboardStats {
   contents_approved: number;
   activities_open: number;
 }
+
+// ===== CRS Store Types =====
+export interface FixedCta {
+  show: boolean;
+  contentId: number | null;
+  eventId: number | null;
+}
+
+export interface KgState {
+  entity: string;
+  pathText: string;
+  similarNames: string[];
+  expandItems: { entity: string }[];
+}

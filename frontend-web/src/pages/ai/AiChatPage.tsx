@@ -1,11 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Send, Trash2, Sparkles, Volume2, VolumeX, ArrowLeft, ChevronRight, ChevronDown, ChevronUp, BookOpen, Calendar } from 'lucide-react';
+import { Send, Trash2, Sparkles, Volume2, VolumeX, ArrowLeft, ChevronRight, ChevronDown, ChevronUp, BookOpen, Calendar, Copy } from 'lucide-react';
 import { apiRequest, shortenReason } from '../../lib/api';
 import CoverImage from '../../components/ui/CoverImage';
 import { useAuthStore } from '../../stores/auth-store';
 import { useChatStore } from '../../stores/chat-store';
-import { AiChatResponse, RecommendCard, CrsAnswerResponse, ActionTask } from '../../types';
+import { AiChatResponse, RecommendCard, CrsAnswerResponse } from '../../types';
 import { DigitalHumanModel } from '../../components/digital-human/DigitalHumanModel';
 import '../../components/digital-human/DigitalHumanModel.css';
 
@@ -18,22 +18,6 @@ const CRS_MODE_QUESTIONS: Record<string, string[]> = {
   mixed: ['云锦和苏绣，哪种工艺更值得深入看？', '古琴和古筝在听感上有什么本质区别？', '京剧和昆曲的表演风格差异在哪？', '端午节在不同地区有什么不同的庆祝方式？', '非遗传承中活态传承是什么意思？', '有没有适合自己动手体验的非遗项目？', '中医里的经络理论和非遗有什么关系？', '如果想系统地了解一个非遗类别，推荐什么顺序？', '花灯制作属于哪一类非遗？入门难度如何？', '非遗进校园活动一般会包含哪些内容？', '非遗和乡村振兴是怎么结合的？', '现在最热门的非遗体验活动有哪些？'],
   precision: ['景德镇的柴窑和气窑烧出来的瓷器差别在哪？', '侗族大歌的演唱技巧为什么很难用乐谱记录？', '蜀锦的挑花结本工艺具体是怎么操作的？', '中医针灸和艾灸在传承路线上有什么不同？', '皮影戏的雕刻刀法对最终演出效果有多大影响？', '非遗文创产品为什么经常被说不夠原汁原味？', '有哪些冷门但非常值得了解的非遗项目？', '非遗保护中的生产性保护是什么概念？', '如何判断一场非遗演出的质量好不好？', '数字化技术对非遗保护带来了什么改变？'],
 };
-
-const KEYWORD_FOLLOWUP_MAP: { keyword: string; questions: string[] }[] = [
-  { keyword: '皮影', questions: ['皮影戏适合从哪些代表作品入门？', '现在哪里还能看到皮影戏现场表演？', '皮影戏和木偶戏有什么区别？', '如果想现场体验皮影戏，先看什么最容易入门？'] },
-  { keyword: '昆曲', questions: ['昆曲适合先听哪几段经典唱段？', '第一次看昆曲演出，最值得注意什么？', '昆曲和京剧在观演体验上有什么差别？', '如果想线下体验昆曲，应该优先选讲座还是演出？'] },
-  { keyword: '云锦', questions: ['云锦最值得先了解的工艺步骤是什么？', '云锦和普通织锦最大的区别在哪里？', '看云锦时怎样才算看懂门道？', '如果想深入了解云锦，可以先看内容还是先看展览？'] },
-  { keyword: '古琴', questions: ['古琴适合从哪些代表曲目开始听？', '古琴为什么会给人特别静心的感觉？', '古琴和古筝在听感上有什么差别？', '如果想体验古琴，先听讲解还是先听完整曲子更合适？'] },
-  { keyword: '端午', questions: ['除了吃粽子，端午还有哪些核心习俗值得了解？', '端午背后的文化象征可以怎么理解？', '端午习俗为什么会因地区不同而变化？', '如果想做端午主题活动，适合先选哪类体验项目？'] },
-  { keyword: '书法', questions: ['书法作为非遗，最适合从哪种字体开始认识？', '书法欣赏时可以先看哪些基本线索？', '书法为什么也被纳入非遗保护？', '如果是初学者，先看名作还是先了解工具更合适？'] },
-  { keyword: '苏绣', questions: ['苏绣和湘绣最大的风格差异在哪？', '苏绣的双面绣工艺为什么被认为是最难的？', '想近距离看苏绣作品，推荐去哪里？', '苏绣入门可以从哪些小件绣品开始了解？'] },
-  { keyword: '京剧', questions: ['京剧脸谱的颜色分别代表什么含义？', '京剧的四大行当分别有什么特点？', '第一次看京剧，选哪出戏最容易看进去？', '京剧的唱腔体系和其他戏曲有什么不同？'] },
-  { keyword: '中医', questions: ['中医针灸为什么能入选联合国非遗名录？', '中医的望闻问切和现代医学诊断有什么互补？', '有没有适合普通人体验的中医养生方法？', '中药材炮制工艺本身也是非遗吗？'] },
-  { keyword: '剪纸', questions: ['剪纸艺术为什么能流传这么久？', '中国南北方剪纸风格有什么明显不同？', '想学剪纸，从什么基本技法开始练？', '剪纸在现代设计中是怎么被应用的？'] },
-  { keyword: '陶瓷', questions: ['景德镇为什么被称为瓷都？', '青花瓷的制作流程包含哪些关键步骤？', '古代陶瓷工艺是怎么传承到今天的？', '现代陶艺和传统制瓷工艺最大的区别是什么？'] },
-  { keyword: '太极', questions: ['太极拳作为非遗有什么特别的文化价值？', '太极拳的不同流派之间差异大吗？', '太极的养生效果从现代科学角度怎么解释？', '学太极拳零基础可以从哪里开始？'] },
-  { keyword: '非遗', questions: ['非遗和普通传统文化项目有什么区别？', '中国目前有多少项世界级非遗？', '非遗传承人需要满足什么条件？', '为什么非遗保护越来越受到重视？'] },
-];
 
 const COLD_START_CATEGORIES: Record<string, string[]> = {
   '传统工艺': ['青花瓷是怎么制作的？', '苏绣和湘绣有什么区别？', '木雕工艺有哪些流派？'],
@@ -58,49 +42,23 @@ export default function AiChatPage() {
   const [input, setInput] = useState('');
   const [waitingTip, setWaitingTip] = useState('');
   const [sourceTag, setSourceTag] = useState('');
-  const [presets, setPresets] = useState<{ text: string; display: string }[]>([]);
-  const [presetQueue, setPresetQueue] = useState<string[]>([]);
-  const [recentPresets, setRecentPresets] = useState<string[]>([]);
   const [crsExpanded, setCrsExpanded] = useState(false);
   const [crsTimeline, setCrsTimeline] = useState<{ ask_id: string; question_text: string; answer?: string; score_delta?: number }[]>([]);
   const [modeCelebrating, setModeCelebrating] = useState(false);
   const [celebrationMode, setCelebrationMode] = useState('');
   const [speaking, setSpeaking] = useState(false);
-  const [typingText, setTypingText] = useState('');
   const [explainExpanded, setExplainExpanded] = useState<Record<number, boolean>>({});
   const [feedbackGiven, setFeedbackGiven] = useState<Record<string, string>>({});
   const [overallFeedback, setOverallFeedback] = useState('');
-  const [rewriteSuggestions, setRewriteSuggestions] = useState<string[]>([]);
-  const [actionTasks, setActionTasks] = useState<ActionTask[]>([]);
-  const [kgEntity, setKgEntity] = useState('');
-  const [kgPathText, setKgPathText] = useState('');
-  const [kgSimilarNames, setKgSimilarNames] = useState<string[]>([]);
-  const [kgExpandItems, setKgExpandItems] = useState<{ entity: string }[]>([]);
   const [celebrationParticles, setCelebrationParticles] = useState<{ id: number; x: number; y: number; color: string }[]>([]);
 
   const bottomRef = useRef<HTMLDivElement>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const typingTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const scrollToBottom = () => bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
 
   useEffect(() => { scrollToBottom(); }, [store.messages]);
-  useEffect(() => { loadCrsState(); generatePresets(); return () => { if (typingTimerRef.current) clearInterval(typingTimerRef.current); }; }, []);
-
-  // Typewriter effect
-  const startTyping = (text: string) => {
-    if (typingTimerRef.current) clearInterval(typingTimerRef.current);
-    setTypingText('');
-    let i = 0;
-    typingTimerRef.current = setInterval(() => {
-      i++;
-      setTypingText(text.slice(0, i));
-      if (i >= text.length && typingTimerRef.current) {
-        clearInterval(typingTimerRef.current);
-        typingTimerRef.current = null;
-      }
-    }, 30);
-  };
+  useEffect(() => { loadCrsState(); store.generatePresets(); }, []);
 
   const loadCrsState = async () => {
     if (!session?.userId) return;
@@ -137,92 +95,29 @@ export default function AiChatPage() {
     if (!q || store.sending) return;
     store.addMessage({ id: 'u' + Date.now(), role: 'user', text: q });
     setInput(''); store.setSending(true); setWaitingTip('黑塔正在思考...'); setSourceTag(''); store.clearAsk();
-    const prevCards = store.recommendCards;
     try {
       const res = await apiRequest<{ code: number; data: AiChatResponse }>('/ai/chat', {
         method: 'POST', timeout: 90000,
-        data: { question: q, user_id: session?.userId || null, context_cards: prevCards.length ? prevCards : undefined },
+        data: { question: q, user_id: session?.userId || null, context_cards: store.recommendCards.length ? store.recommendCards : undefined },
       });
-      const payload = res.data || {};
+      const payload = res.data || {} as AiChatResponse;
       const answer = payload.answer || '未获取到回答';
       store.addMessage({ id: 'a' + Date.now(), role: 'ai', text: answer });
-      startTyping(answer);
       const srcMap: Record<string, string> = { local_kb: '本地知识库', kb_enhanced: '知识库+AI', web_search: '联网补充', doubao: 'AI模型', fallback: '兜底回复' };
       setSourceTag(srcMap[payload.source || ''] || 'AI回答');
-      if (payload.recommend_cards?.length) store.setRecommendCards(payload.recommend_cards);
-      const rw = (payload as unknown as Record<string,unknown>).rewrite_suggestions;
-      if (Array.isArray(rw)) setRewriteSuggestions(rw as string[]);
       const newMode = (payload.crs_mode || store.crsState.mode || 'cold_start') as string;
       const oldMode = store.crsState.mode;
       store.setCrsState({ mode: newMode, confidence_score: payload.crs_confidence?.confidence_score || 0, session_id: payload.crs_session_id });
       if (oldMode !== newMode && newMode !== 'cold_start') triggerModeCelebration(newMode);
       if (payload.ask_prompt) store.setAsk(payload.ask_prompt, payload.ask_options || [], payload.ask_id || '');
-      // KG info
-      if (payload.kg_entity) setKgEntity(payload.kg_entity);
-      if (payload.kg_path?.path) setKgPathText(payload.kg_path.path.map(p => p.entity || p.relation || '').filter(Boolean).join(' → '));
-      if (payload.kg_similar?.items) setKgSimilarNames(payload.kg_similar.items.map(i => i.entity));
-      if (payload.kg_expand?.items) setKgExpandItems(payload.kg_expand.items);
-      // Build action tasks from recommend cards
-      if (payload.recommend_cards?.length) {
-        const tasks: ActionTask[] = payload.recommend_cards.map((c, i) => ({
-          id: `${c.type}_${c.id}_${Date.now()}`,
-          title: c.title,
-          desc: shortenReason(c.reason, c.summary || ''),
-          type: c.type,
-          targetId: c.id,
-          done: false,
-          recommended: i === 0,
-          metaTitle: c.type === 'content' ? '阅读内容' : c.type === 'event' ? '报名活动' : '参与讨论',
-        }));
-        setActionTasks(tasks);
-      }
-      generatePresets(payload);
+      // Use store.processRecommendPayload for all recommendation data
+      store.processRecommendPayload(payload as unknown as Record<string, unknown>);
+      store.generatePresets(payload as unknown as Record<string, unknown>);
+      store.setCurrentFollowupAnchor(
+        store.kgState.entity || q.slice(0, 20)
+      );
     } catch { store.addMessage({ id: 'a_err', role: 'ai', text: '提问失败，请稍后重试。' }); }
     finally { store.setSending(false); setWaitingTip(''); }
-  };
-
-  const buildPresetQueue = (basePool: string[]) => {
-    const pool = [...basePool].sort(() => Math.random() - 0.5);
-    setPresetQueue(pool);
-    return pool;
-  };
-
-  const generatePresets = (payload?: AiChatResponse) => {
-    const mode = store.crsState.mode || 'cold_start';
-    if (payload?.recommended_questions?.length) {
-      const f = payload.recommended_questions.slice(0, 6);
-      setPresetQueue(f);
-      setPresets(f.slice(0, 4).map(t => ({ text: t, display: t.length > 16 ? t.slice(0, 16) + '…' : t })));
-      return;
-    }
-    if (payload?.followup_questions?.length) {
-      const f = payload.followup_questions.slice(0, 6);
-      setPresetQueue(f);
-      setPresets(f.slice(0, 4).map(t => ({ text: t, display: t.length > 16 ? t.slice(0, 16) + '…' : t })));
-      return;
-    }
-    // Try keyword match from recent messages
-    const lastMsg = store.messages.filter(m => m.role === 'user').slice(-1)[0]?.text || '';
-    for (const entry of KEYWORD_FOLLOWUP_MAP) {
-      if (lastMsg.includes(entry.keyword)) {
-        const qs = [...entry.questions].sort(() => Math.random() - 0.5);
-        setPresetQueue(qs);
-        setPresets(qs.slice(0, 4).map(t => ({ text: t, display: t.length > 16 ? t.slice(0, 16) + '…' : t })));
-        return;
-      }
-    }
-    const pool = CRS_MODE_QUESTIONS[mode] || CRS_MODE_QUESTIONS.cold_start;
-    const shuffled = buildPresetQueue(pool);
-    setPresets(shuffled.slice(0, 4).map(t => ({ text: t, display: t.length > 16 ? t.slice(0, 16) + '…' : t })));
-  };
-
-  const refreshPresets = () => {
-    const pool = presetQueue.length > 4 ? presetQueue : [...(CRS_MODE_QUESTIONS[store.crsState.mode || 'cold_start'] || CRS_MODE_QUESTIONS.cold_start)].sort(() => Math.random() - 0.5);
-    const remaining = pool.filter(t => !recentPresets.includes(t));
-    const picked = remaining.length >= 4 ? remaining.slice(0, 4) : pool.slice(0, 4);
-    setPresets(picked.map(t => ({ text: t, display: t.length > 16 ? t.slice(0, 16) + '…' : t })));
-    setRecentPresets(prev => [...prev.slice(-6), ...picked]);
-    apiRequest('/recommend/track', { method: 'POST', data: { user_id: session?.userId, action: 'skip', target_type: 'preset', source_scene: 'ai_chat' } }).catch(() => {});
   };
 
   const handleAskAnswer = async (answer: string) => {
@@ -258,9 +153,14 @@ export default function AiChatPage() {
   };
 
   const handleClear = () => {
-    store.clearHistory(); setCrsTimeline([]); setSourceTag(''); setPresets([]); setRewriteSuggestions([]);
-    setActionTasks([]); setKgEntity(''); setKgPathText(''); setKgSimilarNames([]); setKgExpandItems([]);
-    setRecentPresets([]); setPresetQueue([]);
+    store.clearHistory();
+    setCrsTimeline([]);
+    setSourceTag('');
+    setCrsExpanded(false);
+    setExplainExpanded({});
+    setFeedbackGiven({});
+    setOverallFeedback('');
+    setModeCelebrating(false);
     if (session?.userId) apiRequest('/ai/crs/reset', { method: 'POST', data: { user_id: session.userId } }).catch(() => {});
   };
 
@@ -271,8 +171,6 @@ export default function AiChatPage() {
 
   const confidence = store.crsState.confidence_score || 0;
   const mode = store.crsState.mode || 'cold_start';
-  // CRS 三阶段 → 数字人情绪映射
-  // cold_start → curious（好奇询问）| mixed → thinking（思考推荐）| precision → confident（自信推荐）
   const mood = mode === 'cold_start' ? 'curious' : mode === 'mixed' ? 'thinking' : 'confident';
   const greeting = mode === 'cold_start' ? '来跟我聊聊你想了解什么非遗吧！'
     : mode === 'mixed' ? '让我想想什么适合你...'
@@ -447,9 +345,14 @@ export default function AiChatPage() {
             </h2>
           </div>
 
-          {/* 数字人 — 居中展示 */}
+          {/* 数字人 — 居中展示，点击朗读最新回答 */}
           <div className="relative z-10 flex justify-center my-2">
-            <DigitalHumanModel variant="ai" mood={mood} size={140} greeting={greeting} />
+            <div onClick={() => {
+              const lastAi = [...store.messages].reverse().find(m => m.role === 'ai' && m.text);
+              if (lastAi) handleTTS(lastAi.text);
+            }}>
+              <DigitalHumanModel variant="ai" mood={mood} size={140} greeting={greeting} />
+            </div>
           </div>
 
           {/* CTA 按钮 */}
@@ -520,14 +423,22 @@ export default function AiChatPage() {
                     <div className="whitespace-pre-wrap">{msg.text}</div>
                     {msg.isTransition && <div className="mt-1.5 text-xs text-brand font-semibold">—— 黑塔的反馈</div>}
                     {!msg.isTransition && !store.sending && (
-                      <div className="flex gap-2 mt-3 flex-wrap">
+                      <div className="bubble-actions flex gap-2 mt-3 flex-wrap">
                         <button onClick={() => handleSend('能展开讲讲刚才说的内容吗？')}
-                          className="px-3.5 py-1.5 rounded-full text-xs cursor-pointer transition-all duration-200 hover:shadow-sm"
+                          className="bubble-action px-3.5 py-1.5 rounded-full text-xs cursor-pointer transition-all duration-200 hover:shadow-sm"
                           style={{ background: 'rgba(244,228,208,0.6)', color: '#8c5a31', border: '1px solid rgba(213,185,153,0.3)' }}>
                           ↪ 继续追问
                         </button>
+                        <button onClick={() => {
+                          const anchor = store.currentFollowupAnchor || store.kgState.entity || msg.text.slice(0, 20);
+                          handleSend(`围绕${anchor}推荐相关内容`);
+                        }}
+                          className="bubble-action px-3.5 py-1.5 rounded-full text-xs cursor-pointer transition-all duration-200 hover:shadow-sm"
+                          style={{ background: 'rgba(219,191,155,0.18)', color: '#8a6b4b', border: '1px solid rgba(213,185,153,0.22)' }}>
+                          围绕这个方向
+                        </button>
                         <button onClick={() => handleTTS(msg.text)}
-                          className={`px-3.5 py-1.5 rounded-full text-xs cursor-pointer flex items-center gap-1.5 transition-all duration-200 hover:shadow-sm ${
+                          className={`bubble-action px-3.5 py-1.5 rounded-full text-xs cursor-pointer flex items-center gap-1.5 transition-all duration-200 hover:shadow-sm ${
                             speaking ? 'bg-brand/10 text-brand' : ''
                           }`}
                           style={speaking ? {} : { background: 'rgba(244,228,208,0.6)', color: '#8c5a31', border: '1px solid rgba(213,185,153,0.3)' }}>
@@ -540,15 +451,15 @@ export default function AiChatPage() {
               </div>
             </div>
             {/* Follow-up question chips after last non-transition AI message */}
-            {!msg.isTransition && msg.role === 'ai' && idx === store.messages.length - 1 && presets.length > 0 && !store.sending && (
+            {!msg.isTransition && msg.role === 'ai' && idx === store.messages.length - 1 && store.presets.length > 0 && !store.sending && (
               <div className="flex flex-col gap-1.5 mt-2 ml-2">
                 <div className="flex items-center gap-2">
                   <span className="text-[10px] font-semibold text-[#9c846d] tracking-wider">推荐发问</span>
-                  <button onClick={refreshPresets} className="text-[10px] px-2 py-0.5 rounded-full cursor-pointer border-none transition-colors"
+                  <button onClick={() => store.refreshPresets()} className="text-[10px] px-2 py-0.5 rounded-full cursor-pointer border-none transition-colors"
                     style={{ background: 'rgba(219,191,155,0.18)', color: '#8a6b4b' }}>换一批</button>
                 </div>
                 <div className="flex flex-wrap gap-1.5">
-                  {presets.slice(0, 4).map((p, pi) => (
+                  {store.presets.slice(0, 4).map((p, pi) => (
                     <button key={pi} onClick={() => handleSend(p.text)}
                       className="px-3.5 py-1.5 rounded-full text-xs cursor-pointer border-none transition-all duration-200 hover:shadow-sm active:scale-[0.97]"
                       style={{
@@ -607,6 +518,26 @@ export default function AiChatPage() {
         {/* ═══════ L2 本轮结果 ═══════ */}
         {store.recommendCards.length > 0 && !store.sending && (
           <>
+            {/* Recommend summary panel */}
+            {store.recommendSummary.summary && (
+              <div className="rounded-[14px] px-4 py-3" style={{ background: 'rgba(247,240,227,0.72)' }}>
+                <div onClick={() => store.setRecommendSummary({ expanded: !store.recommendSummary.expanded })}
+                  className="flex items-center justify-between cursor-pointer">
+                  <span className="text-xs font-bold text-[#8b6a4b]">
+                    📋 推荐依据：{store.recommendSummary.expanded ? store.recommendSummary.summary : store.recommendSummary.brief}
+                  </span>
+                  <span className="text-[10px] text-[#9c846d]">{store.recommendSummary.expanded ? '▴' : '▾'}</span>
+                </div>
+                {store.recommendSummary.expanded && store.recommendSummary.sources.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5 mt-2">
+                    {store.recommendSummary.sources.map((s, i) => (
+                      <span key={i} className="px-2 py-0.5 rounded-full text-[10px]" style={{ background: 'rgba(91,140,90,0.08)', color: '#4a7a49' }}>{s}</span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
             <div className="layer-divider">
               <div className="layer-divider-line" />
               <span className="layer-divider-label">本轮结果</span>
@@ -614,10 +545,17 @@ export default function AiChatPage() {
             </div>
 
             <div className="animate-fade-in-up space-y-3">
+              {/* 延伸推荐标题 + 策略标签 */}
               <h4 className="text-base font-bold text-[#2f2419] flex items-center gap-2 px-1">
                 <Sparkles size={16} style={{ color: '#d7a445' }} /> 延伸推荐
-                <span className="text-xs font-normal text-[#a08868]">· {MODE_LABELS[mode]}模式</span>
+                {store.strategyDisplay && <span className="text-xs font-normal px-2 py-0.5 rounded-full" style={{ background: 'rgba(33,150,243,0.1)', color: '#1565c0' }}>{store.strategyDisplay}</span>}
               </h4>
+
+              {/* 推荐前缀文案 */}
+              {store.recommendPrefix && (
+                <p className="text-[11px] text-[#7b6141] mb-2 italic">{store.recommendPrefix}</p>
+              )}
+
               {store.recommendCards.map((card, idx) => {
                 const expanded = explainExpanded[idx] || false;
                 const fb = feedbackGiven[idx];
@@ -693,6 +631,24 @@ export default function AiChatPage() {
                         {display?.expandPath ? <p>🔄 关联路径：{display.expandPath}</p> : null}
                         {display?.kgReasonText ? <p>🧠 推荐原因：{display.kgReasonText}</p> : null}
                         {card.explain?.kg_score_text ? <p>⚡ 知识图谱相似度：{card.explain.kg_score_text}</p> : null}
+                        {/* 复制解释详情按钮 */}
+                        <div className="pt-1">
+                          <button onClick={() => {
+                            const exp = card.explain || {} as Record<string, unknown>;
+                            const expDisplay = (exp.display || {}) as Record<string, unknown>;
+                            const lines = [
+                              `【L1 用户可读理由】${card.reason || ''}`,
+                              `【L2 系统依据】综合=${exp.final_score_text || '0.00'} 匹配=${exp.match_score_text || '0.00'} 新鲜=${exp.novelty_score_text || '0.00'}`,
+                              expDisplay.matchDetailText ? `【L2 匹配依据】${expDisplay.matchDetailText}` : '',
+                              `【L3 策略上下文】推荐方式=${exp.crs_mode_label || '-'} 来源=${((expDisplay.sources || []) as string[]).join('/')}`,
+                              (expDisplay.similarEntities as string[])?.length ? `【L4 关联推荐】相似=${(expDisplay.similarEntities as string[]).join('/')}` : '',
+                            ].filter(Boolean).join('\n');
+                            navigator.clipboard.writeText(lines);
+                          }} className="text-[10px] px-2 py-0.5 rounded-full flex items-center gap-1 cursor-pointer border-none transition-colors"
+                            style={{ background: 'rgba(219,191,155,0.12)', color: '#8a6b4b' }}>
+                            <Copy size={10} /> 复制解释
+                          </button>
+                        </div>
                       </div>
                     )}
                   </div>
@@ -712,12 +668,12 @@ export default function AiChatPage() {
             </div>
 
             {/* Action tasks */}
-            {actionTasks.length > 0 && (
+            {store.actionTasks.length > 0 && (
               <div className="rounded-[14px] overflow-hidden animate-fade-in-up"
                 style={{ background: 'rgba(255,250,243,0.92)', border: '1px solid rgba(238,216,191,0.82)', boxShadow: '0 8px 20px rgba(121,58,31,0.04)' }}>
                 <h4 className="text-sm font-bold text-[#2f2419] px-4 pt-3 pb-1">📋 行动清单</h4>
-                {actionTasks.map((task) => (
-                  <div key={task.id} onClick={() => setActionTasks(prev => prev.map(t => t.id === task.id ? { ...t, done: !t.done } : t))}
+                {store.actionTasks.map((task) => (
+                  <div key={task.id} onClick={() => store.setActionTasks(store.actionTasks.map(t => t.id === task.id ? { ...t, done: !t.done } : t))}
                     className="flex items-start gap-3 px-4 py-2.5 cursor-pointer transition-colors hover:bg-[#faf3e8]">
                     <div className={`w-4 h-4 rounded-full mt-0.5 shrink-0 flex items-center justify-center text-[9px] font-bold transition-colors ${
                       task.done ? 'bg-[#5b8c5a] text-white' : task.recommended ? 'border-2 border-[#d7a445]' : 'border-2 border-[#d4c4aa]'
@@ -734,7 +690,7 @@ export default function AiChatPage() {
             )}
 
             {/* ═══════ L3 深入细节 ═══════ */}
-            {(rewriteSuggestions.length > 0 || kgEntity || (store.crsState.mode && crsExpanded)) && (
+            {(store.rewriteSuggestions.length > 0 || store.kgState.entity || (store.crsState.mode && crsExpanded)) && (
               <div className="layer-divider dashed">
                 <div className="layer-divider-line dashed" />
                 <span className="layer-divider-label">深入细节</span>
@@ -743,12 +699,12 @@ export default function AiChatPage() {
             )}
 
             {/* Rewrite suggestions */}
-            {rewriteSuggestions.length > 0 && (
+            {store.rewriteSuggestions.length > 0 && (
               <div className="rounded-[14px] px-4 py-3"
                 style={{ background: 'rgba(247,240,227,0.72)', border: '1px solid rgba(219,191,155,0.18)' }}>
                 <h4 className="text-xs font-bold text-[#8b6a4b] mb-2.5">💡 换个问法试试</h4>
                 <div className="flex flex-wrap gap-2">
-                  {rewriteSuggestions.map((s, i) => (
+                  {store.rewriteSuggestions.map((s, i) => (
                     <button key={i} onClick={() => handleSend(s)}
                       className="px-3 py-1.5 rounded-full text-xs cursor-pointer border-none hover:opacity-80 transition-opacity"
                       style={{ background: 'rgba(244,228,208,0.52)', color: '#7b4d27', border: '1px solid rgba(213,185,153,0.26)' }}>{s}</button>
@@ -758,22 +714,22 @@ export default function AiChatPage() {
             )}
 
             {/* KG entity panel */}
-            {kgEntity && (
+            {store.kgState.entity && (
               <div className="rounded-[14px] px-4 py-3"
                 style={{ background: 'rgba(247,242,230,0.80)', border: '1px solid rgba(219,191,155,0.18)' }}>
                 <h4 className="text-xs font-bold text-[#8b6a4b] mb-2.5">🧠 关联推荐依据</h4>
-                <p className="text-[11px] text-[#5a4430] mb-1">当前识别实体：<span className="font-semibold text-brand">{kgEntity}</span></p>
-                {kgPathText && <p className="text-[11px] text-[#7b6141] mb-2">关联路径：{kgPathText}</p>}
-                {kgSimilarNames.length > 0 && (
+                <p className="text-[11px] text-[#5a4430] mb-1">当前识别实体：<span className="font-semibold text-[#c08a3e]">{store.kgState.entity}</span></p>
+                {store.kgState.pathText && <p className="text-[11px] text-[#7b6141] mb-2">关联路径：{store.kgState.pathText}</p>}
+                {store.kgState.similarNames.length > 0 && (
                   <div className="flex flex-wrap gap-1.5 mb-1.5">
-                    {kgSimilarNames.map((n, i) => (
+                    {store.kgState.similarNames.map((n, i) => (
                       <span key={i} className="px-2 py-0.5 rounded-full text-[10px]" style={{ background: 'rgba(91,140,90,0.08)', color: '#4a7a49' }}>相似：{n}</span>
                     ))}
                   </div>
                 )}
-                {kgExpandItems.length > 0 && (
+                {store.kgState.expandItems.length > 0 && (
                   <div className="flex flex-wrap gap-1.5">
-                    {kgExpandItems.map((item, i) => (
+                    {store.kgState.expandItems.map((item, i) => (
                       <span key={i} className="px-2 py-0.5 rounded-full text-[10px]" style={{ background: 'rgba(192,138,62,0.08)', color: '#a07230' }}>扩展：{item.entity}</span>
                     ))}
                   </div>
@@ -781,19 +737,25 @@ export default function AiChatPage() {
               </div>
             )}
 
-            {/* CTA bar */}
-            <div className="flex gap-3 pt-2">
-              <button onClick={() => navigate('/content')}
-                className="flex-1 h-[48px] rounded-full text-sm font-bold text-white border-none cursor-pointer flex items-center justify-center gap-1.5 transition-all duration-200 hover:shadow-lg active:scale-[0.97]"
-                style={{ background: 'linear-gradient(135deg, #9f2d22, #c04833)', boxShadow: '0 6px 16px rgba(159,45,34,0.18)' }}>
-                <BookOpen size={14} /> 看相关内容
-              </button>
-              <button onClick={() => navigate('/activity')}
-                className="flex-1 h-[48px] rounded-full text-sm font-bold text-white border-none cursor-pointer flex items-center justify-center gap-1.5 transition-all duration-200 hover:shadow-lg active:scale-[0.97]"
-                style={{ background: 'linear-gradient(135deg, #b98535, #d7a953)', boxShadow: '0 6px 16px rgba(185,133,53,0.18)' }}>
-                <Calendar size={14} /> 去报名活动
-              </button>
-            </div>
+            {/* CTA bar — 使用 store.fixedCta */}
+            {store.fixedCta.show && (
+              <div className="flex gap-3 pt-2">
+                {store.fixedCta.contentId && (
+                  <button onClick={() => navigate(`/content/${store.fixedCta.contentId}`)}
+                    className="flex-1 h-[48px] rounded-full text-sm font-bold text-white border-none cursor-pointer flex items-center justify-center gap-1.5"
+                    style={{ background: 'linear-gradient(135deg, #9f2d22, #c04833)' }}>
+                    <BookOpen size={14} /> 看相关内容
+                  </button>
+                )}
+                {store.fixedCta.eventId && (
+                  <button onClick={() => navigate(`/activity/${store.fixedCta.eventId}`)}
+                    className="flex-1 h-[48px] rounded-full text-sm font-bold text-white border-none cursor-pointer flex items-center justify-center gap-1.5"
+                    style={{ background: 'linear-gradient(135deg, #b98535, #d7a953)' }}>
+                    <Calendar size={14} /> 去报名活动
+                  </button>
+                )}
+              </div>
+            )}
           </>
         )}
 
