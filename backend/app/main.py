@@ -53,7 +53,7 @@ def _ensure_seed_data() -> None:
             subprocess.run([sys.executable, str(sp)], cwd=str(backend_dir), capture_output=True)
 
 
-app = FastAPI(title=settings.app_name, debug=settings.app_debug, lifespan=lifespan)
+app = FastAPI(title=settings.app_name, debug=settings.app_debug, lifespan=lifespan, redirect_slashes=True)
 
 app.add_middleware(
     CORSMiddleware,

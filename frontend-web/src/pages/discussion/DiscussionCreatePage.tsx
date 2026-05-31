@@ -23,7 +23,7 @@ export default function DiscussionCreatePage() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
 
-  const API_BASE = import.meta.env.VITE_API_BASE || '/api/v1';
+  const API_BASE = 'https://106.55.55.54/api/v1';
 
   const getSessionHeaders = () => {
     try {

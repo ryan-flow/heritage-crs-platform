@@ -148,6 +148,30 @@ _FOLLOWUP_TOPIC_TEMPLATES = [
 ]
 
 
+# ── Prompt 注入防护 ──
+_REDACT_PATTERNS = re.compile(
+    r"(system\s*prompt|指令|忽略.*指令|你是一个|ignore.*instructions?"
+    r"|forget.*previous|override.*rules?|jailbreak| DAN|开发者模式)",
+    re.IGNORECASE,
+)
+
+def _sanitize_for_prompt(text: str, max_len: int = 200) -> str:
+    """将用户输入消毒后注入 prompt，防止 prompt 注入攻击。
+
+    - 截断到 max_len 字符
+    - 移除疑似指令注入的模式
+    - 用书名号包裹，明确标识为用户内容
+    """
+    if not text:
+        return ""
+    clean = text.strip()[:max_len]
+    # 移除疑似注入指令的模式
+    clean = _REDACT_PATTERNS.sub("[内容已过滤]", clean)
+    # 用书名号包裹，明确这是用户内容而非指令
+    return f"《{clean}》"
+
+
+
 def _detect_vague_followup(question: str, db: Session, user_id: int | None, last_log: AIQALog | None = None) -> dict:
     """检测短追问（无明确话题），从上一轮AI回答提取主题上下文
 
@@ -188,8 +212,8 @@ def _detect_vague_followup(question: str, db: Session, user_id: int | None, last
             return {"is_vague": False, "context_text": ""}
 
         context_text = (
-            f"用户上一轮的问题是：「{last_q[:60]}」，你的回答是：「{last_a[:HISTORY_TRUNCATE_LEN]}」。\n"
-            f"用户现在追问「{q}」，请基于上一轮的话题来回答，不要说'请告诉我具体项目'之类的话。"
+            f"用户上一轮的问题是：{_sanitize_for_prompt(last_q, 60)}，你的回答是：{_sanitize_for_prompt(last_a, HISTORY_TRUNCATE_LEN)}。\n"
+            f"用户现在追问{_sanitize_for_prompt(q, 60)}，请基于上一轮的话题来回答，不要说'请告诉我具体项目'之类的话。"
         )
         return {"is_vague": True, "context_text": context_text}
     except Exception:

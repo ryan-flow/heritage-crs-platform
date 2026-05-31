@@ -73,7 +73,7 @@ def _refresh_implicit_cache(db: Session, user_id: int) -> None:
     db.commit()
 
 
-@router.get("/")
+@router.get("")
 def get_recommendations(user_id: int | None = None, context: str = "", scene: str = "home", db: Session = Depends(get_db)):
     result = generate_recommendation_payload(db, user_id, context_text=context, scene=scene)
 

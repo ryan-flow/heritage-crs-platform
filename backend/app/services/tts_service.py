@@ -185,7 +185,7 @@ async def _doubao_tts_v1(text: str, output_file: Path) -> bool:
     payload = {
         "app": {
             "appid": appid,
-            "token": "access_token",
+            "token": access_token,
             "cluster": "volcano_tts",
         },
         "user": {"uid": "heritage_platform"},

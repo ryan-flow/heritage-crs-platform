@@ -9,6 +9,7 @@
 
 import httpx
 import json
+import re
 import time
 import logging
 from typing import Generator
@@ -16,6 +17,24 @@ from typing import Generator
 from app.core.config import settings
 
 logger = logging.getLogger(__name__)
+
+
+# ── Prompt 注入防护 ──
+_REDACT_PATTERNS = re.compile(
+    r"(system\s*prompt|指令|忽略.*指令|你是一个|ignore.*instructions?"
+    r"|forget.*previous|override.*rules?|jailbreak| DAN|开发者模式)",
+    re.IGNORECASE,
+)
+
+def _sanitize_for_prompt(text: str, max_len: int = 500) -> str:
+    """将上下文内容消毒后注入 prompt。"""
+    if not text:
+        return ""
+    clean = text.strip()[:max_len]
+    clean = _REDACT_PATTERNS.sub("[内容已过滤]", clean)
+    return clean
+
+
 
 # 标准 Chat Completions 端点
 CHAT_URL = "https://ark.cn-beijing.volces.com/api/v3/chat/completions"
@@ -40,7 +59,7 @@ def _build_messages(
     # 系统提示词
     sys_content = system_prompt or settings.ai_system_prompt
     if context:
-        sys_content += f"\n\n【参考信息】\n{context}"
+        sys_content += f"\n\n【参考信息】\n{_sanitize_for_prompt(context)}"
     messages.append({"role": "system", "content": sys_content})
 
     # 历史对话（最近4轮，避免token过长）

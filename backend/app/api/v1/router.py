@@ -2,7 +2,7 @@ from fastapi import APIRouter
 
 from app.api.v1.endpoints import admin, ai, auth, content, content_favorite, discussion, event, kg, material, places, recommend, stats, user
 
-api_router = APIRouter()
+api_router = APIRouter(redirect_slashes=True)
 api_router.include_router(auth.router, prefix="/auth", tags=["auth"])
 api_router.include_router(user.router, prefix="/users", tags=["users"])
 api_router.include_router(content.router, prefix="/contents", tags=["contents"])

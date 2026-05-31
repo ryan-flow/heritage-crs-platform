@@ -14,6 +14,23 @@ from sqlalchemy.orm import Session
 from app.services.recommendation_service import _safe_json_loads
 from app.services.crs.constants import SPECIFIC_TERMS, CONTENT_CHAPTERS
 
+
+# ── Prompt 注入防护 ──
+import re as _re_inject
+_REDACT_PATTERNS = _re_inject.compile(
+    r"(system\s*prompt|指令|忽略.*指令|你是一个|ignore.*instructions?"
+    r"|forget.*previous|override.*rules?|jailbreak| DAN|开发者模式)",
+    _re_inject.IGNORECASE,
+)
+
+def _sanitize(text: str, max_len: int = 200) -> str:
+    if not text:
+        return ""
+    clean = text.strip()[:max_len]
+    clean = _REDACT_PATTERNS.sub("[已过滤]", clean)
+    return f"《{clean}》"
+
+
 logger = logging.getLogger(__name__)
 
 # KB章节 → 兴趣关键词
@@ -347,12 +364,12 @@ def rewrite_suggestions(question: str, last_answer: str = "", chat_history: list
             "非遗保护从抢救到活化传播的演进逻辑是什么？",
         ]
 
-    topic_hint = f"（刚回答过：{last_answer[:80]}）" if last_answer else ""
+    topic_hint = f"（刚回答过：{_sanitize(last_answer, 80)}）" if last_answer else ""
     history_hint = ""
     if chat_history:
         last_q = chat_history[-1].get("content", "")
         if last_q:
-            history_hint = f"用户此前的问题：{last_q}"
+            history_hint = f"用户此前的问题：{_sanitize(last_q, 100)}"
 
     from app.services.doubao_client import ask_doubao
 
@@ -360,7 +377,7 @@ def rewrite_suggestions(question: str, last_answer: str = "", chat_history: list
         "你是非遗文化AI助手。用户刚问了以下问题，请给出4个后续追问建议，"
         "每个建议不超过20字，必须与用户刚才的话题紧密相关、有深度，"
         "不要重复用户已问的内容。"
-        f"用户问题：{q}{topic_hint}{history_hint}\n"
+        f"用户问题：{_sanitize(q, 100)}{topic_hint}{history_hint}\n"
         "请严格按JSON数组格式回复，例如[\"问题1\",\"问题2\",\"问题3\",\"问题4\"]，不要加其他文字。"
     )
 

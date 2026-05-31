@@ -1,6 +1,9 @@
 import uuid
+from fastapi import APIRouter, Depends, HTTPException, Request
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 
-from fastapi import APIRouter, Depends, HTTPException
+limiter = Limiter(key_func=get_remote_address)
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
@@ -97,8 +100,9 @@ def wx_login(payload: WXLoginRequest, db: Session = Depends(get_db)):
     return success({"userId": user.id, "openid": user.openid, "role": user.role})
 
 
+@limiter.limit("5/minute")
 @router.post("/register")
-def web_register(payload: WebRegisterRequest, db: Session = Depends(get_db)):
+def web_register(request: Request, payload: WebRegisterRequest, db: Session = Depends(get_db)):
     if db.query(User).filter(User.username == payload.username).first():
         return {"code": 1, "message": "用户名已存在", "data": None}
     if len(payload.password) < 3:
@@ -117,8 +121,9 @@ def web_register(payload: WebRegisterRequest, db: Session = Depends(get_db)):
     return success({"userId": user.id})
 
 
+@limiter.limit("10/minute")
 @router.post("/login")
-def web_login(payload: WebLoginRequest, db: Session = Depends(get_db)):
+def web_login(request: Request, payload: WebLoginRequest, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.username == payload.username).first()
     if not user or user.password != payload.password:
         return {"code": 1, "message": "用户名或密码错误", "data": None}

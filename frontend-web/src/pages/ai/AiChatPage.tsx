@@ -81,7 +81,7 @@ export default function AiChatPage() {
       const res = await apiRequest<{ code: number; data: { audio_url: string } }>('/ai/tts', { method: 'POST', data: { text }, timeout: 15000 });
       const url = res.data?.audio_url;
       if (url) {
-        const full = url.startsWith('http') ? url : `${import.meta.env.VITE_API_BASE?.replace('/api/v1', '') || ''}${url}`;
+        const full = url.startsWith('http') ? url : `https://106.55.55.54${url}`;
         if (!audioRef.current) audioRef.current = new Audio();
         audioRef.current.src = full;
         audioRef.current.onended = () => setSpeaking(false);

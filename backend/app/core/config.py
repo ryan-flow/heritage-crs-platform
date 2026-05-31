@@ -11,15 +11,15 @@ class Settings(BaseSettings):
     # Database (PostgreSQL)
     database_url: str = ""
     admin_username: str = "admin"
-    admin_password: str = "admin123"
-    admin_token: str = "REPLACED_ADMIN_TOKEN"
+    admin_password: str = ""
+    admin_token: str = ""
 
     doubao_api_url: str = "https://ark.cn-beijing.volces.com/api/v3/chat/completions"
-    doubao_api_key: str = "REPLACED_API_KEY"
+    doubao_api_key: str = ""
     doubao_model: str = "doubao-seed-2-0-pro-260215"
     # ── 豆包 TTS 配置（主引擎） ──
-    doubao_tts_appid: str = "REPLACED_TTS_APPID"          # 豆包语音 APP ID
-    doubao_tts_access_token: str = "REPLACED_TTS_TOKEN"   # 豆包语音 Access Token（Header 鉴权用）
+    doubao_tts_appid: str = ""          # 豆包语音 APP ID
+    doubao_tts_access_token: str = ""   # 豆包语音 Access Token（Header 鉴权用）
     doubao_tts_speaker: str = "zh_female_vv_uranus_bigtts"  # 默认音色：Vivi 2.0（活泼自然）
     doubao_tts_encoding: str = "mp3"    # 音频编码 mp3/wav/ogg_opus
     doubao_tts_speed: float = 1.0       # 语速 [0.1, 2]
@@ -61,3 +61,19 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+
+# ── 启动时校验关键配置 ──
+import logging as _cfg_logging
+_cfg_logger = _cfg_logging.getLogger("app.config")
+
+_missing = []
+if not settings.database_url:
+    _missing.append("DATABASE_URL")
+if not settings.admin_token:
+    _missing.append("ADMIN_TOKEN")
+if not settings.doubao_api_key:
+    _cfg_logger.warning("DOUBAO_API_KEY 未配置，AI功能将不可用")
+if _missing:
+    _cfg_logger.critical("缺少必要环境变量: %s — 请在 .env 中配置", ", ".join(_missing))
+    raise SystemExit(1)
+

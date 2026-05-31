@@ -1,4 +1,7 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
+from slowapi import Limiter
+from slowapi.util import get_remote_address
+limiter = Limiter(key_func=get_remote_address)
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
@@ -742,8 +745,9 @@ def chat_ai(payload: AskRequest, db: Session = Depends(get_db)):
     return success(result)
 
 
+@limiter.limit("30/minute")
 @router.post("/ask")
-def ask_ai_compat(payload: AskRequest, db: Session = Depends(get_db)):
+def ask_ai_compat(request: Request, payload: AskRequest, db: Session = Depends(get_db)):
     # 兼容旧接口，内部复用 chat 逻辑
     result = ai_answer(db, payload.question, payload.user_id)
     strategy = result.get("strategy", "")
@@ -856,8 +860,9 @@ def chat_ai_stream(payload: AskRequest, db: Session = Depends(get_db)):
     )
 
 
+@limiter.limit("20/minute")
 @router.post("/tts")
-async def tts(payload: TTSRequest):
+async def tts(request: Request, payload: TTSRequest):
     try:
         url = await text_to_speech(payload.text)
         if not url:
