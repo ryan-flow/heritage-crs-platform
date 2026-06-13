@@ -2,7 +2,7 @@
 
 > **应届生求职作品集项目** — 聚焦两个核心创新：**CRS（对话式推荐系统）** 与 **AI 数字人导览官**
 >
-> 在线演示：[https://heritage.refineyourself.asia](https://heritage.refineyourself.asia)
+> 在线演示：[https://heritage.refine.ryanflow.cloud](https://heritage.refine.ryanflow.cloud)
 
 ---
 
@@ -57,7 +57,7 @@ cold_start（冷启动）→ mixed（混合推荐）→ precision（精准推荐
 
 ### 在线演示
 
-[https://heritage.refineyourself.asia](https://heritage.refineyourself.asia)
+[https://heritage.refine.ryanflow.cloud](https://heritage.refine.ryanflow.cloud)
 
 点击"游客体验"即可进入，无需注册。推荐体验路径：
 
