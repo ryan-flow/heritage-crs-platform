@@ -139,3 +139,5 @@ VITE_API_BASE=http://localhost:8000/api/v1 npm run dev
 ### 扩展能力（了解即可）
 - **知识图谱**：独立 SQLite 图数据库（`knowledge_graph.db`），66 个非遗实体 + 64 个三元组，提供相似实体推荐和路径查询
 - **内容治理**：质量评分、审核状态、白名单回补，确保推荐内容质量
+
+<!-- rebuild -->
