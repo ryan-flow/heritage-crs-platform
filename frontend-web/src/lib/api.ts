@@ -1,4 +1,4 @@
-const API_BASE = 'https://heritage.refineyourself.asia/api/v1'
+const API_BASE = 'https://heritage.refineyourself.asia/api/v1' // rebuild
 
 interface RequestOptions {
   method?: string
