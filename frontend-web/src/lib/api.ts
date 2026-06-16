@@ -1,4 +1,4 @@
-const API_BASE = import.meta.env.VITE_API_BASE || 'http://106.55.55.54:8001/api/v1'
+const API_BASE = import.meta.env.VITE_API_BASE || '/api/v1'
 
 interface RequestOptions {
   method?: string
@@ -60,37 +60,9 @@ export function buildImageUrl(raw: string | null | undefined): string {
   if (!s) return ''
   if (s.startsWith('http://') || s.startsWith('https://')) return s
 
-  const host = API_BASE.replace(/\/api\/v1\/?$/, '')
-
-  // Absolute storage paths
-  if (s.startsWith('/storage/') || s.startsWith('/static/')) return `${host}${s}`
-
-  // /covers/ → /storage/covers/
-  if (s.startsWith('/covers/')) return `${host}/storage${s}`
-
-  // /discussion_covers/ → /storage/discussion_covers/
-  if (s.startsWith('/discussion_covers/')) return `${host}/storage${s}`
-
-  // /web_crawl/ → /storage/web_crawl/
-  if (s.startsWith('/web_crawl/')) return `${host}/storage${s}`
-
-  // /tts/ → /storage/tts/
-  if (s.startsWith('/tts/')) return `${host}/storage${s}`
-
-  // Search for storage/static path anywhere in string
-  const storageIdx = s.indexOf('/storage/')
-  if (storageIdx >= 0) return `${host}${s.slice(storageIdx)}`
-
-  const staticIdx = s.indexOf('/static/')
-  if (staticIdx >= 0) return `${host}${s.slice(staticIdx)}`
-
-  // Filename-only fallback: guess storage path by pattern
-  const filename = s.replace(/\\/g, '/').split('/').pop() || s
-  if (/\.mp3$/i.test(filename)) return `${host}/storage/tts/${filename}`
-  if (/^topic_|^discussion_/i.test(filename)) return `${host}/storage/discussion_covers/${filename}`
-  if (/\.(png|jpg|jpeg|webp|gif|svg)$/i.test(filename)) return `${host}/storage/covers/${filename}`
-
-  return `${host}/storage/${s.replace(/\\/g, '/')}`
+  // 使用相对路径时，直接返回相对路径
+  // 因为 storage 也通过 vercel.json 代理了
+  return s
 }
 
 export function shortenReason(text: string | null | undefined, fallback: string): string {
