@@ -5,7 +5,19 @@
   "installCommand": "npm install",
   "rewrites": [
     {
-      "source": "/((?!api/|storage/|static/).*)",
+      "source": "/api/:path*",
+      "destination": "http://106.55.55.54:8001/api/:path*"
+    },
+    {
+      "source": "/storage/:path*",
+      "destination": "http://106.55.55.54:8001/storage/:path*"
+    },
+    {
+      "source": "/assets/:path*",
+      "destination": "http://106.55.55.54:8001/assets/:path*"
+    },
+    {
+      "source": "/((?!api/|storage/|static/|assets/).*)",
       "destination": "/index.html"
     }
   ]
