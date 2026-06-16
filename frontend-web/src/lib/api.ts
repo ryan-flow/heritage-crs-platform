@@ -34,7 +34,7 @@ export async function apiRequest<T = unknown>(
 
   try {
     const method = (options.method || 'GET').toUpperCase()
-    const fullUrl = `${API_BASE}${url}`
+    const fullUrl = `${API_BASE}${url}`.replace(/\/$, '')
 
     const res = await fetch(fullUrl, {
       method,
