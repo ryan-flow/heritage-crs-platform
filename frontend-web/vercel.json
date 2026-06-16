@@ -3,8 +3,6 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "installCommand": "npm install",
-  "cleanUrls": true,
-  "trailingSlash": false,
   "rewrites": [
     {
       "source": "/api/:path+",
@@ -19,7 +17,7 @@
       "destination": "http://106.55.55.54:8001/static/:path+"
     },
     {
-      "source": "/(.*)",
+      "source": "/((?!api/|storage/|static/).*)",
       "destination": "/index.html"
     }
   ]
