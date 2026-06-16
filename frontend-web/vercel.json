@@ -18,6 +18,10 @@
     {
       "source": "/static/:path*",
       "destination": "http://106.55.55.54:8001/static/:path*"
+    },
+    {
+      "source": "/((?!api/|storage/|static/|assets/|.*\\.).*)",
+      "destination": "/index.html"
     }
   ]
 }
