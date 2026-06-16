@@ -1,4 +1,4 @@
-const API_BASE = '/api/v1'
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://106.55.55.54:8001/api/v1'
 
 interface RequestOptions {
   method?: string
