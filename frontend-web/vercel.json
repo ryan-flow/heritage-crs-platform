@@ -6,15 +6,15 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "http://106.55.55.54:8001/api/$1"
+      "destination": "http://106.55.55.54/api/$1"
     },
     {
       "source": "/storage/(.*)",
-      "destination": "http://106.55.55.54:8001/storage/$1"
+      "destination": "http://106.55.55.54/storage/$1"
     },
     {
       "source": "/assets/(.*)",
-      "destination": "http://106.55.55.54:8001/assets/$1"
+      "destination": "http://106.55.55.54/assets/$1"
     },
     {
       "source": "/((?!api/|storage/|static/|assets/).*)",
